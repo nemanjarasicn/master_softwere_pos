@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { styled } from '@mui/material/styles';
+import Logo from  '../Images/master_logo.png'
 
 function Footer(props) {
   return (
@@ -73,9 +73,7 @@ export const LoginPage = () => {
               alignItems: 'center',
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
+            <img src={Logo} alt="Master logo" style={{maxWidth:100}}  />
             <Typography component="h1" sx={{fontSize: 50, color: '#ffffff'}}>
               master
             </Typography>

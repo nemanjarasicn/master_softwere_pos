@@ -1,5 +1,6 @@
 
 import  {LoginPage}    from   './Pages/loginPage'
+import  {MainPayment}    from   './Pages/mainPayment'
 import { Route, Routes ,  BrowserRouter as Router} from "react-router-dom";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
     <Router>
         <Routes >
           <Route exact path='/' element={<LoginPage/>} />
+          <Route exact path='/naplata' element={<MainPayment/>} />
         </Routes>
     </Router>
     </>
