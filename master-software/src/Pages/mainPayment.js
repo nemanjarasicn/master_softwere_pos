@@ -33,6 +33,10 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
+import { fontSize } from '@mui/system';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import BadgeIcon from '@mui/icons-material/Badge';
+import GroupIcon from '@mui/icons-material/Group';
 
 const drawerWidth = 240;
 
@@ -103,6 +107,37 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+const icons = [
+  {
+    id: 0,
+    avatarIcon: (<MonetizationOnIcon/>),
+    text: "Naplata",
+  },
+  {
+    id: 1,
+    avatarIcon: (<TextSnippetIcon/>),
+    text: "Predracun",
+    
+  },
+  {
+    id: 2,
+    avatarIcon: (<BadgeIcon/>),
+    text: "Loyality",
+  },
+  {
+    id: 3,
+    avatarIcon: (<GroupIcon/>),
+    text: "Kupac",
+  },
+  {
+    id: 2,
+    avatarIcon: (<ContactPageIcon/>),
+    text: "Admin",
+  },
+];
+
+
+
 export const MainPayment = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -125,81 +160,88 @@ export const MainPayment = () => {
         <CssBaseline />
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                <img src={Logo} alt="Master logo" style={{maxWidth:50}}  />
+                  <Box>
+                      <img src={Logo} alt="Master logo" style={{maxWidth:50}}  />
+                  </Box>
                 </DrawerHeader>
-                <Divider sx={{ background: 'white'}} />
-                <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                        sx={{
-                        minHeight: 48,
-                        justifyContent:  'center',
-                        px: 2.5,
-                        }}
-                    >
-                        <ListItemIcon
-                        sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                            color:  'white'
-                        }}
+                <Box sx={{marginTop: 5}}>
+                    <List>
+                    {icons.map((item, index) => (
+                        <ListItem key={item} disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent:  'center',
+                              px: 2.5,
+                              display:  'flex',
+                              flexDirection:  'column'
+                            }}
                         >
-                        {index % 2 === 0 ? <MonetizationOnIcon /> : <TextSnippetIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={'test'} sx={{ opacity: 0, color: 'white'}} />
-                    </ListItemButton>
-                    </ListItem>
-                ))}
-                </List>
-                <Divider  sx={{ background: 'white'}} />
-                <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                        sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                        }}
-                    >
-                        <ListItemIcon
-                        sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                            color:  'white',
-                        }}
-                        >
-                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                    </ListItemButton>
-                    </ListItem>
-                ))}
-                </List>
+                            <ListItemIcon
+                            sx={{
+                                justifyContent: 'center',
+                                color:  'white'
+                            }}
+                            >
+                            {item.avatarIcon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.text} sx={{ color: 'white'}} 
+                                primaryTypographyProps={{
+                                                      fontSize: 15,
+                                                      fontWeight: 'medium',
+                                                      letterSpacing: 0,
+                                                    }} />
+                        </ListItemButton>
+                        {item.text === 'Naplata' ? <Divider  sx={{ background: 'white', marginBottom: 1}} /> : <p></p>}
+                        </ListItem>
+                    ))}
+                    </List>
+                </Box>
             </Drawer>
             <Box  sx={{ flexGrow: 1, p: 3, height: '100vh', overflow: 'auto'  , display:  'flex' }}>
-                  <Grid
-                      direction="row"
+                  <Grid 
                       justifyContent="space-between"
                       sx={{ height: "100%", overflow:  'auto' }}
-                      xs={8}
+                      xs={8} 
                     >
                       <Grid  
                           container
                           direction="column"
                           justifyContent="space-between"
-                          style={{ height: "100%" }}
-                          
+                          sx={{ height: "100%" }} 
                         >
-                            <Grid item style={{ background: "#1e2730", height: "10%",  alignContent: 'center',  display:  'flex'}} >
-                                <Button variant="contained"  sx={{fontSize: 8, backgroundColor:  '#323b40' }}>racun 01</Button>
-                                <Button variant="contained" sx={{ml:1,fontSize: 8, backgroundColor:  '#323b40'}}>racun 02</Button>
-                                <Button variant="contained" sx={{ml:1,fontSize: 8 , backgroundColor:  '#323b40'}}>racun 03</Button>
-                                <Button variant="contained" sx={{ml:1, fontSize: 8, backgroundColor:  '#323b40'}}>racun 04</Button>
-                                
+                            <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
+            
+                                    <Button variant="contained"  sx={{fontSize: 6, backgroundColor:  '#323b40',
+                                                                      '&:hover': {
+                                                                        backgroundColor: '#6cb238',
+                                                                        borderColor: '#0062cc',
+                                                                        boxShadow: 'none',
+                                                                      }, }}>racun 01</Button>
+                                    <Button variant="contained" sx={{ml:2,fontSize: 6, backgroundColor:  '#323b40',
+                                                                      '&:hover': {
+                                                                        backgroundColor: '#6cb238',
+                                                                        borderColor: '#0062cc',
+                                                                        boxShadow: 'none',
+                                                                      },}}>racun 02</Button>
+                                    <Button variant="contained" sx={{ml:2,fontSize: 6 , backgroundColor:  '#323b40',
+                                                                      '&:hover': {
+                                                                        backgroundColor: '#6cb238',
+                                                                        borderColor: '#0062cc',
+                                                                        boxShadow: 'none',
+                                                                      },}}>racun 03</Button>
+                                    <Button variant="contained" sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
+                                                                      '&:hover': {
+                                                                        backgroundColor: '#6cb238',
+                                                                        borderColor: '#0062cc',
+                                                                        boxShadow: 'none',
+                                                                      },}}>racun 04</Button>
+                                    <Button variant="contained" sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
+                                                                      '&:hover': {
+                                                                        backgroundColor: '#6cb238',
+                                                                        borderColor: '#0062cc',
+                                                                        boxShadow: 'none',
+                                                                      },}}>racun 05</Button>
                                 <TextField
                                     id="outlined-password-input"
                                     variant= "outlined"
@@ -210,31 +252,71 @@ export const MainPayment = () => {
                                            background: "#323b40",
                                         },
                                         "& .MuiOutlinedInput-input": {
-                                          color: "green"
+                                          color: "green",
+                                          height: 20            
                                         },
                                       }}
                                   />
-                                <Button variant="contained"  startIcon={<SearchIcon />} sx={{ml: 1,fontSize: 8, backgroundColor:  '#6cb238' }}>Detaljna pretraga</Button>
+                                  <Button variant="contained"  startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>Detaljna pretraga</Button>
+                            </Grid>  
+                             
+                            <Grid  sx={{ background: "#323b40", height: "75%"}}  >
+                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
+                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Govedja kobasica zlatiborac</Button>
+                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Slanina u omotu Carnex</Button>
+                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Slanina barena mesara Seka</Button>
+                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Madjarski pileci narezak</Button>
+                                </Grid>
+                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
+                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Cureca sunka</Button>
+                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Praska sunka PIK</Button>
+                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Alpska kobasica Yuhor</Button>
+                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Wudi parizer AIA</Button> 
+                                </Grid>
+                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
+                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Suvi vrat 1kg</Button>
+                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Alpska kobasica Imes</Button>
+                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Pileca extra XXL</Button>
+                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Suve kosti 1kg</Button> 
+                                </Grid>
+                                <Grid  item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
+                                    <Button variant="contained"  sx={{ width: '25%',  background: "#1e2730", fontSize: 10}}  >Pecenica 1kg</Button>
+                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Sendvic kobasica Neoplanta 1kg</Button>
+                                    <Button variant="contained"  sx={{ ml: 2, width: '25%',  background: "#1e2730", fontSize: 10}}  ></Button>
+                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}></Button>
+                    
+                                </Grid>
                             </Grid>
-                            <Grid item style={{ background: "#1e2730", height: "70%", border:  'solid 1px white'}} >
-                                <h1>OKKK</h1>
-                            </Grid>
-                            <Grid item style={{ background: "#1e2730", height: "20%", m:5, border:  'solid 1px  white' }} >
-                                <h1>OKKK</h1>
+                            <Grid item style={{ background: "#1e2730", height: "10%" }} >
+                            <Grid  container  sx={{display: 'flex'}}>
+                                <Grid item xs={4} justifyContent='flex-start'>
+                                  <Typography variant="body2" color="#ffffff"  >
+                                        {'operater  0124'}
+                                  </Typography>
+                                </Grid>
+ 
+                                <Grid item xs={4} justifyContent='center'>
+                                  
+                                </Grid>
+
+                                <Grid  item xs={4} sx={{display:  'flex'}} justifyContent='flex-end'>
+                                  <Typography variant="body2" color="#ffffff"  >
+                                        {'Kupac: XZY Kupac 1234'}
+                                  </Typography>
+                                </Grid>
+                              </Grid>         
+                        
                             </Grid>
                       </Grid>
                   </Grid>
                   <Grid
-                      direction="row"
                       justifyContent="space-between"
-                      sx={{ height: "100%", overflow:  'auto' }}
+                      sx={{ height: "100%", overflow:  'auto', marginLeft: 2 }}
                       xs={4}
                     >
-                          <Grid item style={{ background: "blue", height: "100%", mt:5, border:  'solid 1px white'}} >
-                                <h1>OKKK</h1>
-                            </Grid>
+                        <Grid item style={{ background: "blue", height: "100%", mt:5, border:  'solid 1px white'}} >
+                        </Grid>
                     </Grid>
-                  
             </Box>
         
     </Grid>
