@@ -10,6 +10,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from  '../Images/master_logo.png'
+import { useNavigate, useParams } from 'react-router-dom';
 
 function Footer(props) {
   return (
@@ -38,13 +39,24 @@ function Footer(props) {
 const theme = createTheme();
 
 export const LoginPage = () => {
+
+  
+  const navigate  = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get('email'),
       password: data.get('password'),
     });
+    if(data.get('password')) {
+      navigate({
+        pathname: '/naplata',
+        state: {
+          data: data.password,
+        },
+      })
+    }
   };
 
     return (

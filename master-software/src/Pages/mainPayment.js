@@ -35,6 +35,11 @@ import { fontSize } from '@mui/system';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import BadgeIcon from '@mui/icons-material/Badge';
 import GroupIcon from '@mui/icons-material/Group';
+import Table from '@mui/material/Table';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 const drawerWidth = 240;
 
@@ -312,7 +317,17 @@ export const MainPayment = () => {
                       sx={{ height: "100%", overflow:  'auto', marginLeft: 2 }}
                       xs={4}
                     >
-                        <Grid item style={{ background: "blue", height: "100%", mt:5, border:  'solid 1px white'}} >
+                        <Grid item style={{ background: "#323b40", height: "100%"}} >
+                                <Table aria-label="simple table">
+                                  <TableHead>
+                                      <TableRow  >
+                                        <TableCell  sx={{color:  'white', width:  '40%'}}>Artikal</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">Kolicina</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">Cena</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">Ukupno</TableCell>
+                                      </TableRow>
+                                  </TableHead>
+                                </Table>
                         </Grid>
                     </Grid>
             </Box>
