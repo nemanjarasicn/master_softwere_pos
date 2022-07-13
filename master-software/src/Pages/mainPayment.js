@@ -22,8 +22,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Avatar from '@mui/material/Avatar';
-import {Deposits}  from   './deposits'
-import {Charts}  from   './chart'
 import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Logo from  '../Images/master_logo.png'
@@ -180,7 +178,7 @@ export const MainPayment = () => {
                             <ListItemIcon
                             sx={{
                                 justifyContent: 'center',
-                                color:  'white'
+                                color:  () => item.text === 'Naplata' ? '#6cb238' : '#ffffff',
                             }}
                             >
                             {item.avatarIcon}
@@ -192,7 +190,7 @@ export const MainPayment = () => {
                                                       letterSpacing: 0,
                                                     }} />
                         </ListItemButton>
-                        {item.text === 'Naplata' ? <Divider  sx={{ background: 'white', marginBottom: 1}} /> : <p></p>}
+                        {item.text === 'Naplata' ? <Divider  sx={{ background: 'white', marginBottom: 1, }} /> : <p></p>}
                         </ListItem>
                     ))}
                     </List>
