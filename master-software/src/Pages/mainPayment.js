@@ -40,6 +40,9 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import TableBody from '@mui/material/TableBody';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 
 const drawerWidth = 240;
 
@@ -139,6 +142,97 @@ const icons = [
   },
 ];
 
+const dataListTip = [
+{
+  id: 1,
+  name: 'Govedja kobasica zlatiborac'
+}, 
+{
+  id:2,
+  name:  'Slanina u omotu Carnex'
+},
+{
+  id:3,
+  name:  'Slanina barena mesara Seka'
+},
+{
+  id: 4,
+  name:  'Madjarski pileci narezak'
+}, 
+{
+  id: 5,
+  name:  'Madjarski pileci narezak'
+}
+];
+
+
+const listRacuna = [
+  {
+    id: 1,
+    name: 'Racun 01'
+  }, 
+  {
+    id:2,
+    name:  'Racun 02'
+  },
+  {
+    id:3,
+    name:  'Racun 03'
+  },
+  {
+    id: 4,
+    name:  'Racun 04'
+  }, 
+  {
+    id: 5,
+    name:  'Racun 05'
+  }
+  ];
+
+
+  const artikliTmp = [
+    {
+      id: 1,
+      artikal: 'Govedja kobasica zlatiborac',
+      kolicina: 1,
+      cena: 100
+    }, 
+    {
+      id:2,
+      artikal:  'Slanina u omotu Carnex',
+      kolicina: 1,
+      cena: 100
+    },
+    {
+      id:3,
+      artikal:  'Slanina barena mesara Seka',
+      kolicina: 1,
+      cena: 100
+    },
+    {
+      id: 4,
+      artikal:  'Madjarski pileci narezak',
+      kolicina: 1,
+      cena: 100
+    }, 
+    {
+      id: 5,
+      artikal:  'Madjarski pileci narezak',
+      kolicina: 1,
+      cena: 100
+    }
+    ];
+
+
+
+
+const arrayChunk = (arr, n) => {
+  const array = arr.slice();
+  const chunks = [];
+  while (array.length) chunks.push(array.splice(0, n));
+  return chunks;
+};
+
 
 
 export const MainPayment = () => {
@@ -201,50 +295,30 @@ export const MainPayment = () => {
                     </List>
                 </Box>
             </Drawer>
-            <Box  sx={{ flexGrow: 1, p: 3, height: '100vh', overflow: 'auto'  , display:  'flex' }}>
+            <Box  sx={{ flexGrow: 1,  height: '100vh', overflow: 'auto'  , display:  'flex' }}>
                   <Grid 
                       justifyContent="space-between"
-                      sx={{ height: "100%", overflow:  'auto' }}
-                      xs={8} 
+                      sx={{ height: "100%", p: 1}}
+                      
                     >
                       <Grid  
                           container
                           direction="column"
                           justifyContent="space-between"
-                          sx={{ height: "100%" }} 
+                          sx={{ height: "100%"}}
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
-            
-                                    <Button variant="contained"  sx={{fontSize: 6, backgroundColor:  '#323b40',
-                                                                      '&:hover': {
-                                                                        backgroundColor: '#6cb238',
-                                                                        borderColor: '#0062cc',
-                                                                        boxShadow: 'none',
-                                                                      }, }}>racun 01</Button>
-                                    <Button variant="contained" sx={{ml:2,fontSize: 6, backgroundColor:  '#323b40',
-                                                                      '&:hover': {
-                                                                        backgroundColor: '#6cb238',
-                                                                        borderColor: '#0062cc',
-                                                                        boxShadow: 'none',
-                                                                      },}}>racun 02</Button>
-                                    <Button variant="contained" sx={{ml:2,fontSize: 6 , backgroundColor:  '#323b40',
-                                                                      '&:hover': {
-                                                                        backgroundColor: '#6cb238',
-                                                                        borderColor: '#0062cc',
-                                                                        boxShadow: 'none',
-                                                                      },}}>racun 03</Button>
-                                    <Button variant="contained" sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
-                                                                      '&:hover': {
-                                                                        backgroundColor: '#6cb238',
-                                                                        borderColor: '#0062cc',
-                                                                        boxShadow: 'none',
-                                                                      },}}>racun 04</Button>
-                                    <Button variant="contained" sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
-                                                                      '&:hover': {
-                                                                        backgroundColor: '#6cb238',
-                                                                        borderColor: '#0062cc',
-                                                                        boxShadow: 'none',
-                                                                      },}}>racun 05</Button>
+                                    {listRacuna.map((item,index) => (
+                                        <Button variant="contained"  sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
+                                        '&:hover': {
+                                          backgroundColor: '#6cb238',
+                                          borderColor: '#0062cc',
+                                          boxShadow: 'none',
+                                        },
+                                        '&:first-child': {
+                                         ml: 0,
+                                        }, }}>{item.name}</Button>
+                                    ))}
                                 <TextField
                                     id="outlined-password-input"
                                     variant= "outlined"
@@ -263,32 +337,16 @@ export const MainPayment = () => {
                                   <Button variant="contained"  startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>Detaljna pretraga</Button>
                             </Grid>  
                              
-                            <Grid  sx={{ background: "#323b40", height: "75%"}}  >
-                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
-                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Govedja kobasica zlatiborac</Button>
-                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Slanina u omotu Carnex</Button>
-                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Slanina barena mesara Seka</Button>
-                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Madjarski pileci narezak</Button>
-                                </Grid>
-                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
-                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Cureca sunka</Button>
-                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Praska sunka PIK</Button>
-                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Alpska kobasica Yuhor</Button>
-                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Wudi parizer AIA</Button> 
-                                </Grid>
-                                <Grid item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
-                                    <Button variant="contained"  sx={{ width: '25%', background: "#1e2730", fontSize: 10}}  >Suvi vrat 1kg</Button>
-                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Alpska kobasica Imes</Button>
-                                    <Button variant="contained"  sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Pileca extra XXL</Button>
-                                    <Button variant="contained" sx={{ml:  2,width: '25%', background: "#1e2730", fontSize: 10}}>Suve kosti 1kg</Button> 
-                                </Grid>
-                                <Grid  item xs={12} m={2}  sx={{display: 'flex', height: '15%'}}>
-                                    <Button variant="contained"  sx={{ width: '25%',  background: "#1e2730", fontSize: 10}}  >Pecenica 1kg</Button>
-                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}>Sendvic kobasica Neoplanta 1kg</Button>
-                                    <Button variant="contained"  sx={{ ml: 2, width: '25%',  background: "#1e2730", fontSize: 10}}  ></Button>
-                                    <Button variant="contained"  sx={{ml:2,width: '25%', background: "#1e2730", fontSize: 10}}></Button>
-                    
-                                </Grid>
+                            <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
+                                {arrayChunk(dataListTip, 4).map((row, i) => (
+                                  <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
+                                    {row.map((col, i) => (
+                                        <Grid item xs={3} >
+                                            <Button variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10}}  >{col.name}</Button>
+                                        </Grid>
+                                    ))}
+                                  </Grid>
+                                ))}  
                             </Grid>
                             <Grid item style={{ background: "#1e2730", height: "10%" }} >
                             <Grid  container  sx={{display: 'flex'}}>
@@ -314,20 +372,70 @@ export const MainPayment = () => {
                   </Grid>
                   <Grid
                       justifyContent="space-between"
-                      sx={{ height: "100%", overflow:  'auto', marginLeft: 2 }}
+                      sx={{ height: "100%", overflow:  'auto' }}
                       xs={4}
                     >
-                        <Grid item style={{ background: "#323b40", height: "100%"}} >
-                                <Table aria-label="simple table">
+                        <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
+                            <Grid item style={{ height: "75%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex', margin: 5}} >
+                                <Table size='medium' aria-label="a dense table" >
                                   <TableHead>
-                                      <TableRow  >
-                                        <TableCell  sx={{color:  'white', width:  '40%'}}>Artikal</TableCell>
+                                      <TableRow   >
+                                        <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>Artikal</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Kolicina</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Cena</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Ukupno</TableCell>
                                       </TableRow>
                                   </TableHead>
+                                  <TableBody>
+                                  {artikliTmp.map((row,index) => (
+                                    <TableRow
+                                      key={index}
+                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
+                                    >
+                                      <TableCell component="th" scope="row">
+                                        {row.artikal}
+                                      </TableCell>
+                                      <TableCell align="right">{row.kolicina}</TableCell>
+                                      <TableCell align="right">{row.cena}</TableCell>
+                                      <TableCell align="right">{row.kolicina} * {row.cena}</TableCell>
+                                  
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
                                 </Table>
+                            </Grid>
+                            <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
+                            <Card sx={{ minWidth: 275, display: 'flex', backgroundColor:  '#4f5e65', m: 1}}>
+                                
+                                <ButtonGroup sx={{
+                                                  mt: 1,
+                                                  mb: 1,
+                                                  width: "100%",
+                                                  justifyContent: "space-evenly"}}>
+                                    <Button variant="contained"  startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Popust</Button>
+                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Numeric</Button>
+                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Vaga</Button>
+                                    <Button variant="contained" sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Storno</Button>
+                                  </ButtonGroup>
+
+                              </Card>
+
+                            </Grid>
+                            <Grid item sx={{  height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
+                                  <Grid item xs={6}  sx={{  height: "100%", marginTop: 1}}>
+                                    <Grid sx={{display:  'flex', ml:1}}>
+                                      <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>Total racun</Typography></Grid>
+                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex'}}>2490</Typography></Grid>
+                                    </Grid>
+                                    <Grid sx={{display:  'flex',  ml:  1  }}>
+                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >Total za naplatu</Typography></Grid>
+                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >2490</Typography></Grid>
+                                    </Grid>
+                                  </Grid>
+                                  <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
+                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1 }} fullWidth>Naplata</Button>
+                                  </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
             </Box>
