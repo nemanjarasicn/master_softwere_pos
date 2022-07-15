@@ -43,6 +43,11 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import '../Css/mainPaymentCss.css'
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 
 const drawerWidth = 240;
 
@@ -162,6 +167,86 @@ const dataListTip = [
 {
   id: 5,
   name:  'Madjarski pileci narezak'
+},
+{
+  id: 1,
+  name: 'Govedja kobasica zlatiborac'
+}, 
+{
+  id:2,
+  name:  'Slanina u omotu Carnex'
+},
+{
+  id:3,
+  name:  'Slanina barena mesara Seka'
+},
+{
+  id: 4,
+  name:  'Madjarski pileci narezak'
+}, 
+{
+  id: 5,
+  name:  'Madjarski pileci narezak'
+},
+{
+  id: 1,
+  name: 'Govedja kobasica zlatiborac'
+}, 
+{
+  id:2,
+  name:  'Slanina u omotu Carnex'
+},
+{
+  id:3,
+  name:  'Slanina barena mesara Seka'
+},
+{
+  id: 4,
+  name:  'Madjarski pileci narezak'
+}, 
+{
+  id: 5,
+  name:  'Madjarski pileci narezak'
+},
+{
+  id: 1,
+  name: 'Govedja kobasica zlatiborac'
+}, 
+{
+  id:2,
+  name:  'Slanina u omotu Carnex'
+},
+{
+  id:3,
+  name:  'Slanina barena mesara Seka'
+},
+{
+  id: 4,
+  name:  'Madjarski pileci narezak'
+}, 
+{
+  id: 5,
+  name:  'Madjarski pileci narezak'
+},
+{
+  id: 1,
+  name: 'Govedja kobasica zlatiborac'
+}, 
+{
+  id:2,
+  name:  'Slanina u omotu Carnex'
+},
+{
+  id:3,
+  name:  'Slanina barena mesara Seka'
+},
+{
+  id: 4,
+  name:  'Madjarski pileci narezak'
+}, 
+{
+  id: 5,
+  name:  'Madjarski pileci narezak'
 }
 ];
 
@@ -220,7 +305,39 @@ const listRacuna = [
       artikal:  'Madjarski pileci narezak',
       kolicina: 1,
       cena: 100
-    }
+    },
+    {
+      id: 1,
+      artikal: 'Govedja kobasica zlatiborac',
+      kolicina: 1,
+      cena: 100
+    }, 
+    {
+      id:2,
+      artikal:  'Slanina u omotu Carnex',
+      kolicina: 1,
+      cena: 100
+    },
+    {
+      id: 5,
+      artikal:  'Madjarski pileci narezak',
+      kolicina: 1,
+      cena: 100
+    },
+    {
+      id: 1,
+      artikal: 'Govedja kobasica zlatiborac',
+      kolicina: 1,
+      cena: 100
+    }, 
+    {
+      id:2,
+      artikal:  'Slanina u omotu Carnex',
+      kolicina: 1,
+      cena: 100
+    },
+    
+    
     ];
 
 
@@ -238,6 +355,7 @@ const arrayChunk = (arr, n) => {
 export const MainPayment = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState(0);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -245,6 +363,10 @@ export const MainPayment = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   return (
@@ -338,6 +460,7 @@ export const MainPayment = () => {
                             </Grid>  
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
+                              <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} >
                                 {arrayChunk(dataListTip, 4).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
@@ -346,8 +469,33 @@ export const MainPayment = () => {
                                         </Grid>
                                     ))}
                                   </Grid>
-                                ))}  
+                                ))} 
+                                </Grid>
+                                <Grid    sx={{maxWidth: { xs: 500, sm: 700 },  height:  '20%',  mt:7}}>
+                                  <Tabs
+                                    value={value}
+                                    onChange={handleChange}
+                                    variant="scrollable"
+                                    scrollButtons
+                                    allowScrollButtonsMobile
+                                    aria-label="scrollable auto tabs example"
+                                    sx={{'& .MuiTabScrollButton-root': {
+                                      color: 'red'
+                                    },
+                                    '& .Mui-selected': {color:  'white !important'}}}
+                                    TabIndicatorProps={{ style: { background: "#6cb238" } }}
+                                    
+                                  >
+                                    <Tab label="Mlecni proizvodi"    sx={{color: '#5b6266'}} />
+                                    <Tab label="Suhomesnato"     sx={{color:  '#5b6266'}} />
+                                    <Tab label="Hleb i peciva"   sx={{color:  '#5b6266'}} />
+                                    <Tab label="Kafa"    sx={{color:  '#5b6266'}}/>
+                                    <Tab label="Sokovi i voce"     sx={{color:  '#5b6266'}}/>
+                                    <Tab label="Item Seven"   sx={{color:  '#5b6266'}}/>
+                                  </Tabs>
+                                </Grid> 
                             </Grid>
+                            
                             <Grid item style={{ background: "#1e2730", height: "10%" }} >
                             <Grid  container  sx={{display: 'flex'}}>
                                 <Grid item xs={4} justifyContent='flex-start'>
@@ -370,23 +518,24 @@ export const MainPayment = () => {
                             </Grid>
                       </Grid>
                   </Grid>
-                  <Grid
+                  <Grid item
                       justifyContent="space-between"
                       sx={{ height: "100%", overflow:  'auto' }}
                       xs={4}
                     >
                         <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
-                            <Grid item style={{ height: "75%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex', margin: 5}} >
-                                <Table size='medium' aria-label="a dense table" >
-                                  <TableHead>
-                                      <TableRow   >
+                            <Grid item style={{ height: "70%",   display:  'flex', margin: 5,  }} >
+                              <TableContainer sx={{ maxHeight: 300 }}>
+                                <Table  stickyHeader  aria-label="sticky table"  sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
+                                  <TableHead   >
+                                      <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
                                         <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>Artikal</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Kolicina</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Cena</TableCell>
                                         <TableCell  sx={{color:  'white'}} align="right">Ukupno</TableCell>
                                       </TableRow>
                                   </TableHead>
-                                  <TableBody>
+                                  <TableBody sx={{border: 'solid 1px red', overflowY: 'scroll'}}>
                                   {artikliTmp.map((row,index) => (
                                     <TableRow
                                       key={index}
@@ -403,10 +552,15 @@ export const MainPayment = () => {
                                   ))}
                                 </TableBody>
                                 </Table>
+                              </TableContainer>
+                            </Grid>
+                            <Grid item style={{ height: "5%",   display:  'flex', margin: 1, alignItems:    'center',   justifyContent:  'flex-end' }} >
+                                 <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
+                                 <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}><KeyboardArrowDownIcon /></Button>
                             </Grid>
                             <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
-                            <Card sx={{ minWidth: 275, display: 'flex', backgroundColor:  '#4f5e65', m: 1}}>
-                                
+                              <Card sx={{ minWidth: 275, display: 'flex', backgroundColor:  '#4f5e65', m: 1}}>
+
                                 <ButtonGroup sx={{
                                                   mt: 1,
                                                   mb: 1,
@@ -425,7 +579,7 @@ export const MainPayment = () => {
                                   <Grid item xs={6}  sx={{  height: "100%", marginTop: 1}}>
                                     <Grid sx={{display:  'flex', ml:1}}>
                                       <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>Total racun</Typography></Grid>
-                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex'}}>2490</Typography></Grid>
+                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>2490</Typography></Grid>
                                     </Grid>
                                     <Grid sx={{display:  'flex',  ml:  1  }}>
                                       <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >Total za naplatu</Typography></Grid>
@@ -433,7 +587,7 @@ export const MainPayment = () => {
                                     </Grid>
                                   </Grid>
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
-                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1 }} fullWidth>Naplata</Button>
+                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}} fullWidth>Naplata</Button>
                                   </Grid>
                             </Grid>
                         </Grid>
