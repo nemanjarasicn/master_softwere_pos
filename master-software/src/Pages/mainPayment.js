@@ -54,6 +54,7 @@ import {ModalCount} from '../Components/modalCount'
 import {ModalPopustArtikal} from '../Components/modalPopustArtikal'
 import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
+import {ModalNaplata} from '../Components/modalNaplata'
 
 const drawerWidth = 240;
 
@@ -382,6 +383,7 @@ export const MainPayment = () => {
   const [openModalPopustRacun, setOpenModalPopustRacun] = React.useState(false);
   const [openModalStornoArtikla, setOpenModalStornoArtikla] = React.useState(false);
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
+  const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
@@ -393,6 +395,9 @@ export const MainPayment = () => {
   const handleCloseModalStornoArtikal = () => setOpenModalStornoArtikla(false);
   const handleOpenModalStornoRacun = () => setOpenModalStornoRacun(true);
   const handleCloseModalStornoRacun = () => setOpenModalStornoRacun(false);
+  const handleOpenModalNaplata = () => setOpenModalNaplata(true);
+  const handleCloseModalNaplata = () => setOpenModalNaplata(false);
+  
 
 
   const handleChange = (event, newValue) => {
@@ -582,7 +587,7 @@ export const MainPayment = () => {
                                       </TableCell>
                                       <TableCell align="right" onClick={handleOpenModalKolicina}>{row.kolicina}</TableCell>
                                       <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
-                                      <TableCell align="right">{row.kolicina} * {row.cena}</TableCell>
+                                      <TableCell align="right">{currencyFormat(parseFloat(row.kolicina) * parseFloat(row.cena))}</TableCell>
                                   
                                     </TableRow>
                                   ))}
@@ -627,8 +632,9 @@ export const MainPayment = () => {
                                     </Grid>
                                   </Grid>
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
-                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}} fullWidth>Naplata</Button>
+                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth>Naplata</Button>
                                   </Grid>
+                                  <ModalNaplata openProps={openModalNaplata} handleCloseprops={handleCloseModalNaplata} ></ModalNaplata>
                             </Grid>
                         </Grid>
                     </Grid>
