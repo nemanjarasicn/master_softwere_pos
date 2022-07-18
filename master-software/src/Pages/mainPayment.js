@@ -47,7 +47,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import '../Css/mainPaymentCss.css'
 import Tabs from '@mui/material/Tabs';
+import Modal from '@mui/material/Modal';
 import Tab from '@mui/material/Tab';
+import Input from '@mui/material/Input';
+import {ModalCount} from '../Components/modalCount'
+import {ModalPopustArtikal} from '../Components/modalPopustArtikal'
+import {ModalPopustRacun} from '../Components/modalPopustRacun'
+import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 
 const drawerWidth = 240;
 
@@ -341,6 +347,21 @@ const listRacuna = [
     ];
 
 
+    
+    const style = {
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: 300,
+      height: 300,
+      bgcolor: 'background.paper',
+      border: '2px solid #000',
+      boxShadow: 24,
+      borderRadius: 2,
+      p: 4,
+      backgroundColor:  '#323b40'
+    };
 
 
 const arrayChunk = (arr, n) => {
@@ -352,22 +373,37 @@ const arrayChunk = (arr, n) => {
 
 
 
+
+
 export const MainPayment = () => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [openModalKolicina, setOpenModalKolicina] = React.useState(false);
+  const [openModalPopustArtikal, setOpenModalPopustArtikal] = React.useState(false);
+  const [openModalPopustRacun, setOpenModalPopustRacun] = React.useState(false);
+  const [openModalStornoArtikla, setOpenModalStornoArtikla] = React.useState(false);
+  const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [value, setValue] = React.useState(0);
+  const handleOpenModalKolicina = () => setOpenModalKolicina(true);
+  const handleCloseModalKolicina = () => setOpenModalKolicina(false);
+  const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
+  const handleCloseModalPopustArtikal = () => setOpenModalPopustArtikal(false);
+  const handleOpenModalPopustRacun = () => setOpenModalPopustRacun(true);
+  const handleCloseModalPopustRacun = () => setOpenModalPopustRacun(false);
+  const handleOpenModalStornoArtikal = () => setOpenModalStornoArtikla(true);
+  const handleCloseModalStornoArtikal = () => setOpenModalStornoArtikla(false);
+  const handleOpenModalStornoRacun = () => setOpenModalStornoRacun(true);
+  const handleCloseModalStornoRacun = () => setOpenModalStornoRacun(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const currencyFormat = (num) => {
+    return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+ }
+
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -377,7 +413,7 @@ export const MainPayment = () => {
                   display:  'flex'
                    }}>
         <CssBaseline />
-            <Drawer variant="permanent" open={open}>
+            <Drawer variant="permanent" >
                 <DrawerHeader>
                   <Box>
                       <img src={Logo} alt="Master logo" style={{maxWidth:50}}  />
@@ -465,7 +501,7 @@ export const MainPayment = () => {
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10}}  >{col.name}</Button>
+                                            <Button   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
@@ -541,18 +577,21 @@ export const MainPayment = () => {
                                       key={index}
                                       sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
-                                      <TableCell component="th" scope="row">
+                                      <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
                                         {row.artikal}
                                       </TableCell>
-                                      <TableCell align="right">{row.kolicina}</TableCell>
-                                      <TableCell align="right">{row.cena}</TableCell>
+                                      <TableCell align="right" onClick={handleOpenModalKolicina}>{row.kolicina}</TableCell>
+                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
                                       <TableCell align="right">{row.kolicina} * {row.cena}</TableCell>
                                   
                                     </TableRow>
                                   ))}
                                 </TableBody>
                                 </Table>
-                              </TableContainer>
+                              </TableContainer>        
+                              <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina} ></ModalCount>
+                              <ModalPopustArtikal openProps={openModalPopustArtikal} handleCloseprops={handleCloseModalPopustArtikal}   ></ModalPopustArtikal>
+                              <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
                             </Grid>
                             <Grid item style={{ height: "5%",   display:  'flex', margin: 1, alignItems:    'center',   justifyContent:  'flex-end' }} >
                                  <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
@@ -566,24 +605,25 @@ export const MainPayment = () => {
                                                   mb: 1,
                                                   width: "100%",
                                                   justifyContent: "space-evenly"}}>
-                                    <Button variant="contained"  startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Popust</Button>
+                                    <Button variant="contained"   onClick={handleOpenModalPopustRacun} startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Popust</Button>
                                     <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Numeric</Button>
                                     <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Vaga</Button>
-                                    <Button variant="contained" sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Storno</Button>
+                                    <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Storno</Button>
                                   </ButtonGroup>
 
                               </Card>
-
+                              <ModalPopustRacun openProps={openModalPopustRacun} handleCloseprops={handleCloseModalPopustRacun} ></ModalPopustRacun>
+                              <ModalStornoArtikal openProps={openModalStornoRacun} handleCloseprops={handleCloseModalStornoRacun}  titleTextProps={'Storno Racun'} ></ModalStornoArtikal>        
                             </Grid>
                             <Grid item sx={{  height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
                                   <Grid item xs={6}  sx={{  height: "100%", marginTop: 1}}>
                                     <Grid sx={{display:  'flex', ml:1}}>
                                       <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>Total racun</Typography></Grid>
-                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>2490</Typography></Grid>
+                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>{currencyFormat(2490)}</Typography></Grid>
                                     </Grid>
                                     <Grid sx={{display:  'flex',  ml:  1  }}>
                                       <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >Total za naplatu</Typography></Grid>
-                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >2490</Typography></Grid>
+                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >{currencyFormat(2490)}</Typography></Grid>
                                     </Grid>
                                   </Grid>
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
