@@ -26,6 +26,25 @@ const style = {
 
 export const ModalCount = ({openProps,handleCloseprops}) => {
 
+    const [counter, setCounter] = React.useState(0);
+
+
+    //increase counter
+  const increase = () => {
+    setCounter(count => count + 1);
+  };
+
+  //decrease counter
+  const decrease = () => {
+        setCounter(count => count - 1);
+  };
+
+
+  //reset counter 
+  const reset = () =>{
+    setCounter(0)
+  }
+
       return (
         <Modal
             open={openProps}
@@ -43,7 +62,7 @@ export const ModalCount = ({openProps,handleCloseprops}) => {
                     <Grid sx={{display:  'flex', height:  '60%', alignItems:  'center'}} >
                     <Grid item xs={12}  sx={{display: 'flex'}} >
                             <Grid item xs={4}     sx={{display: 'flex',  alignItems:  'center'}} >
-                                <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
+                                <Button variant="contained"  onClick={increase}   sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
                             </Grid>
                             <Grid item xs={4}    sx={{display: 'flex'}}>
                             <TextField
@@ -51,13 +70,13 @@ export const ModalCount = ({openProps,handleCloseprops}) => {
                                 id="filled-hidden-label-normal"
                                 defaultValue="1"
                                 variant="filled"
-                            
+                                value={counter}
                                 size="small"
-                                sx={{ input: {  fontSize: 36,   color:  'white', ml: 2},  }}
+                                sx={{ input: {  fontSize: 36,   color:  'white', ml: 1},  }}
                                 />
                             </Grid>
                             <Grid item xs={4}   sx={{display:  'flex', alignItems:  'center' , justifyContent:  'flex-end'}}>
-                                <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
+                                <Button variant="contained"   onClick={decrease}  sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
                             </Grid>
                         </Grid>
                     </Grid>

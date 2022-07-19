@@ -55,206 +55,162 @@ import {ModalPopustArtikal} from '../Components/modalPopustArtikal'
 import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
-
-const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: 'hidden',
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-    backgroundColor:  '#323b40',
-  },
-});
+import {Sidebar} from '../Components/sidebar'
 
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
-  }),
-);
-
-const icons = [
-  {
-    id: 0,
-    avatarIcon: (<MonetizationOnIcon/>),
-    text: "Naplata",
-  },
-  {
-    id: 1,
-    avatarIcon: (<TextSnippetIcon/>),
-    text: "Predracun",
-    
-  },
-  {
-    id: 2,
-    avatarIcon: (<BadgeIcon/>),
-    text: "Loyality",
-  },
-  {
-    id: 3,
-    avatarIcon: (<GroupIcon/>),
-    text: "Kupac",
-  },
-  {
-    id: 2,
-    avatarIcon: (<ContactPageIcon/>),
-    text: "Admin",
-  },
-];
 
 const dataListTip = [
 {
   id: 1,
-  name: 'Govedja kobasica zlatiborac'
+  name: 'Govedja kobasica zlatiborac',
+  tipProizvodaId: 2 
 }, 
 {
   id:2,
-  name:  'Slanina u omotu Carnex'
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
 },
 {
   id:3,
-  name:  'Slanina barena mesara Seka'
+  name:  'Slanina barena mesara Seka',
+  tipProizvodaId: 2 
 },
 {
   id: 4,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 }, 
 {
   id: 5,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 },
 {
   id: 1,
-  name: 'Govedja kobasica zlatiborac'
+  name: 'Govedja kobasica zlatiborac',
+  tipProizvodaId: 2 
 }, 
 {
   id:2,
-  name:  'Slanina u omotu Carnex'
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
 },
 {
   id:3,
-  name:  'Slanina barena mesara Seka'
+  name:  'Slanina barena mesara Seka',
+  tipProizvodaId: 2 
 },
 {
   id: 4,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 }, 
 {
   id: 5,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 },
 {
   id: 1,
-  name: 'Govedja kobasica zlatiborac'
+  name: 'Govedja kobasica zlatiborac',
+  tipProizvodaId: 2 
 }, 
 {
   id:2,
-  name:  'Slanina u omotu Carnex'
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
 },
 {
   id:3,
-  name:  'Slanina barena mesara Seka'
+  name:  'Slanina barena mesara Seka',
+  tipProizvodaId: 2 
 },
 {
   id: 4,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 }, 
 {
   id: 5,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 },
 {
   id: 1,
-  name: 'Govedja kobasica zlatiborac'
+  name: 'Govedja kobasica zlatiborac',
+  tipProizvodaId: 2 
 }, 
 {
   id:2,
-  name:  'Slanina u omotu Carnex'
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
 },
 {
   id:3,
-  name:  'Slanina barena mesara Seka'
+  name:  'Slanina barena mesara Seka',
+  tipProizvodaId: 2 
 },
 {
   id: 4,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 }, 
 {
   id: 5,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
 },
 {
   id: 1,
-  name: 'Govedja kobasica zlatiborac'
+  name: 'Govedja kobasica zlatiborac',
+  tipProizvodaId: 2 
 }, 
 {
   id:2,
-  name:  'Slanina u omotu Carnex'
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
 },
 {
   id:3,
-  name:  'Slanina barena mesara Seka'
+  name:  'Slanina barena mesara Seka',
+  tipProizvodaId: 2 
 },
 {
   id: 4,
-  name:  'Madjarski pileci narezak'
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
+
 }, 
 {
   id: 5,
-  name:  'Madjarski pileci narezak'
-}
+  name:  'Madjarski pileci narezak',
+  tipProizvodaId: 2 
+},
+{
+  id:2,
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 1 
+},
+{
+  id:2,
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 1 
+},
+{
+  id:2,
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 1 
+},
+{
+  id:2,
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 1 
+},
+{
+  id:2,
+  name:  'Slanina u omotu Carnex',
+  tipProizvodaId: 2 
+},
 ];
 
 
@@ -282,7 +238,7 @@ const listRacuna = [
   ];
 
 
-  const artikliTmp = [
+  const racun01 = [
     {
       id: 1,
       artikal: 'Govedja kobasica zlatiborac',
@@ -347,32 +303,35 @@ const listRacuna = [
     
     ];
 
-
-    
-    const style = {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      width: 300,
-      height: 300,
-      bgcolor: 'background.paper',
-      border: '2px solid #000',
-      boxShadow: 24,
-      borderRadius: 2,
-      p: 4,
-      backgroundColor:  '#323b40'
-    };
+    const racun02 = [];
 
 
-const arrayChunk = (arr, n) => {
-  const array = arr.slice();
-  const chunks = [];
-  while (array.length) chunks.push(array.splice(0, n));
-  return chunks;
-};
-
-
+    const tipoviProizvoda  = [
+      {
+        id:1,
+        name: 'Mlecni proizvodi'
+      },
+      {
+        id:  2,
+        name:   'Suhomesnato'
+      },
+      {
+        id:  3,
+        name:   'Hleb i peciva'
+      },  
+      {
+        id:  4,
+        name:  'Kafa'
+      },
+      {
+        id:  5,
+        name:  'Sokovi i voce'
+      },
+      {
+        id:  6,
+        name:   'Ostalo'
+      }
+    ];
 
 
 
@@ -384,6 +343,10 @@ export const MainPayment = () => {
   const [openModalStornoArtikla, setOpenModalStornoArtikla] = React.useState(false);
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
+  const [activRacun, setActivRacun] = React.useState(1);
+  const [racunTmp01, setRacunTmp01] = React.useState(racun01);
+  const [racunTmp02, setRacunTmp02] = React.useState([]);
+  const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
   const [value, setValue] = React.useState(0);
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
@@ -399,6 +362,17 @@ export const MainPayment = () => {
   const handleCloseModalNaplata = () => setOpenModalNaplata(false);
   
 
+  const racuni = [
+    {
+      idRacuna: 1,
+      racun: racunTmp01
+    },
+    {
+      idRacuna: 2,
+      racun: racunTmp02
+    },
+  ];
+
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -407,6 +381,23 @@ export const MainPayment = () => {
   const currencyFormat = (num) => {
     return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
  }
+
+  const setAtivButton = (idButton) => {
+    setActivRacun(idButton);
+ };
+
+
+ const setAtivTipPro = (idButton) => {
+  setActivTipProizvoda(idButton);
+};
+
+const arrayChunk = (arr, n) => {
+  const arrayTmp = arr.filter(element => element.tipProizvodaId === activTipProizvoda);
+  const array = arrayTmp.slice();
+  const chunks = [];
+  while (array.length) chunks.push(array.splice(0, n));
+  return chunks;
+};
 
 
 
@@ -418,46 +409,7 @@ export const MainPayment = () => {
                   display:  'flex'
                    }}>
         <CssBaseline />
-            <Drawer variant="permanent" >
-                <DrawerHeader>
-                  <Box>
-                      <img src={Logo} alt="Master logo" style={{maxWidth:50}}  />
-                  </Box>
-                </DrawerHeader>
-                <Box sx={{marginTop: 5}}>
-                    <List>
-                    {icons.map((item, index) => (
-                        <ListItem key={item} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                              minHeight: 48,
-                              justifyContent:  'center',
-                              px: 2.5,
-                              display:  'flex',
-                              flexDirection:  'column'
-                            }}
-                        >
-                            <ListItemIcon
-                            sx={{
-                                justifyContent: 'center',
-                                color:  () => item.text === 'Naplata' ? '#6cb238' : '#ffffff',
-                            }}
-                            >
-                            {item.avatarIcon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} sx={{ color: 'white'}} 
-                                primaryTypographyProps={{
-                                                      fontSize: 15,
-                                                      fontWeight: 'medium',
-                                                      letterSpacing: 0,
-                                                    }} />
-                        </ListItemButton>
-                        {item.text === 'Naplata' ? <Divider  sx={{ background: 'white', marginBottom: 1, }} /> : <p></p>}
-                        </ListItem>
-                    ))}
-                    </List>
-                </Box>
-            </Drawer>
+            <Sidebar></Sidebar>
             <Box  sx={{ flexGrow: 1,  height: '100vh', overflow: 'auto'  , display:  'flex' }}>
                   <Grid 
                       justifyContent="space-between"
@@ -472,7 +424,8 @@ export const MainPayment = () => {
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
                                     {listRacuna.map((item,index) => (
-                                        <Button variant="contained"  sx={{ml:2, fontSize: 6, backgroundColor:  '#323b40',
+                                        <Button key={index} variant="contained" onClick={()=>setAtivButton(item.id)} sx={{ml:2, fontSize: 6, 
+                                         backgroundColor:  () => item.id == activRacun ? '#6cb238' : '#323b40', 
                                         '&:hover': {
                                           backgroundColor: '#6cb238',
                                           borderColor: '#0062cc',
@@ -480,6 +433,9 @@ export const MainPayment = () => {
                                         },
                                         '&:first-child': {
                                          ml: 0,
+                                        },
+                                        "&:active": {
+                                          backgroundColor: '#6cb238'
                                         }, }}>{item.name}</Button>
                                     ))}
                                 <TextField
@@ -527,12 +483,9 @@ export const MainPayment = () => {
                                     TabIndicatorProps={{ style: { background: "#6cb238" } }}
                                     
                                   >
-                                    <Tab label="Mlecni proizvodi"    sx={{color: '#5b6266'}} />
-                                    <Tab label="Suhomesnato"     sx={{color:  '#5b6266'}} />
-                                    <Tab label="Hleb i peciva"   sx={{color:  '#5b6266'}} />
-                                    <Tab label="Kafa"    sx={{color:  '#5b6266'}}/>
-                                    <Tab label="Sokovi i voce"     sx={{color:  '#5b6266'}}/>
-                                    <Tab label="Item Seven"   sx={{color:  '#5b6266'}}/>
+                                    {tipoviProizvoda.map((row,index)  => (
+                                        <Tab label={row.name}  onClick={()=>setActivTipProizvoda(row.id)}   sx={{color: '#5b6266'}} />
+                                    ))}
                                   </Tabs>
                                 </Grid> 
                             </Grid>
@@ -577,19 +530,22 @@ export const MainPayment = () => {
                                       </TableRow>
                                   </TableHead>
                                   <TableBody sx={{border: 'solid 1px red', overflowY: 'scroll'}}>
-                                  {artikliTmp.map((row,index) => (
+                          
+                                  {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
+                                    row.racun.map((col,i) => (
                                     <TableRow
                                       key={index}
-                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
+                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
-                                        {row.artikal}
+                                        {col.artikal}
                                       </TableCell>
-                                      <TableCell align="right" onClick={handleOpenModalKolicina}>{row.kolicina}</TableCell>
-                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
-                                      <TableCell align="right">{currencyFormat(parseFloat(row.kolicina) * parseFloat(row.cena))}</TableCell>
+                                      <TableCell align="right" onClick={handleOpenModalKolicina}>{col.kolicina}</TableCell>
+                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(col.cena)}</TableCell>
+                                      <TableCell align="right">{currencyFormat(parseFloat(col.kolicina) * parseFloat(col.cena))}</TableCell>
                                   
                                     </TableRow>
+                                  ))
                                   ))}
                                 </TableBody>
                                 </Table>
