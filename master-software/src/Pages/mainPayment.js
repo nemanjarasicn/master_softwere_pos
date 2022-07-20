@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect }  from 'react'
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -80,6 +81,7 @@ export const MainPayment = () => {
   const [racunTmp01, setRacunTmp01] = React.useState([]);
   const [racunTmp02, setRacunTmp02] = React.useState([]);
   const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
+  const [totalPrice, setTotalPrice] = React.useState(0);
   const [value, setValue] = React.useState(0);
   const [data, setData] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
@@ -150,7 +152,6 @@ const handleAddArtikalRacun = (event) => {
 }
 
 const childToParent = (childdata) => {
-  console.log(childdata); 
   const newState = racunTmp01.map(obj => {
     if (obj.id === childdata.id) {
       return {...obj, kolicina: childdata.counter};
@@ -163,6 +164,14 @@ const childToParent = (childdata) => {
 const parentToChild = (id) => {
   setData(id);
 }
+
+
+useEffect(() => {
+  if(racunTmp01.length) {
+      const total = racunTmp01.reduce((total, row) => total + (parseFloat(row.kolicina)  * (parseFloat(row.cena))),0);
+    setTotalPrice(total);
+  }
+}, [racunTmp01]);
 
 
 
@@ -189,7 +198,7 @@ const parentToChild = (id) => {
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
                                     {RacuniList.map((item,index) => (
                                         <Button key={index} variant="contained" onClick={()=>setAtivButton(item.id)} sx={{ml:2, fontSize: 6, 
-                                         backgroundColor:  () => item.id == activRacun ? '#6cb238' : '#323b40', 
+                                         backgroundColor:  () => item.id === activRacun ? '#6cb238' : '#323b40', 
                                         '&:hover': {
                                           backgroundColor: '#6cb238',
                                           borderColor: '#0062cc',
@@ -290,7 +299,7 @@ const parentToChild = (id) => {
                                   </TableHead>
                                   <TableBody sx={{border: 'solid 1px red', overflowY: 'scroll'}}>
                                   {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
-                                    row.racun.map((col,i) => (
+                                    row.racun.map((col,i) =>  (
                                     <TableRow
                                       key={index}
                                       sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
@@ -301,6 +310,7 @@ const parentToChild = (id) => {
                                       <TableCell align="right"  onClick={() => {parentToChild(col.id); handleOpenModalKolicina()}}>{col.kolicina}</TableCell>
                                       <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(col.cena)}</TableCell>
                                       <TableCell align="right">{currencyFormat(parseFloat(col.kolicina) * parseFloat(col.cena))}</TableCell>
+                                      
                                     </TableRow>
                                     ))
                                   ))}
@@ -337,11 +347,11 @@ const parentToChild = (id) => {
                                   <Grid item xs={6}  sx={{  height: "100%", marginTop: 1}}>
                                     <Grid sx={{display:  'flex', ml:1}}>
                                       <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>Total racun</Typography></Grid>
-                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>{currencyFormat(2490)}</Typography></Grid>
+                                      <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>{currencyFormat(totalPrice)}</Typography></Grid>
                                     </Grid>
                                     <Grid sx={{display:  'flex',  ml:  1  }}>
                                       <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >Total za naplatu</Typography></Grid>
-                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >{currencyFormat(2490)}</Typography></Grid>
+                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >{currencyFormat(totalPrice)}</Typography></Grid>
                                     </Grid>
                                   </Grid>
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >

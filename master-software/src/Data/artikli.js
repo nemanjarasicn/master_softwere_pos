@@ -13,7 +13,7 @@ export const  ArtikliList =  [
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0002',
-    kolicina: 1,
+    kolicina: 2,
     cena: 100 
   },
   {

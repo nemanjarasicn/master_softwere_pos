@@ -26,7 +26,7 @@ const style = {
 
 export const ModalCount = ({openProps,handleCloseprops,childToParent,parentToChild}) => {
 
-    const [counter, setCounter] = React.useState(0);
+    const [counter, setCounter] = React.useState(1);
 
 
     //increase counter
@@ -42,11 +42,12 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,parentToChi
 
   //reset counter 
   const reset = () =>{
-    setCounter(0)
+    setCounter(1)
   }
 
   const handleSubmit = () => {
-    childToParent({counter: counter, id: 1});
+    childToParent({counter: counter, id: parentToChild});
+    reset();
     handleCloseprops(parentToChild);
   }
 
@@ -87,7 +88,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,parentToChi
                     </Grid>
                     <Grid sx={{display:  'flex', height:  '30%', flexDirection:  'column',  justifyContent:  'center'}} >
                         <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                            <Button variant="contained"  onClick={handleSubmit}  sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
+                            <Button variant="contained"  onClick={handleSubmit}  sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
                         </Box>
                         <Typography id="modal-modal-title" variant="h8" component="h6"  sx={{mt:  2, display:  'flex', justifyContent:  'center',  color:  'white'}}>
                                 Odustani
