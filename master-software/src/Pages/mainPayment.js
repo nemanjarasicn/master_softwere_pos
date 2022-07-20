@@ -56,284 +56,17 @@ import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
+import { ArtikliList } from  "../Data/artikli"
+import { RacuniList } from  "../Data/racuniList"
+import { Racun01 }  from  "../Data/racun01"
+import { TipoviProizvoda } from '../Data/tipoviProizvoda';
 
 
 
-const dataListTip = [
-{
-  id: 1,
-  name: 'Govedja kobasica zlatiborac',
-  tipProizvodaId: 2 
-}, 
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-{
-  id:3,
-  name:  'Slanina barena mesara Seka',
-  tipProizvodaId: 2 
-},
-{
-  id: 4,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-}, 
-{
-  id: 5,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-},
-{
-  id: 1,
-  name: 'Govedja kobasica zlatiborac',
-  tipProizvodaId: 2 
-}, 
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-{
-  id:3,
-  name:  'Slanina barena mesara Seka',
-  tipProizvodaId: 2 
-},
-{
-  id: 4,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-}, 
-{
-  id: 5,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-},
-{
-  id: 1,
-  name: 'Govedja kobasica zlatiborac',
-  tipProizvodaId: 2 
-}, 
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-{
-  id:3,
-  name:  'Slanina barena mesara Seka',
-  tipProizvodaId: 2 
-},
-{
-  id: 4,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-}, 
-{
-  id: 5,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-},
-{
-  id: 1,
-  name: 'Govedja kobasica zlatiborac',
-  tipProizvodaId: 2 
-}, 
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-{
-  id:3,
-  name:  'Slanina barena mesara Seka',
-  tipProizvodaId: 2 
-},
-{
-  id: 4,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-}, 
-{
-  id: 5,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-},
-{
-  id: 1,
-  name: 'Govedja kobasica zlatiborac',
-  tipProizvodaId: 2 
-}, 
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-{
-  id:3,
-  name:  'Slanina barena mesara Seka',
-  tipProizvodaId: 2 
-},
-{
-  id: 4,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-
-}, 
-{
-  id: 5,
-  name:  'Madjarski pileci narezak',
-  tipProizvodaId: 2 
-},
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 1 
-},
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 1 
-},
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 1 
-},
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 1 
-},
-{
-  id:2,
-  name:  'Slanina u omotu Carnex',
-  tipProizvodaId: 2 
-},
-];
 
 
-const listRacuna = [
-  {
-    id: 1,
-    name: 'Racun 01'
-  }, 
-  {
-    id:2,
-    name:  'Racun 02'
-  },
-  {
-    id:3,
-    name:  'Racun 03'
-  },
-  {
-    id: 4,
-    name:  'Racun 04'
-  }, 
-  {
-    id: 5,
-    name:  'Racun 05'
-  }
-  ];
 
-
-  const racun01 = [
-    {
-      id: 1,
-      artikal: 'Govedja kobasica zlatiborac',
-      kolicina: 1,
-      cena: 100
-    }, 
-    {
-      id:2,
-      artikal:  'Slanina u omotu Carnex',
-      kolicina: 1,
-      cena: 100
-    },
-    {
-      id:3,
-      artikal:  'Slanina barena mesara Seka',
-      kolicina: 1,
-      cena: 100
-    },
-    {
-      id: 4,
-      artikal:  'Madjarski pileci narezak',
-      kolicina: 1,
-      cena: 100
-    }, 
-    {
-      id: 5,
-      artikal:  'Madjarski pileci narezak',
-      kolicina: 1,
-      cena: 100
-    },
-    {
-      id: 1,
-      artikal: 'Govedja kobasica zlatiborac',
-      kolicina: 1,
-      cena: 100
-    }, 
-    {
-      id:2,
-      artikal:  'Slanina u omotu Carnex',
-      kolicina: 1,
-      cena: 100
-    },
-    {
-      id: 5,
-      artikal:  'Madjarski pileci narezak',
-      kolicina: 1,
-      cena: 100
-    },
-    {
-      id: 1,
-      artikal: 'Govedja kobasica zlatiborac',
-      kolicina: 1,
-      cena: 100
-    }, 
-    {
-      id:2,
-      artikal:  'Slanina u omotu Carnex',
-      kolicina: 1,
-      cena: 100
-    },
-    
-    
-    ];
-
-    const racun02 = [];
-
-
-    const tipoviProizvoda  = [
-      {
-        id:1,
-        name: 'Mlecni proizvodi'
-      },
-      {
-        id:  2,
-        name:   'Suhomesnato'
-      },
-      {
-        id:  3,
-        name:   'Hleb i peciva'
-      },  
-      {
-        id:  4,
-        name:  'Kafa'
-      },
-      {
-        id:  5,
-        name:  'Sokovi i voce'
-      },
-      {
-        id:  6,
-        name:   'Ostalo'
-      }
-    ];
-
-
+  
 
 export const MainPayment = () => {
   const theme = useTheme();
@@ -344,10 +77,11 @@ export const MainPayment = () => {
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
   const [activRacun, setActivRacun] = React.useState(1);
-  const [racunTmp01, setRacunTmp01] = React.useState(racun01);
+  const [racunTmp01, setRacunTmp01] = React.useState([]);
   const [racunTmp02, setRacunTmp02] = React.useState([]);
   const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
   const [value, setValue] = React.useState(0);
+  const [data, setData] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
   const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
@@ -401,6 +135,37 @@ const arrayChunk = (arr, n) => {
 
 
 
+const handleAddArtikalRacun = (event) => {
+  if (event.key === 'Enter') {
+    const artikalTmp = ArtikliList.filter(element => element.sifra === event.target.value);
+    if(artikalTmp.length) {
+      console.log(artikalTmp[0]);
+      event.target.value = '';
+      setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+
+    } else{
+      console.log('nema artikla');
+    }
+  }
+}
+
+const childToParent = (childdata) => {
+  console.log(childdata); 
+  const newState = racunTmp01.map(obj => {
+    if (obj.id === childdata.id) {
+      return {...obj, kolicina: childdata.counter};
+    }
+    return obj;
+  });
+  setRacunTmp01(newState);
+}
+
+const parentToChild = (id) => {
+  setData(id);
+}
+
+
+
   return (
     <ThemeProvider theme={theme}>
       <Grid container  
@@ -414,7 +179,6 @@ const arrayChunk = (arr, n) => {
                   <Grid 
                       justifyContent="space-between"
                       sx={{ height: "100%", p: 1}}
-                      
                     >
                       <Grid  
                           container
@@ -423,7 +187,7 @@ const arrayChunk = (arr, n) => {
                           sx={{ height: "100%"}}
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
-                                    {listRacuna.map((item,index) => (
+                                    {RacuniList.map((item,index) => (
                                         <Button key={index} variant="contained" onClick={()=>setAtivButton(item.id)} sx={{ml:2, fontSize: 6, 
                                          backgroundColor:  () => item.id == activRacun ? '#6cb238' : '#323b40', 
                                         '&:hover': {
@@ -441,14 +205,15 @@ const arrayChunk = (arr, n) => {
                                 <TextField
                                     id="outlined-password-input"
                                     variant= "outlined"
-                                    type="password"
+                                    onKeyDown={handleAddArtikalRacun}
                                     autoComplete="current-password"
                                     sx={{ml:  1,
-                                        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                                           background: "#323b40",
+                                        "& .MuiOutlinedInput-root ": {
+                                           backgroundColor:  '#323b40',
+                                  
                                         },
                                         "& .MuiOutlinedInput-input": {
-                                          color: "green",
+                                          color: "white",
                                           height: 20            
                                         },
                                       }}
@@ -458,7 +223,7 @@ const arrayChunk = (arr, n) => {
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
                               <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} >
-                                {arrayChunk(dataListTip, 4).map((row, i) => (
+                                {arrayChunk(ArtikliList, 4).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
@@ -480,16 +245,14 @@ const arrayChunk = (arr, n) => {
                                       color: 'red'
                                     },
                                     '& .Mui-selected': {color:  'white !important'}}}
-                                    TabIndicatorProps={{ style: { background: "#6cb238" } }}
-                                    
+                                    TabIndicatorProps={{ style: { background: "#6cb238" } }}  
                                   >
-                                    {tipoviProizvoda.map((row,index)  => (
+                                    {TipoviProizvoda.map((row,index)  => (
                                         <Tab label={row.name}  onClick={()=>setActivTipProizvoda(row.id)}   sx={{color: '#5b6266'}} />
                                     ))}
                                   </Tabs>
                                 </Grid> 
                             </Grid>
-                            
                             <Grid item style={{ background: "#1e2730", height: "10%" }} >
                             <Grid  container  sx={{display: 'flex'}}>
                                 <Grid item xs={4} justifyContent='flex-start'>
@@ -497,18 +260,14 @@ const arrayChunk = (arr, n) => {
                                         {'operater  0124'}
                                   </Typography>
                                 </Grid>
- 
-                                <Grid item xs={4} justifyContent='center'>
-                                  
+                                <Grid item xs={4} justifyContent='center'> 
                                 </Grid>
-
                                 <Grid  item xs={4} sx={{display:  'flex'}} justifyContent='flex-end'>
                                   <Typography variant="body2" color="#ffffff"  >
                                         {'Kupac: XZY Kupac 1234'}
                                   </Typography>
                                 </Grid>
                               </Grid>         
-                        
                             </Grid>
                       </Grid>
                   </Grid>
@@ -530,7 +289,6 @@ const arrayChunk = (arr, n) => {
                                       </TableRow>
                                   </TableHead>
                                   <TableBody sx={{border: 'solid 1px red', overflowY: 'scroll'}}>
-                          
                                   {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
                                     row.racun.map((col,i) => (
                                     <TableRow
@@ -538,19 +296,18 @@ const arrayChunk = (arr, n) => {
                                       sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
-                                        {col.artikal}
+                                        {col.name}
                                       </TableCell>
-                                      <TableCell align="right" onClick={handleOpenModalKolicina}>{col.kolicina}</TableCell>
+                                      <TableCell align="right"  onClick={() => {parentToChild(col.id); handleOpenModalKolicina()}}>{col.kolicina}</TableCell>
                                       <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(col.cena)}</TableCell>
                                       <TableCell align="right">{currencyFormat(parseFloat(col.kolicina) * parseFloat(col.cena))}</TableCell>
-                                  
                                     </TableRow>
-                                  ))
+                                    ))
                                   ))}
                                 </TableBody>
                                 </Table>
                               </TableContainer>        
-                              <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina} ></ModalCount>
+                              <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina}    childToParent={childToParent} parentToChild={data}></ModalCount>
                               <ModalPopustArtikal openProps={openModalPopustArtikal} handleCloseprops={handleCloseModalPopustArtikal}   ></ModalPopustArtikal>
                               <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
                             </Grid>
@@ -593,9 +350,8 @@ const arrayChunk = (arr, n) => {
                                   <ModalNaplata openProps={openModalNaplata} handleCloseprops={handleCloseModalNaplata} ></ModalNaplata>
                             </Grid>
                         </Grid>
-                    </Grid>
+                  </Grid>
             </Box>
-        
     </Grid>
     </ThemeProvider>
   );
