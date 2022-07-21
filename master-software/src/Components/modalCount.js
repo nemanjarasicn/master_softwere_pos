@@ -24,7 +24,7 @@ const style = {
     backgroundColor:  '#323b40'
   };
 
-export const ModalCount = ({openProps,handleCloseprops,childToParent,parentToChild}) => {
+export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCount}) => {
 
     const [counter, setCounter] = React.useState(1);
 
@@ -46,9 +46,9 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,parentToChi
   }
 
   const handleSubmit = () => {
-    childToParent({counter: counter, id: parentToChild});
+    childToParent({counter: counter, id: toModalCount});
     reset();
-    handleCloseprops(parentToChild);
+    handleCloseprops();
   }
 
       return (

@@ -82,6 +82,7 @@ export const MainPayment = () => {
   const [racunTmp02, setRacunTmp02] = React.useState([]);
   const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
   const [totalPrice, setTotalPrice] = React.useState(0);
+  const [totalPopust, setTotalPopust] = React.useState(0);
   const [value, setValue] = React.useState(0);
   const [data, setData] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
@@ -95,7 +96,11 @@ export const MainPayment = () => {
   const handleOpenModalStornoRacun = () => setOpenModalStornoRacun(true);
   const handleCloseModalStornoRacun = () => setOpenModalStornoRacun(false);
   const handleOpenModalNaplata = () => setOpenModalNaplata(true);
-  const handleCloseModalNaplata = () => setOpenModalNaplata(false);
+  const handleCloseModalNaplata = () => {
+                                          setOpenModalNaplata(false);
+                                          setRacunTmp01([]);
+                                          setTotalPrice(0);
+  }
   
 
   const racuni = [
@@ -161,9 +166,10 @@ const childToParent = (childdata) => {
   setRacunTmp01(newState);
 }
 
-const parentToChild = (id) => {
+const toModalCount = (id) => {
   setData(id);
 }
+
 
 
 useEffect(() => {
@@ -216,6 +222,7 @@ useEffect(() => {
                                     variant= "outlined"
                                     onKeyDown={handleAddArtikalRacun}
                                     autoComplete="current-password"
+                                    autoFocus
                                     sx={{ml:  1,
                                         "& .MuiOutlinedInput-root ": {
                                            backgroundColor:  '#323b40',
@@ -301,13 +308,14 @@ useEffect(() => {
                                   {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
                                     row.racun.map((col,i) =>  (
                                     <TableRow
-                                      key={index}
-                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
+                                      selected = {col.id === 1} 
+                                      key={i}
+                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90}, "&.Mui-selected": {backgroundColor:  'white'} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
                                         {col.name}
                                       </TableCell>
-                                      <TableCell align="right"  onClick={() => {parentToChild(col.id); handleOpenModalKolicina()}}>{col.kolicina}</TableCell>
+                                      <TableCell align="right"  onClick={() => {toModalCount(col.id); handleOpenModalKolicina()}}>{col.kolicina}</TableCell>
                                       <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(col.cena)}</TableCell>
                                       <TableCell align="right">{currencyFormat(parseFloat(col.kolicina) * parseFloat(col.cena))}</TableCell>
                                       
@@ -317,7 +325,7 @@ useEffect(() => {
                                 </TableBody>
                                 </Table>
                               </TableContainer>        
-                              <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina}    childToParent={childToParent} parentToChild={data}></ModalCount>
+                              <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina}    childToParent={childToParent} toModalCount={data}></ModalCount>
                               <ModalPopustArtikal openProps={openModalPopustArtikal} handleCloseprops={handleCloseModalPopustArtikal}   ></ModalPopustArtikal>
                               <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
                             </Grid>
@@ -357,7 +365,7 @@ useEffect(() => {
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
                                       <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth>Naplata</Button>
                                   </Grid>
-                                  <ModalNaplata openProps={openModalNaplata} handleCloseprops={handleCloseModalNaplata} ></ModalNaplata>
+                                  <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata} ></ModalNaplata>
                             </Grid>
                         </Grid>
                   </Grid>

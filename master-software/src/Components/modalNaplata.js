@@ -27,11 +27,38 @@ const style = {
 
 
 
-export const ModalNaplata = ({openProps,handleCloseprops}) => {
+export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata}) => {
     
+    
+    const [uplataStr, setUplataStr] = React.useState();
+    const [uplata, setUplata] = React.useState(0);
+    const [kusur, setKusur] = React.useState(0);
+    
+
     const currencyFormat = (num) => {
         return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
      }
+
+     const naplataGotovinom = () => {
+        setKusur(0);
+        handleCloseprops();
+     }
+
+     const handleChange = (event) => {
+        if (event.key === 'Enter') {
+            setKusur(0);
+            let kusurTmp = (parseFloat(event.target.value)  -  parseFloat(toModalNaplata[0].totalPrice));
+            setKusur(kusurTmp);
+            
+            let tmpUplata = currencyFormat(parseFloat(event.target.value));
+            setUplataStr(tmpUplata);
+            setUplata(event.target.value);
+            event.target.value = tmpUplata;
+
+        }
+
+     } 
+
 
       return (
         <Modal
@@ -55,7 +82,7 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 </Grid>
                                 <Grid item xs={6} sx={{display:  'flex',    justifyContent:  'flex-end'}}>
                                         <Typography id="modal-modal-title"   sx={{display:  'flex',  fontSize: 12,   justifyContent:  'flex-start', color:  'white'}}>
-                                            {currencyFormat(2490)}
+                                            {currencyFormat(toModalNaplata[0].totalPrice)}
                                         </Typography>
                                 </Grid>
                         </Grid>
@@ -67,7 +94,7 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 </Grid>
                                 <Grid item xs={6} sx={{display:  'flex',    justifyContent:  'flex-end'}}>
                                     <Typography id="modal-modal-title"   sx={{display:  'flex',  fontSize: 12,  mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                            {currencyFormat(2490)}
+                                            {currencyFormat(toModalNaplata[0].totalPopust)}
                                     </Typography>
                                 </Grid>
                         </Grid>
@@ -79,7 +106,7 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 </Grid>
                                 <Grid item xs={6} sx={{display:  'flex',    justifyContent:  'flex-end'}}>
                                         <Typography id="modal-modal-title"   sx={{display:  'flex',  fontSize: 14,   mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                            {currencyFormat(2490)}
+                                            {currencyFormat(toModalNaplata[0].totalPrice)}
                                         </Typography>
                                 </Grid>
                         </Grid>
@@ -93,9 +120,10 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 <TextField
                                     hiddenLabel
                                     id="filled-hidden-label-normal"
-                                    defaultValue={currencyFormat(2490)}
+                                    placeholder='0,00'
                                     variant="filled"
-                                
+                                   
+                                    onKeyDown={handleChange}
                                     size="small"
                                     sx={{ input: {  fontSize: 12,   color:  'white', ml: 2},  }}
                                     />
@@ -109,7 +137,7 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 </Grid>
                                 <Grid item xs={6} sx={{display:  'flex',    justifyContent:  'flex-end'}}>
                                         <Typography id="modal-modal-title"   sx={{display:  'flex',  fontSize: 12,   justifyContent:  'flex-start', color:  'white'}}>
-                                            0
+                                             {currencyFormat(kusur)}
                                         </Typography>
                                 </Grid>
                         </Grid>
@@ -117,35 +145,9 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
 
                     </Box>
                     
-                    {/*<Grid sx={{display:  'flex', height:  '60%', alignItems:  'center'}} >
-                    <Grid item xs={12}  sx={{display: 'flex'}} >
-                            <Grid item xs={4}     sx={{display: 'flex',  alignItems:  'center'}} >
-                                <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
-                            </Grid>
-                            <Grid item xs={4}    sx={{display: 'flex'}}>
-                            <TextField
-                                hiddenLabel
-                                id="filled-hidden-label-normal"
-                                defaultValue="1"
-                                variant="filled"
-                            
-                                size="small"
-                                sx={{ input: {  fontSize: 36,   color:  'white', ml: 2},  }}
-                                />
-                            </Grid>
-                            <Grid item xs={4}   sx={{display:  'flex', alignItems:  'center' , justifyContent:  'flex-end'}}>
-                                <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid sx={{display:  'flex', height:  '30%', flexDirection:  'column',  justifyContent:  'center'}} >
-                        <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                            <Button variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
-                        </Box>
-                        <Typography id="modal-modal-title" variant="h8" component="h6"  sx={{mt:  2, display:  'flex', justifyContent:  'center',  color:  'white'}}>
-                        Odustani
-                        </Typography>
-      </Grid>*/}
+
+
+                   
                 </Grid>
                 <Grid item xs={6} sx={{display:  'flex',  ml: 2,      height:  '100%'}} >
                         <Box>
@@ -174,7 +176,7 @@ export const ModalNaplata = ({openProps,handleCloseprops}) => {
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}  sx={{display: 'flex',  mt:   1}}>
-                                    <Button variant="contained"   sx={{fontSize: 14,   backgroundColor:  '#6cb238',  '&.MuiButton-root': {color:  'black'}}}   fullWidth>Gotovina</Button>
+                                    <Button variant="contained"  onClick={naplataGotovinom}  sx={{fontSize: 14,   backgroundColor:  '#6cb238',  '&.MuiButton-root': {color:  'black'}}}   fullWidth>Gotovina</Button>
                             </Grid>
                             <Grid item xs={12}  sx={{display: 'flex',  mt:   1}}>
                                     <Button variant="contained"   sx={{fontSize: 14, backgroundColor:  '#6cb238',  '&.MuiButton-root': {color:  'black'}}}   fullWidth>Platna kartica</Button>
