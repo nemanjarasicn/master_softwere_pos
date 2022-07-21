@@ -116,7 +116,9 @@ export const  ArtikliList =  [
     id: 5,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
-    sifra: '0015' 
+    sifra: '0015',
+    kolicina: 1,
+    cena: 100  
   },
   {
     id: 1,

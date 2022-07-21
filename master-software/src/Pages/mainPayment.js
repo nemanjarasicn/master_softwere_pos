@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect }  from 'react'
+import { useRef,  useState, useEffect }  from 'react'
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
@@ -61,6 +61,8 @@ import { ArtikliList } from  "../Data/artikli"
 import { RacuniList } from  "../Data/racuniList"
 import { Racun01 }  from  "../Data/racun01"
 import { TipoviProizvoda } from '../Data/tipoviProizvoda';
+import * as Scroll from 'react-scroll';
+import {  animateScroll as scroll } from 'react-scroll'
 
 
 
@@ -101,6 +103,9 @@ export const MainPayment = () => {
                                           setRacunTmp01([]);
                                           setTotalPrice(0);
   }
+
+  const Scroll = require('react-scroll');
+  const scroll = Scroll.animateScroll;
   
 
   const racuni = [
@@ -142,6 +147,17 @@ const arrayChunk = (arr, n) => {
 
 
 
+
+const handleAddArtikalRacunTipovi = (sifra) => {
+    const artikalTmp = ArtikliList.filter(element => element.sifra === sifra);
+    if(artikalTmp.length) {
+      console.log(artikalTmp[0]);
+
+      setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+  }
+}
+
+
 const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
     const artikalTmp = ArtikliList.filter(element => element.sifra === event.target.value);
@@ -178,6 +194,29 @@ useEffect(() => {
     setTotalPrice(total);
   }
 }, [racunTmp01]);
+
+
+const ref = useRef();
+
+useEffect(() => {
+  const temp = ref.current;
+  handleBottom();
+});
+
+const handleTop = () => {
+  
+  ref.current.scrollBy({ top: -100, behavior: 'smooth' });
+};
+
+
+const handleBottom = () => {
+  ref.current.scrollTop = ref.current.scrollHeight
+}
+
+
+const handleBottomStep = () => {
+  ref.current.scrollBy({ top: 100, behavior: 'smooth' });
+}
 
 
 
@@ -243,7 +282,7 @@ useEffect(() => {
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
+                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.sifra)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
@@ -294,8 +333,8 @@ useEffect(() => {
                     >
                         <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
                             <Grid item style={{ height: "70%",   display:  'flex', margin: 5,  }} >
-                              <TableContainer sx={{ maxHeight: 300 }}>
-                                <Table  stickyHeader  aria-label="sticky table"  sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
+                              <TableContainer sx={{ maxHeight: 300 }} ref={ref}>
+                                <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
                                   <TableHead   >
                                       <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
                                         <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>Artikal</TableCell>
@@ -304,13 +343,13 @@ useEffect(() => {
                                         <TableCell  sx={{color:  'white'}} align="right">Ukupno</TableCell>
                                       </TableRow>
                                   </TableHead>
-                                  <TableBody sx={{border: 'solid 1px red', overflowY: 'scroll'}}>
+                                  <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
                                   {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
                                     row.racun.map((col,i) =>  (
                                     <TableRow
-                                      selected = {col.id === 1} 
-                                      key={i}
-                                      sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90}, "&.Mui-selected": {backgroundColor:  'white'} }}
+
+                                      key={index}
+                                      sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
                                         {col.name}
@@ -330,8 +369,8 @@ useEffect(() => {
                               <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
                             </Grid>
                             <Grid item style={{ height: "5%",   display:  'flex', margin: 1, alignItems:    'center',   justifyContent:  'flex-end' }} >
-                                 <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
-                                 <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}><KeyboardArrowDownIcon /></Button>
+                                 <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={handleTop} > <KeyboardArrowUpIcon /></Button>
+                                 <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={handleBottomStep} ><KeyboardArrowDownIcon /></Button>
                             </Grid>
                             <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
                               <Card sx={{ minWidth: 275, display: 'flex', backgroundColor:  '#4f5e65', m: 1}}>
