@@ -80,7 +80,7 @@ export const MainPayment = () => {
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
   const [activRacun, setActivRacun] = React.useState(1);
-  const [racunTmp01, setRacunTmp01] = React.useState([]);
+  const [racunTmp01, setRacunTmp01] = React.useState(JSON.parse(localStorage.getItem('racunTmp01')));
   const [racunTmp02, setRacunTmp02] = React.useState([]);
   const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
   const [totalPrice, setTotalPrice] = React.useState(0);
@@ -101,6 +101,7 @@ export const MainPayment = () => {
   const handleCloseModalNaplata = () => {
                                           setOpenModalNaplata(false);
                                           setRacunTmp01([]);
+                                          localStorage.setItem('racunTmp01', JSON.stringify([]));                                    
                                           setTotalPrice(0);
   }
 
@@ -111,7 +112,7 @@ export const MainPayment = () => {
   const racuni = [
     {
       idRacuna: 1,
-      racun: racunTmp01
+      racun: JSON.parse(localStorage.getItem('racunTmp01'))
     },
     {
       idRacuna: 2,
@@ -151,11 +152,10 @@ const arrayChunk = (arr, n) => {
 const handleAddArtikalRacunTipovi = (sifra) => {
     const artikalTmp = ArtikliList.filter(element => element.sifra === sifra);
     if(artikalTmp.length) {
-      console.log(artikalTmp[0]);
-
-      setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+       setRacunTmp01(prevState => [...prevState,artikalTmp[0]])   
   }
 }
+
 
 
 const handleAddArtikalRacun = (event) => {
@@ -165,7 +165,6 @@ const handleAddArtikalRacun = (event) => {
       console.log(artikalTmp[0]);
       event.target.value = '';
       setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
-
     } else{
       console.log('nema artikla');
     }
@@ -173,7 +172,7 @@ const handleAddArtikalRacun = (event) => {
 }
 
 const childToParent = (childdata) => {
-  const newState = racunTmp01.map(obj => {
+  const newState = JSON.parse(localStorage.getItem('racunTmp01')).map(obj => {
     if (obj.id === childdata.id) {
       return {...obj, kolicina: childdata.counter};
     }
@@ -189,33 +188,41 @@ const toModalCount = (id) => {
 
 
 useEffect(() => {
-  if(racunTmp01.length) {
-      const total = racunTmp01.reduce((total, row) => total + (parseFloat(row.kolicina)  * (parseFloat(row.cena))),0);
+  localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));
+  if(JSON.parse(localStorage.getItem('racunTmp01')).length) {
+      const total = JSON.parse(localStorage.getItem('racunTmp01')).reduce((total, row) => total + (parseFloat(row.kolicina)  * (parseFloat(row.cena))),0);
     setTotalPrice(total);
   }
 }, [racunTmp01]);
 
 
-const ref = useRef();
+const refTable = useRef();
+const refTipoviProizvoda = useRef();
 
 useEffect(() => {
-  const temp = ref.current;
   handleBottom();
 });
 
-const handleTop = () => {
-  
-  ref.current.scrollBy({ top: -100, behavior: 'smooth' });
+const handleTop = (tipScroll) => {
+  if(tipScroll === 1) {
+      refTable.current.scrollBy({ top: -100, behavior: 'smooth' });
+  } else {
+      refTipoviProizvoda.current.scrollBy({ top: -100, behavior: 'smooth' });
+  }
 };
 
 
 const handleBottom = () => {
-  ref.current.scrollTop = ref.current.scrollHeight
+  refTable.current.scrollTop = refTable.current.scrollHeight
 }
 
 
-const handleBottomStep = () => {
-  ref.current.scrollBy({ top: 100, behavior: 'smooth' });
+const handleBottomStep = (tipScroll) => {
+    if(tipScroll === 1) {
+        refTable.current.scrollBy({ top: 100, behavior: 'smooth' });
+    } else {
+        refTipoviProizvoda.current.scrollBy({ top: 100, behavior: 'smooth' });
+    }
 }
 
 
@@ -277,7 +284,7 @@ const handleBottomStep = () => {
                             </Grid>  
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
-                              <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} >
+                              <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
                                 {arrayChunk(ArtikliList, 4).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
@@ -288,7 +295,11 @@ const handleBottomStep = () => {
                                   </Grid>
                                 ))} 
                                 </Grid>
-                                <Grid    sx={{maxWidth: { xs: 500, sm: 700 },  height:  '20%',  mt:7}}>
+                                <Grid item style={{ height: "5%",   display:  'flex',  alignItems:    'center',  marginTop: 15,   justifyContent:  'flex-end' }} >
+                                        <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0)} > <KeyboardArrowUpIcon /></Button>
+                                        <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(0)} ><KeyboardArrowDownIcon /></Button>
+                                </Grid>
+                                <Grid    sx={{maxWidth: { xs: 500, sm: 700 },  height:  '20%',  mt:  3}}>
                                   <Tabs
                                     value={value}
                                     onChange={handleChange}
@@ -333,7 +344,7 @@ const handleBottomStep = () => {
                     >
                         <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
                             <Grid item style={{ height: "70%",   display:  'flex', margin: 5,  }} >
-                              <TableContainer sx={{ maxHeight: 300 }} ref={ref}>
+                              <TableContainer sx={{ maxHeight: 300 }} ref={refTable}>
                                 <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
                                   <TableHead   >
                                       <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
@@ -369,8 +380,8 @@ const handleBottomStep = () => {
                               <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
                             </Grid>
                             <Grid item style={{ height: "5%",   display:  'flex', margin: 1, alignItems:    'center',   justifyContent:  'flex-end' }} >
-                                 <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={handleTop} > <KeyboardArrowUpIcon /></Button>
-                                 <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={handleBottomStep} ><KeyboardArrowDownIcon /></Button>
+                                 <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(1)} > <KeyboardArrowUpIcon /></Button>
+                                 <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(1)} ><KeyboardArrowDownIcon /></Button>
                             </Grid>
                             <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
                               <Card sx={{ minWidth: 275, display: 'flex', backgroundColor:  '#4f5e65', m: 1}}>

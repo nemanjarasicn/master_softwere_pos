@@ -40,6 +40,8 @@ const theme = createTheme();
 
 export const LoginPage = () => {
 
+
+  const [racunTmp01, setRacunTmp01] = React.useState([]);
   
   const navigate  = useNavigate();
 
@@ -50,6 +52,7 @@ export const LoginPage = () => {
       password: data.get('password'),
     });
     if(data.get('password')) {
+      localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));                                         
       navigate({
         pathname: '/naplata',
         state: {
