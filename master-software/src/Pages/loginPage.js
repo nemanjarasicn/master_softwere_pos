@@ -42,6 +42,7 @@ export const LoginPage = () => {
 
 
   const [racunTmp01, setRacunTmp01] = React.useState([]);
+  const [listaRacunaTmp, setListaRacunaTmp] = React.useState([]);
   
   const navigate  = useNavigate();
 
@@ -52,7 +53,8 @@ export const LoginPage = () => {
       password: data.get('password'),
     });
     if(data.get('password')) {
-      localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));                                         
+      localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
+      localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));                                         
       navigate({
         pathname: '/naplata',
         state: {

@@ -87,6 +87,7 @@ export const MainPayment = () => {
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [value, setValue] = React.useState(0);
   const [data, setData] = React.useState('');
+  const [listaRacunaTmp, setListaRacunaTmp] = React.useState(JSON.parse(localStorage.getItem('listaRacunaTmp')));
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
   const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
@@ -100,7 +101,7 @@ export const MainPayment = () => {
   const handleOpenModalNaplata = () => setOpenModalNaplata(true);
   const handleCloseModalNaplata = () => {
                                           setOpenModalNaplata(false);
-                                          setRacunTmp01([]);
+                                          deleteRacun();
                                           localStorage.setItem('racunTmp01', JSON.stringify([]));                                    
                                           setTotalPrice(0);
   }
@@ -150,21 +151,42 @@ const arrayChunk = (arr, n) => {
 
 
 const handleAddArtikalRacunTipovi = (sifra) => {
-    const artikalTmp = ArtikliList.filter(element => element.sifra === sifra);
+    let artikalTmp = ArtikliList.filter(element => element.sifra === sifra);
     if(artikalTmp.length) {
-       setRacunTmp01(prevState => [...prevState,artikalTmp[0]])   
-  }
+      let artikalTmp2 = {
+        id: artikalTmp[0].id,
+        name: artikalTmp[0].name,
+        kolicina: artikalTmp[0].kolicina,
+        cena:  artikalTmp[0].cena,
+        tipProizvodaId: artikalTmp[0].tipProizvodaId,
+        sifra: artikalTmp[0].sifra,
+        activRacun: activRacun
+      }
+  
+       //setRacunTmp01(prevState => [...prevState,artikalTmp[0]]);
+       setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
+  } 
 }
 
 
 
 const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
-    const artikalTmp = ArtikliList.filter(element => element.sifra === event.target.value);
+    let artikalTmp = ArtikliList.filter(element => element.sifra === event.target.value);
     if(artikalTmp.length) {
-      console.log(artikalTmp[0]);
+      let artikalTmp2 = {
+        id: artikalTmp[0].id,
+        name: artikalTmp[0].name,
+        kolicina: artikalTmp[0].kolicina,
+        cena:  artikalTmp[0].cena,
+        tipProizvodaId: artikalTmp[0].tipProizvodaId,
+        sifra: artikalTmp[0].sifra,
+        activRacun: activRacun
+      }
+      
       event.target.value = '';
-      setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+      //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+      setListaRacunaTmp(prevState => [...prevState,artikalTmp2])
     } else{
       console.log('nema artikla');
     }
@@ -172,13 +194,23 @@ const handleAddArtikalRacun = (event) => {
 }
 
 const childToParent = (childdata) => {
-  const newState = JSON.parse(localStorage.getItem('racunTmp01')).map(obj => {
-    if (obj.id === childdata.id) {
+  let listaRacunaTmp1 =  JSON.parse(localStorage.getItem('listaRacunaTmp'));
+  const newState = listaRacunaTmp1.map(obj => {
+    if (obj.id === childdata.id && obj.activRacun === activRacun) {
       return {...obj, kolicina: childdata.counter};
     }
     return obj;
   });
-  setRacunTmp01(newState);
+  //setRacunTmp01(newState);
+  setListaRacunaTmp(newState);
+}
+
+
+const deleteRacun = () => {
+  let deleteRacunTmp =  JSON.parse(localStorage.getItem('listaRacunaTmp')).filter(racun => racun.activRacun !== activRacun);
+  console.log(deleteRacunTmp);
+  setListaRacunaTmp(deleteRacunTmp);
+    
 }
 
 const toModalCount = (id) => {
@@ -188,18 +220,27 @@ const toModalCount = (id) => {
 
 
 useEffect(() => {
-  localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));
-  if(JSON.parse(localStorage.getItem('racunTmp01')).length) {
-      const total = JSON.parse(localStorage.getItem('racunTmp01')).reduce((total, row) => total + (parseFloat(row.kolicina)  * (parseFloat(row.cena))),0);
+  //localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));
+  localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
+  let listaRacunaTmp1 =  JSON.parse(localStorage.getItem('listaRacunaTmp'));
+  if(JSON.parse(localStorage.getItem('listaRacunaTmp')).length) {
+      const total = listaRacunaTmp1.filter(racun => racun.activRacun === activRacun).reduce((total, row) => total + (parseFloat(row.kolicina)  * (parseFloat(row.cena))),0);
     setTotalPrice(total);
   }
-}, [racunTmp01]);
+}, [listaRacunaTmp,activRacun]);
+
+
+
+
+
 
 
 const refTable = useRef();
 const refTipoviProizvoda = useRef();
+const refTextField = useRef();
 
 useEffect(() => {
+  refTextField.current.focus();
   handleBottom();
 });
 
@@ -209,6 +250,7 @@ const handleTop = (tipScroll) => {
   } else {
       refTipoviProizvoda.current.scrollBy({ top: -100, behavior: 'smooth' });
   }
+  refTextField.current.focus();
 };
 
 
@@ -223,6 +265,7 @@ const handleBottomStep = (tipScroll) => {
     } else {
         refTipoviProizvoda.current.scrollBy({ top: 100, behavior: 'smooth' });
     }
+    refTextField.current.focus();
 }
 
 
@@ -268,6 +311,7 @@ const handleBottomStep = (tipScroll) => {
                                     variant= "outlined"
                                     onKeyDown={handleAddArtikalRacun}
                                     autoComplete="current-password"
+                                    inputRef={refTextField}
                                     autoFocus
                                     sx={{ml:  1,
                                         "& .MuiOutlinedInput-root ": {
@@ -355,22 +399,22 @@ const handleBottomStep = (tipScroll) => {
                                       </TableRow>
                                   </TableHead>
                                   <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
-                                  {racuni.filter(racun => racun.idRacuna === activRacun).map((row,index) => (
-                                    row.racun.map((col,i) =>  (
+                                  {listaRacunaTmp.filter(racun => racun.activRacun === activRacun).map((row,index) => (
+                                    
                                     <TableRow
 
                                       key={index}
-                                      sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => i%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
+                                      sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
-                                        {col.name}
+                                        {row.name}
                                       </TableCell>
-                                      <TableCell align="right"  onClick={() => {toModalCount(col.id); handleOpenModalKolicina()}}>{col.kolicina}</TableCell>
-                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(col.cena)}</TableCell>
-                                      <TableCell align="right">{currencyFormat(parseFloat(col.kolicina) * parseFloat(col.cena))}</TableCell>
+                                      <TableCell align="right"  onClick={() => {toModalCount(row.id); handleOpenModalKolicina()}}>{row.kolicina}</TableCell>
+                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
+                                      <TableCell align="right">{currencyFormat(parseFloat(row.kolicina) * parseFloat(row.cena))}</TableCell>
                                       
                                     </TableRow>
-                                    ))
+                                    
                                   ))}
                                 </TableBody>
                                 </Table>

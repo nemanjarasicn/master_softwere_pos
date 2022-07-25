@@ -41,7 +41,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 1,
+    id: 6,
     name: "Govedja kobasica zlatiborac",
     tipProizvodaId: 2,
     sifra: '0006',
@@ -49,7 +49,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id:2,
+    id:7,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0007',
@@ -57,7 +57,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:3,
+    id:8,
     name:  "Slanina barena mesara Seka",
     tipProizvodaId: 2,
     sifra: '0008',
@@ -65,7 +65,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 4,
+    id: 9,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0009',
@@ -73,7 +73,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id: 5,
+    id: 10,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0010',
@@ -81,7 +81,7 @@ export const  ArtikliList =  [
     cena: 100 
   },
   {
-    id: 1,
+    id: 11,
     name: "Govedja kobasica zlatiborac",
     tipProizvodaId: 2,
     sifra: '0011',
@@ -89,7 +89,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id:2,
+    id:12,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0012',
@@ -97,7 +97,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:3,
+    id:13,
     name:  "Slanina barena mesara Seka",
     tipProizvodaId: 2,
     sifra: '0013',
@@ -105,7 +105,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 4,
+    id: 14,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0014',
@@ -113,7 +113,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id: 5,
+    id: 15,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0015',
@@ -121,7 +121,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 1,
+    id: 16,
     name: "Govedja kobasica zlatiborac",
     tipProizvodaId: 2,
     sifra: '0016',
@@ -129,7 +129,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id:2,
+    id:17,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0017',
@@ -137,7 +137,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:3,
+    id:18,
     name:  "Slanina barena mesara Seka",
     tipProizvodaId: 2,
     sifra: '0018',
@@ -145,7 +145,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 4,
+    id: 19,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0019',
@@ -153,7 +153,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id: 5,
+    id: 20,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0020',
@@ -161,7 +161,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 1,
+    id: 21,
     name: "Govedja kobasica zlatiborac",
     tipProizvodaId: 2,
     sifra: '0021',
@@ -169,7 +169,7 @@ export const  ArtikliList =  [
     cena: 100  
   }, 
   {
-    id:2,
+    id:22,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0022',
@@ -177,7 +177,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:3,
+    id:23,
     name:  "Slanina barena mesara Seka",
     tipProizvodaId: 2,
     sifra: '0023',
@@ -185,7 +185,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id: 4,
+    id: 24,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0024',
@@ -194,7 +194,7 @@ export const  ArtikliList =  [
   
   }, 
   {
-    id: 5,
+    id: 25,
     name:  "Madjarski pileci narezak",
     tipProizvodaId: 2,
     sifra: '0025',
@@ -202,7 +202,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:2,
+    id:26,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 1,
     sifra: '0026',
@@ -210,7 +210,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:2,
+    id:27,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 1,
     sifra: '0027',
@@ -218,7 +218,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:2,
+    id:28,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 1,
     sifra: '0028',
@@ -226,7 +226,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:2,
+    id:29,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 1,
     sifra: '0029',
@@ -234,7 +234,7 @@ export const  ArtikliList =  [
     cena: 100  
   },
   {
-    id:2,
+    id:30,
     name:  "Slanina u omotu Carnex",
     tipProizvodaId: 2,
     sifra: '0030',
