@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useRef,  useState, useEffect }  from 'react'
 
 
 const style = {
@@ -59,7 +60,18 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata}) => {
 
      } 
 
+     const ref = useRef();
+     
+     if(openProps) {
+        setTimeout(() => {
+            ref.current.focus();
+        }, 200);
+     }
 
+
+
+
+     
       return (
         <Modal
             open={openProps}
@@ -126,6 +138,8 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata}) => {
                                     onKeyDown={handleChange}
                                     size="small"
                                     sx={{ input: {  fontSize: 12,   color:  'white', ml: 2},  }}
+                                    autoFocus
+                                    inputRef={ref}
                                     />
                                 </Grid>
                         </Grid>

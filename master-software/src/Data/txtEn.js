@@ -1,0 +1,15 @@
+export  const txtArtikal = 'Item';
+export  const txtKolicina = 'Quantity';
+export  const txtCena = 'Price';
+export  const txtUkupno = 'Total';
+export  const txtPopust = 'Discount';
+export  const txtNumeric = 'Numeric';
+export  const txtVaga = 'Libra';
+export  const txtStorno = 'Cancelled';
+export  const txtTotalRacun = 'Total bill';
+export  const txtKupac = 'Customer';
+export  const txtKupacNumber = 'XZY Customer 1234';
+export  const txtOperater = 'Operator';
+export  const txtOperaterNumber = '0124';
+export  const txtDetaljnaPretraga = 'Detailed search';
+export  const txtNaplata = 'Payment';

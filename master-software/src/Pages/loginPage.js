@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Logo from  '../Images/master_logo.png'
 import { useNavigate, useParams } from 'react-router-dom';
+import { ButtonRacunList } from  "../Data/racuniList"
 
 function Footer(props) {
   return (
@@ -54,7 +55,10 @@ export const LoginPage = () => {
     });
     if(data.get('password')) {
       localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
-      localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));                                         
+      localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
+      localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
+      localStorage.setItem('buttonRacunList', JSON.stringify(ButtonRacunList));     
+      localStorage.setItem('buttonRacunCount', JSON.stringify(2));                                          
       navigate({
         pathname: '/naplata',
         state: {

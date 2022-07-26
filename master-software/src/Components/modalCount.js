@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { txtArtikal } from '../Data/txt';
 
 
 const style = {
@@ -27,7 +28,7 @@ const style = {
 export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCount}) => {
 
     const [counter, setCounter] = React.useState(1);
-
+    
 
     //increase counter
   const increase = () => {
@@ -46,10 +47,14 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   }
 
   const handleSubmit = () => {
-    childToParent({counter: counter, id: toModalCount});
+    childToParent({counter: counter, id: toModalCount.id});
     reset();
     handleCloseprops();
   }
+
+
+
+
 
       return (
         <Modal
@@ -91,7 +96,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
                             <Button variant="contained"  onClick={handleSubmit}  sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
                         </Box>
                         <Typography id="modal-modal-title" variant="h8" component="h6"  sx={{mt:  2, display:  'flex', justifyContent:  'center',  color:  'white'}}>
-                                Odustani
+                             Odustani     
                         </Typography>
                     </Grid>
                 </Grid>

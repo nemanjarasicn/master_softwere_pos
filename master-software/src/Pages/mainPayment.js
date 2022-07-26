@@ -58,11 +58,12 @@ import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
 import { ArtikliList } from  "../Data/artikli"
-import { RacuniList } from  "../Data/racuniList"
+import { ButtonRacunList } from  "../Data/racuniList"
 import { Racun01 }  from  "../Data/racun01"
 import { TipoviProizvoda } from '../Data/tipoviProizvoda';
 import * as Scroll from 'react-scroll';
 import {  animateScroll as scroll } from 'react-scroll'
+import * as txtGeneral from '../Data/txt';
 
 
 
@@ -88,6 +89,9 @@ export const MainPayment = () => {
   const [value, setValue] = React.useState(0);
   const [data, setData] = React.useState('');
   const [listaRacunaTmp, setListaRacunaTmp] = React.useState(JSON.parse(localStorage.getItem('listaRacunaTmp')));
+  const [buttonRacunList, setButtonRacunList] = React.useState(JSON.parse(localStorage.getItem('buttonRacunList')));
+  const [buttonRacunCount, setButtonRacunCount] = React.useState(JSON.parse(localStorage.getItem('buttonRacunCount')));
+  const [txt, setTxt] = React.useState(txtGeneral);
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
   const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
@@ -208,13 +212,19 @@ const childToParent = (childdata) => {
 
 const deleteRacun = () => {
   let deleteRacunTmp =  JSON.parse(localStorage.getItem('listaRacunaTmp')).filter(racun => racun.activRacun !== activRacun);
-  console.log(deleteRacunTmp);
   setListaRacunaTmp(deleteRacunTmp);
+  if(activRacun > 1) {
+    let buttonRacunListTmp = buttonRacunList.filter(buttonList => buttonList.id  !==  activRacun);
+    setButtonRacunList(buttonRacunListTmp);
+    setButtonRacunCount(buttonRacunCount -1);
+    setActivRacun(1);
+  }
     
 }
 
 const toModalCount = (id) => {
-  setData(id);
+  setData({id,txt});
+
 }
 
 
@@ -228,6 +238,13 @@ useEffect(() => {
     setTotalPrice(total);
   }
 }, [listaRacunaTmp,activRacun]);
+
+
+
+useEffect(() => {
+  localStorage.setItem('buttonRacunList', JSON.stringify(buttonRacunList));
+  localStorage.setItem('buttonRacunCount', JSON.stringify(buttonRacunCount));
+}, [buttonRacunList]);
 
 
 
@@ -269,6 +286,20 @@ const handleBottomStep = (tipScroll) => {
 }
 
 
+const addRacun = () => {
+   let buttonRacunTmp = 
+   {
+        id: buttonRacunCount,
+        name: 'Racun 0' + buttonRacunCount
+  }
+  if(buttonRacunCount <= 4) {
+      setButtonRacunList(prevState => [...prevState,buttonRacunTmp]);
+      setButtonRacunCount(buttonRacunCount + 1);
+  }
+  refTextField.current.focus();
+}
+
+
 
   return (
     <ThemeProvider theme={theme}>
@@ -291,7 +322,8 @@ const handleBottomStep = (tipScroll) => {
                           sx={{ height: "100%"}}
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
-                                    {RacuniList.map((item,index) => (
+                                <Grid item xs={6}  sx={{display:  'flex'}}>
+                                    {buttonRacunList.map((item,index) => (
                                         <Button key={index} variant="contained" onClick={()=>setAtivButton(item.id)} sx={{ml:2, fontSize: 6, 
                                          backgroundColor:  () => item.id === activRacun ? '#6cb238' : '#323b40', 
                                         '&:hover': {
@@ -306,25 +338,46 @@ const handleBottomStep = (tipScroll) => {
                                           backgroundColor: '#6cb238'
                                         }, }}>{item.name}</Button>
                                     ))}
-                                <TextField
-                                    id="outlined-password-input"
-                                    variant= "outlined"
-                                    onKeyDown={handleAddArtikalRacun}
-                                    autoComplete="current-password"
-                                    inputRef={refTextField}
-                                    autoFocus
-                                    sx={{ml:  1,
-                                        "& .MuiOutlinedInput-root ": {
-                                           backgroundColor:  '#323b40',
-                                  
+                                    <Button  variant="contained"   onClick={() => addRacun()} sx={{ml:2, fontSize: 28, 
+                                         backgroundColor: '#323b40',
+                                         
+                                        '&:hover': {
+                                          backgroundColor: '#6cb238',
+                                          borderColor: '#0062cc',
+                                          boxShadow: 'none',
+                                          
                                         },
-                                        "& .MuiOutlinedInput-input": {
-                                          color: "white",
-                                          height: 20            
+                                        '&:first-child': {
+                                         ml: 0,
                                         },
-                                      }}
-                                  />
-                                  <Button variant="contained"  startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>Detaljna pretraga</Button>
+                                        "&:active": {
+                                          backgroundColor: '#6cb238'
+                                        }, }}>+</Button>
+                                </Grid>
+                                <Grid item xs={4} sx={{display:  'flex'}} >
+                                  <TextField
+                                      id="outlined-password-input"
+                                      variant= "outlined"
+                                      onKeyDown={handleAddArtikalRacun}
+                                      autoComplete="current-password"
+                                      inputRef={refTextField}
+                                      autoFocus
+                                      fullWidth
+                                      sx={{ml:  1,
+                                          "& .MuiOutlinedInput-root ": {
+                                            backgroundColor:  '#323b40',
+                                    
+                                          },
+                                          "& .MuiOutlinedInput-input": {
+                                            color: "white",
+                                            height: 20            
+                                          },
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid xs={2}   sx={{display:  'flex'}}  >
+                                  <Button  fullWidth variant="contained"  startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>{txt.txtDetaljnaPretraga}</Button>
+                                </Grid>
                             </Grid>  
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
@@ -367,14 +420,14 @@ const handleBottomStep = (tipScroll) => {
                             <Grid  container  sx={{display: 'flex'}}>
                                 <Grid item xs={4} justifyContent='flex-start'>
                                   <Typography variant="body2" color="#ffffff"  >
-                                        {'operater  0124'}
+                                        {txt.txtOperater} {txt.txtOperaterNumber}
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={4} justifyContent='center'> 
                                 </Grid>
                                 <Grid  item xs={4} sx={{display:  'flex'}} justifyContent='flex-end'>
                                   <Typography variant="body2" color="#ffffff"  >
-                                        {'Kupac: XZY Kupac 1234'}
+                                        {txt.txtKupac} : {txt.txtKupacNumber}
                                   </Typography>
                                 </Grid>
                               </Grid>         
@@ -392,10 +445,10 @@ const handleBottomStep = (tipScroll) => {
                                 <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
                                   <TableHead   >
                                       <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
-                                        <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>Artikal</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">Kolicina</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">Cena</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">Ukupno</TableCell>
+                                        <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>{txt.txtArtikal}</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtKolicina}</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtCena}</TableCell>
+                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtUkupno}</TableCell>
                                       </TableRow>
                                   </TableHead>
                                   <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
@@ -435,10 +488,10 @@ const handleBottomStep = (tipScroll) => {
                                                   mb: 1,
                                                   width: "100%",
                                                   justifyContent: "space-evenly"}}>
-                                    <Button variant="contained"   onClick={handleOpenModalPopustRacun} startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Popust</Button>
-                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Numeric</Button>
-                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Vaga</Button>
-                                    <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>Storno</Button>
+                                    <Button variant="contained"   onClick={handleOpenModalPopustRacun} startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtPopust}</Button>
+                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtNumeric}</Button>
+                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtVaga}</Button>
+                                    <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtStorno}</Button>
                                   </ButtonGroup>
 
                               </Card>
@@ -448,16 +501,16 @@ const handleBottomStep = (tipScroll) => {
                             <Grid item sx={{  height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
                                   <Grid item xs={6}  sx={{  height: "100%", marginTop: 1}}>
                                     <Grid sx={{display:  'flex', ml:1}}>
-                                      <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>Total racun</Typography></Grid>
+                                      <Grid item xs={6}  ><Typography  sx={{fontSize: 10, color:  'white'}}>{txt.txtTotalRacun}</Typography></Grid>
                                       <Grid item xs={6}  justifyContent="flex-end"><Typography  sx={{fontSize: 10, color:  'white', display:  'flex', justifyContent:  'flex-end'}}>{currencyFormat(totalPrice)}</Typography></Grid>
                                     </Grid>
                                     <Grid sx={{display:  'flex',  ml:  1  }}>
-                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >Total za naplatu</Typography></Grid>
+                                      <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3}} >{txt.txtTotalRacun}</Typography></Grid>
                                       <Grid item xs={6}><Typography  sx={{  fontSize: 12,  color:  'white', mt: 3,  display:  'flex', justifyContent:  'flex-end'}} >{currencyFormat(totalPrice)}</Typography></Grid>
                                     </Grid>
                                   </Grid>
                                   <Grid xs={6} sx={{   height: "100%",    display:  'flex', marginTop:  1}} >
-                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth>Naplata</Button>
+                                      <Button variant="contained"   sx={{ml: 2,fontSize: 14, backgroundColor:  '#6cb238', mr:1, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth>{txt.txtNaplata}</Button>
                                   </Grid>
                                   <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata} ></ModalNaplata>
                             </Grid>
