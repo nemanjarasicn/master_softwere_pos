@@ -46,6 +46,7 @@ export const LoginPage = () => {
   const [listaRacunaTmp, setListaRacunaTmp] = React.useState([]);
   
   const navigate  = useNavigate();
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -54,6 +55,19 @@ export const LoginPage = () => {
       password: data.get('password'),
     });
     if(data.get('password')) {
+
+      const requestOptions = {
+        method: 'GET',
+        headers: { 'PETCOM': 'dejan' },
+        
+    };
+
+      fetch('http://localhost:8087/api/v1/search//products/1234Danijela1234556966665668', requestOptions) 
+        .then((response) => response.json())
+        .then((data) =>  {
+            localStorage.setItem('artikalList', JSON.stringify(data));
+        });
+
       localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
       localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
       localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 

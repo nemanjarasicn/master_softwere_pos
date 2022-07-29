@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useRef,  useState, useEffect }  from 'react'
 
 
 const style = {
@@ -25,6 +26,14 @@ const style = {
   };
 
 export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
+
+    if(openProps) {
+        setTimeout(() => {
+            ref.current.focus();
+        }, 200);
+     }
+     
+    const ref = useRef();
 
       return (
         <Modal
@@ -56,6 +65,7 @@ export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
                             
                                 size="small"
                                 sx={{ input: {   fontSize: 14,      color:  'white', ml: 2},  }}
+                                inputRef={ref}
                                 />
                             </Grid>
 

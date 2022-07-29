@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { txtArtikal } from '../Data/txt';
+import * as txtCount from '../Data/txt';
 
 
 const style = {
@@ -67,7 +67,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
                 <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                     <Grid sx={{display:  'flex', height:  '10%',  justifyContent:  'center'}} >
                     <Typography id="modal-modal-title" variant="h6" component="h2"  sx={{display:  'flex', justifyContent:  'center', color:  'white'}}>
-                        Kolicina
+                        {txtCount.txtKolicina}
                     </Typography>
                     </Grid>
                     <Grid sx={{display:  'flex', height:  '60%', alignItems:  'center'}} >
@@ -93,10 +93,10 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
                     </Grid>
                     <Grid sx={{display:  'flex', height:  '30%', flexDirection:  'column',  justifyContent:  'center'}} >
                         <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                            <Button variant="contained"  onClick={handleSubmit}  sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
+                            <Button variant="contained"  onClick={handleSubmit}  sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>{txtCount.txtPotvrdi}</Button>
                         </Box>
                         <Typography id="modal-modal-title" variant="h8" component="h6"  sx={{mt:  2, display:  'flex', justifyContent:  'center',  color:  'white'}}>
-                             Odustani     
+                             {txtCount.txtOdustani}     
                         </Typography>
                     </Grid>
                 </Grid>

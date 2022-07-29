@@ -92,6 +92,9 @@ export const MainPayment = () => {
   const [buttonRacunList, setButtonRacunList] = React.useState(JSON.parse(localStorage.getItem('buttonRacunList')));
   const [buttonRacunCount, setButtonRacunCount] = React.useState(JSON.parse(localStorage.getItem('buttonRacunCount')));
   const [txt, setTxt] = React.useState(txtGeneral);
+  //da aplikacija ne bi pucala ako je lista artikala prazna ili ako ima problem sa komunikacijom sa api
+  const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
+  const [artikalList, seArtikalList] = React.useState(artikalListTmp);
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
   const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
@@ -126,6 +129,8 @@ export const MainPayment = () => {
   ];
 
 
+  
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -143,8 +148,10 @@ export const MainPayment = () => {
   setActivTipProizvoda(idButton);
 };
 
+//pakuje niz u podnizove od n elemenata
+
 const arrayChunk = (arr, n) => {
-  const arrayTmp = arr.filter(element => element.tipProizvodaId === activTipProizvoda);
+  const arrayTmp = arr.filter(element => element.productGroupRequest[0].idGroup === `${activTipProizvoda}`);
   const array = arrayTmp.slice();
   const chunks = [];
   while (array.length) chunks.push(array.splice(0, n));
@@ -153,17 +160,18 @@ const arrayChunk = (arr, n) => {
 
 
 
+//dodavanje artikla iz tipova 
 
 const handleAddArtikalRacunTipovi = (sifra) => {
-    let artikalTmp = ArtikliList.filter(element => element.sifra === sifra);
+    let artikalTmp = artikalList.filter(element => element.code === sifra);
     if(artikalTmp.length) {
       let artikalTmp2 = {
-        id: artikalTmp[0].id,
-        name: artikalTmp[0].name,
-        kolicina: artikalTmp[0].kolicina,
-        cena:  artikalTmp[0].cena,
-        tipProizvodaId: artikalTmp[0].tipProizvodaId,
-        sifra: artikalTmp[0].sifra,
+        productid: artikalTmp[0].productId,
+        productName: artikalTmp[0].productName,
+        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+        code: artikalTmp[0].code,
         activRacun: activRacun
       }
   
@@ -173,18 +181,21 @@ const handleAddArtikalRacunTipovi = (sifra) => {
 }
 
 
+//dodavanje artikla sa input polja
+
 
 const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
-    let artikalTmp = ArtikliList.filter(element => element.sifra === event.target.value);
-    if(artikalTmp.length) {
+    let artikalTmp = artikalList.filter(element => element.code === event.target.value);
+    let artikalCheck = checkArtikal(artikalTmp);
+    if(artikalCheck) {
       let artikalTmp2 = {
-        id: artikalTmp[0].id,
-        name: artikalTmp[0].name,
-        kolicina: artikalTmp[0].kolicina,
-        cena:  artikalTmp[0].cena,
-        tipProizvodaId: artikalTmp[0].tipProizvodaId,
-        sifra: artikalTmp[0].sifra,
+        productid: artikalTmp[0].productId,
+        productName: artikalTmp[0].productName,
+        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+        code: artikalTmp[0].code,
         activRacun: activRacun
       }
       
@@ -227,6 +238,32 @@ const toModalCount = (id) => {
 
 }
 
+
+const checkArtikal = (artikalCheckTmp) =>  {
+  //ako je flagCheck true onda je artikal u redu
+  let flagCheck =  !artikalCheckTmp.length  ? false : true;
+  let message = '';
+  artikalCheckTmp.map(obj => {
+    Object.keys(obj).map(key => {
+      if(key === 'priceLists' && !obj[key][0].price) {
+          message = 'Fali cena na artiklu';
+          flagCheck = false;
+          console.log(message);
+      }
+      if(key === 'productGroupRequest' && !obj[key][0].idGroup) {
+          message = 'Fali idGroup na artiklu';
+          flagCheck = false;
+          console.log(message);
+      }
+      if(!obj[key] && key !== 'vatName') {
+         flagCheck = false;
+         message = 'Fali podatak u artiklu';
+         console.log(message);
+      }
+    });
+  })
+  return flagCheck;
+}
 
 
 useEffect(() => {
@@ -311,15 +348,15 @@ const addRacun = () => {
         <CssBaseline />
             <Sidebar></Sidebar>
             <Box  sx={{ flexGrow: 1,  height: '100vh', overflow: 'auto'  , display:  'flex' }}>
-                  <Grid 
+                  {/*<Grid 
                       justifyContent="space-between"
                       sx={{ height: "100%", p: 1}}
-                    >
+                  >*/}
                       <Grid  
                           container
                           direction="column"
                           justifyContent="space-between"
-                          sx={{ height: "100%"}}
+                          sx={{ height: "100%", p: 1}}
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
                                 <Grid item xs={6}  sx={{display:  'flex'}}>
@@ -382,11 +419,11 @@ const addRacun = () => {
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
                               <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
-                                {arrayChunk(ArtikliList, 4).map((row, i) => (
+                                {arrayChunk(artikalList, 4).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.sifra)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
+                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.productName}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
@@ -433,11 +470,11 @@ const addRacun = () => {
                               </Grid>         
                             </Grid>
                       </Grid>
-                  </Grid>
+                  {/*</Grid>*/}
                   <Grid item
                       justifyContent="space-between"
                       sx={{ height: "100%", overflow:  'auto' }}
-                      xs={4}
+                      xs={6}
                     >
                         <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
                             <Grid item style={{ height: "70%",   display:  'flex', margin: 5,  }} >
@@ -460,7 +497,7 @@ const addRacun = () => {
                                       sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
                                     >
                                       <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
-                                        {row.name}
+                                        {row.productName}
                                       </TableCell>
                                       <TableCell align="right"  onClick={() => {toModalCount(row.id); handleOpenModalKolicina()}}>{row.kolicina}</TableCell>
                                       <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
@@ -474,7 +511,7 @@ const addRacun = () => {
                               </TableContainer>        
                               <ModalCount openProps={openModalKolicina} handleCloseprops={handleCloseModalKolicina}    childToParent={childToParent} toModalCount={data}></ModalCount>
                               <ModalPopustArtikal openProps={openModalPopustArtikal} handleCloseprops={handleCloseModalPopustArtikal}   ></ModalPopustArtikal>
-                              <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={'Storno artikla'} ></ModalStornoArtikal>
+                              <ModalStornoArtikal openProps={openModalStornoArtikla} handleCloseprops={handleCloseModalStornoArtikal}  titleTextProps={txt.txtStornoArtikla} ></ModalStornoArtikal>
                             </Grid>
                             <Grid item style={{ height: "5%",   display:  'flex', margin: 1, alignItems:    'center',   justifyContent:  'flex-end' }} >
                                  <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(1)} > <KeyboardArrowUpIcon /></Button>

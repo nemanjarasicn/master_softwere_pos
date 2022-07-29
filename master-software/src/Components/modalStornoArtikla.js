@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-
+import * as txtStornoArtikla from '../Data/txt';
 
 const style = {
     position: 'absolute',
@@ -25,6 +25,8 @@ const style = {
   };
 
 export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) => {
+
+
 
       return (
         <Modal
@@ -56,10 +58,10 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                     </Grid>
                     <Grid sx={{display:  'flex', height:  '30%', flexDirection:  'column',  justifyContent:  'center'}} >
                         <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                            <Button variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
+                            <Button variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtPotvrdi}</Button>
                         </Box>
                         <Typography id="modal-modal-title" variant="h8" component="h6"  sx={{mt:  2, display:  'flex', justifyContent:  'center',  color:  'white'}}>
-                        Odustani
+                                {txtStornoArtikla.txtOdustani}
                         </Typography>
                     </Grid>
                 </Grid>

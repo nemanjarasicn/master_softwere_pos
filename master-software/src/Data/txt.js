@@ -14,6 +14,9 @@ export  const txtOperaterNumber = '0124';
 export  const txtDetaljnaPretraga = 'Detaljna pretraga';
 export  const txtNaplata = 'Naplata';
 export  const txtOdustani = 'Odustani';
+export  const txtStornoArtikla = 'Storno artikla';
+export  const txtPotvrdi = 'Potvrdi';
+
 
 
 
