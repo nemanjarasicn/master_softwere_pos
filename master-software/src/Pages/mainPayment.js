@@ -2,40 +2,14 @@ import * as React from 'react';
 import { useRef,  useState, useEffect }  from 'react'
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import Logo from  '../Images/master_logo.png'
-import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
-import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import SearchIcon from '@mui/icons-material/Search';
-import { fontSize } from '@mui/system';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
-import BadgeIcon from '@mui/icons-material/Badge';
-import GroupIcon from '@mui/icons-material/Group';
 import Table from '@mui/material/Table';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -43,34 +17,20 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import '../Css/mainPaymentCss.css'
 import Tabs from '@mui/material/Tabs';
-import Modal from '@mui/material/Modal';
 import Tab from '@mui/material/Tab';
-import Input from '@mui/material/Input';
 import {ModalCount} from '../Components/modalCount'
 import {ModalPopustArtikal} from '../Components/modalPopustArtikal'
 import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
-import { ArtikliList } from  "../Data/artikli"
-import { ButtonRacunList } from  "../Data/racuniList"
-import { Racun01 }  from  "../Data/racun01"
-import { TipoviProizvoda } from '../Data/tipoviProizvoda';
-import * as Scroll from 'react-scroll';
-import {  animateScroll as scroll } from 'react-scroll'
+
 import * as txtGeneral from '../Data/txt';
 
-
-
-
-
-
-  
 
 export const MainPayment = () => {
   const theme = useTheme();
@@ -81,9 +41,7 @@ export const MainPayment = () => {
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
   const [activRacun, setActivRacun] = React.useState(1);
-  const [racunTmp01, setRacunTmp01] = React.useState(JSON.parse(localStorage.getItem('racunTmp01')));
-  const [racunTmp02, setRacunTmp02] = React.useState([]);
-  const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
+  const [activTipProizvoda, setActivTipProizvoda] = React.useState(0);
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [value, setValue] = React.useState(0);
@@ -95,6 +53,7 @@ export const MainPayment = () => {
   //da aplikacija ne bi pucala ako je lista artikala prazna ili ako ima problem sa komunikacijom sa api
   const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
   const [artikalList, seArtikalList] = React.useState(artikalListTmp);
+  const [errorMessage, setErrorMessage] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
   const handleOpenModalPopustArtikal = () => setOpenModalPopustArtikal(true);
@@ -113,28 +72,22 @@ export const MainPayment = () => {
                                           setTotalPrice(0);
   }
 
-  const Scroll = require('react-scroll');
-  const scroll = Scroll.animateScroll;
-  
+  const unique = [...new Set(artikalList.map(item => item.groupName))];
+  const [tipoviProizvoda1, settipoviProizvoda1]  =  React.useState([]);
 
-  const racuni = [
-    {
-      idRacuna: 1,
-      racun: JSON.parse(localStorage.getItem('racunTmp01'))
-    },
-    {
-      idRacuna: 2,
-      racun: racunTmp02
-    },
-  ];
-
-
+  useEffect(() => {
+    unique.map((obj,i) => {
+      let objTmp = {id: i,name: obj};
+      settipoviProizvoda1(prevState => [...prevState, objTmp]);
+    })
+  },[]);
   
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  //funkcija vraca format za novac
   const currencyFormat = (num) => {
     return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
  }
@@ -143,14 +96,9 @@ export const MainPayment = () => {
     setActivRacun(idButton);
  };
 
-
- const setAtivTipPro = (idButton) => {
-  setActivTipProizvoda(idButton);
-};
-
 //pakuje niz u podnizove od n elemenata
-
-const arrayChunk = (arr, n) => {
+const arrayChunk = (arr, n, activTipProizvoda) => {
+  console.log(activTipProizvoda);
   const arrayTmp = arr.filter(element => element.productGroupRequest[0].idGroup === `${activTipProizvoda}`);
   const array = arrayTmp.slice();
   const chunks = [];
@@ -158,13 +106,11 @@ const arrayChunk = (arr, n) => {
   return chunks;
 };
 
-
-
 //dodavanje artikla iz tipova 
-
 const handleAddArtikalRacunTipovi = (sifra) => {
     let artikalTmp = artikalList.filter(element => element.code === sifra);
-    if(artikalTmp.length) {
+    let artikalCheckTmp = checkArtikal(artikalTmp);
+    if(artikalCheckTmp === '') {
       let artikalTmp2 = {
         productid: artikalTmp[0].productId,
         productName: artikalTmp[0].productName,
@@ -177,18 +123,18 @@ const handleAddArtikalRacunTipovi = (sifra) => {
   
        //setRacunTmp01(prevState => [...prevState,artikalTmp[0]]);
        setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
+  } else{
+    setErrorMessage(artikalCheckTmp);
+    console.log(artikalCheckTmp);
   } 
 }
 
-
 //dodavanje artikla sa input polja
-
-
 const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
     let artikalTmp = artikalList.filter(element => element.code === event.target.value);
-    let artikalCheck = checkArtikal(artikalTmp);
-    if(artikalCheck) {
+    let artikalCheckTmp = checkArtikal(artikalTmp);
+    if(artikalCheckTmp === '') {
       let artikalTmp2 = {
         productid: artikalTmp[0].productId,
         productName: artikalTmp[0].productName,
@@ -203,10 +149,12 @@ const handleAddArtikalRacun = (event) => {
       //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
       setListaRacunaTmp(prevState => [...prevState,artikalTmp2])
     } else{
-      console.log('nema artikla');
+      setErrorMessage(artikalCheckTmp);
+      console.log(artikalCheckTmp);
     }
   }
 }
+
 
 const childToParent = (childdata) => {
   let listaRacunaTmp1 =  JSON.parse(localStorage.getItem('listaRacunaTmp'));
@@ -220,7 +168,7 @@ const childToParent = (childdata) => {
   setListaRacunaTmp(newState);
 }
 
-
+//funkcija brise racun posle naplate
 const deleteRacun = () => {
   let deleteRacunTmp =  JSON.parse(localStorage.getItem('listaRacunaTmp')).filter(racun => racun.activRacun !== activRacun);
   setListaRacunaTmp(deleteRacunTmp);
@@ -233,39 +181,34 @@ const deleteRacun = () => {
     
 }
 
+
 const toModalCount = (id) => {
   setData({id,txt});
 
 }
 
-
+// funkija proverava da li artikal ima sve potrebne vrednosti, ako ne vraca gresku 
 const checkArtikal = (artikalCheckTmp) =>  {
-  //ako je flagCheck true onda je artikal u redu
-  let flagCheck =  !artikalCheckTmp.length  ? false : true;
-  let message = '';
+  //ako je message prazan onda je artikal u redu
+  let message = !artikalCheckTmp.length  ? 'Ne postoji artikal' : '';
   artikalCheckTmp.map(obj => {
     Object.keys(obj).map(key => {
-      if(key === 'priceLists' && !obj[key][0].price) {
+      if(key === 'priceLists' && !obj[key]) {
           message = 'Fali cena na artiklu';
-          flagCheck = false;
-          console.log(message);
       }
       if(key === 'productGroupRequest' && !obj[key][0].idGroup) {
           message = 'Fali idGroup na artiklu';
-          flagCheck = false;
-          console.log(message);
+
       }
       if(!obj[key] && key !== 'vatName') {
-         flagCheck = false;
          message = 'Fali podatak u artiklu';
-         console.log(message);
       }
     });
   })
-  return flagCheck;
+  return message;
 }
 
-
+// setuje listu racuna i total price
 useEffect(() => {
   //localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));
   localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
@@ -277,27 +220,25 @@ useEffect(() => {
 }, [listaRacunaTmp,activRacun]);
 
 
-
 useEffect(() => {
   localStorage.setItem('buttonRacunList', JSON.stringify(buttonRacunList));
   localStorage.setItem('buttonRacunCount', JSON.stringify(buttonRacunCount));
 }, [buttonRacunList]);
 
 
-
-
-
-
-
+// ovo su ref koji gadjaju na odredjeni element
 const refTable = useRef();
 const refTipoviProizvoda = useRef();
 const refTextField = useRef();
 
+// omogucava uvek focus na input polju i omogucava da kad se ubaci 
+// novi artikal, uvek scroll bude na kraju
 useEffect(() => {
   refTextField.current.focus();
   handleBottom();
 });
 
+// funkcija za scroll up na strelice
 const handleTop = (tipScroll) => {
   if(tipScroll === 1) {
       refTable.current.scrollBy({ top: -100, behavior: 'smooth' });
@@ -307,14 +248,14 @@ const handleTop = (tipScroll) => {
   refTextField.current.focus();
 };
 
-
+// funkcija za scroll na kraj tabele
 const handleBottom = () => {
   refTable.current.scrollTop = refTable.current.scrollHeight
 }
 
-
+// funkcija za scrol down na strelice
 const handleBottomStep = (tipScroll) => {
-    if(tipScroll === 1) {
+    if(tipScroll === 1) { //1 za tabelu artikala 0 za tabelu tipova proizvoda
         refTable.current.scrollBy({ top: 100, behavior: 'smooth' });
     } else {
         refTipoviProizvoda.current.scrollBy({ top: 100, behavior: 'smooth' });
@@ -322,7 +263,7 @@ const handleBottomStep = (tipScroll) => {
     refTextField.current.focus();
 }
 
-
+//  funkcija za dodavanje racuna na +
 const addRacun = () => {
    let buttonRacunTmp = 
    {
@@ -336,6 +277,8 @@ const addRacun = () => {
   refTextField.current.focus();
 }
 
+ 
+
 
 
   return (
@@ -348,10 +291,6 @@ const addRacun = () => {
         <CssBaseline />
             <Sidebar></Sidebar>
             <Box  sx={{ flexGrow: 1,  height: '100vh', overflow: 'auto'  , display:  'flex' }}>
-                  {/*<Grid 
-                      justifyContent="space-between"
-                      sx={{ height: "100%", p: 1}}
-                  >*/}
                       <Grid  
                           container
                           direction="column"
@@ -359,6 +298,17 @@ const addRacun = () => {
                           sx={{ height: "100%", p: 1}}
                         >
                             <Grid item style={{ background: "#1e2730", height: "10%", alignContent:  'center',  justifyContent:  'flex-start',  display:  'flex'}} >
+                            <Box sx={{width: 250, height: 100, borderRadius: 2, display: errorMessage  ? '' :  'none', backgroundColor: 'white', position: 'absolute', zIndex: 2}}>
+                              <Box sx={{display:  'flex'}}>
+                                  <Typography sx={{ml:1, color: 'red'}}> Error heandling</Typography>
+                                  <Typography sx={{ml: 14,
+                                                '&:hover': {
+                                                  cursor:  'pointer'
+                                                },}} onClick={() => setErrorMessage('')}>X</Typography>
+                              </Box>
+                                  <Typography sx={{mt: 2, ml:1, color: '#6cb238'}}>{errorMessage}</Typography>
+                              
+                            </Box>
                                 <Grid item xs={6}  sx={{display:  'flex'}}>
                                     {buttonRacunList.map((item,index) => (
                                         <Button key={index} variant="contained" onClick={()=>setAtivButton(item.id)} sx={{ml:2, fontSize: 6, 
@@ -419,7 +369,7 @@ const addRacun = () => {
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
                               <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
-                                {arrayChunk(artikalList, 4).map((row, i) => (
+                                {arrayChunk(artikalList, 4,activTipProizvoda).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
@@ -447,7 +397,7 @@ const addRacun = () => {
                                     '& .Mui-selected': {color:  'white !important'}}}
                                     TabIndicatorProps={{ style: { background: "#6cb238" } }}  
                                   >
-                                    {TipoviProizvoda.map((row,index)  => (
+                                    {tipoviProizvoda1.map((row,index)  => (
                                         <Tab label={row.name}  onClick={()=>setActivTipProizvoda(row.id)}   sx={{color: '#5b6266'}} />
                                     ))}
                                   </Tabs>
@@ -470,7 +420,7 @@ const addRacun = () => {
                               </Grid>         
                             </Grid>
                       </Grid>
-                  {/*</Grid>*/}
+    
                   <Grid item
                       justifyContent="space-between"
                       sx={{ height: "100%", overflow:  'auto' }}
