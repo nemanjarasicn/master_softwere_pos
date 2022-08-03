@@ -110,9 +110,10 @@ const arrayChunk = (arr, n) => {
 
 //dodavanje artikla iz tipova 
 const handleAddArtikalRacunTipovi = (sifra) => {
-    let artikalTmp = artikalList.filter(element => element.code === sifra);
+    let artikalTmp = artikalList.filter(element => element.sifra === sifra);
+    console.log(sifra);
     //let artikalCheckTmp = checkArtikal(artikalTmp);
-    if(artikalTmp.length === '') {
+   // if(artikalTmp.length === '') {
       let artikalTmp2 = {
         productid: artikalTmp[0].id,
         productName: artikalTmp[0].name,
@@ -125,10 +126,10 @@ const handleAddArtikalRacunTipovi = (sifra) => {
   
        //setRacunTmp01(prevState => [...prevState,artikalTmp[0]]);
        setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
-  } else{
+  //} else{
     //setErrorMessage(artikalCheckTmp);
-    console.log('ne postoji artikal');
-  } 
+    //console.log('ne postoji artikal');
+  //} 
 }
 
 //dodavanje artikla sa input polja
@@ -376,7 +377,7 @@ const addRacun = () => {
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
+                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.sifra)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
