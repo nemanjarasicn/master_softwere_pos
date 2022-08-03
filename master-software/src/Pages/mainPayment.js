@@ -28,6 +28,8 @@ import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
+import {ArtikliList}  from '../Data/artikli'
+import {TipoviProizvoda}  from '../Data/tipoviProizvoda'
 
 import * as txtGeneral from '../Data/txt';
 
@@ -41,7 +43,7 @@ export const MainPayment = () => {
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
   const [activRacun, setActivRacun] = React.useState(1);
-  const [activTipProizvoda, setActivTipProizvoda] = React.useState(0);
+  const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [value, setValue] = React.useState(0);
@@ -51,8 +53,8 @@ export const MainPayment = () => {
   const [buttonRacunCount, setButtonRacunCount] = React.useState(JSON.parse(localStorage.getItem('buttonRacunCount')));
   const [txt, setTxt] = React.useState(txtGeneral);
   //da aplikacija ne bi pucala ako je lista artikala prazna ili ako ima problem sa komunikacijom sa api
-  const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
-  const [artikalList, seArtikalList] = React.useState(artikalListTmp);
+  const artikalListTmp = [];
+  const [artikalList, setArtikalList] = React.useState(ArtikliList);
   const [errorMessage, setErrorMessage] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
@@ -73,14 +75,14 @@ export const MainPayment = () => {
   }
 
   const unique = [...new Set(artikalList.map(item => item.groupName))];
-  const [tipoviProizvoda1, settipoviProizvoda1]  =  React.useState([]);
+  const [tipoviProizvoda1, settipoviProizvoda1]  =  React.useState(TipoviProizvoda);
 
-  useEffect(() => {
+  {/*useEffect(() => {
     unique.map((obj,i) => {
       let objTmp = {id: i,name: obj};
       settipoviProizvoda1(prevState => [...prevState, objTmp]);
     })
-  },[]);
+  },[]);*/}
   
 
   const handleChange = (event, newValue) => {
@@ -97,9 +99,9 @@ export const MainPayment = () => {
  };
 
 //pakuje niz u podnizove od n elemenata
-const arrayChunk = (arr, n, activTipProizvoda) => {
-  console.log(activTipProizvoda);
-  const arrayTmp = arr.filter(element => element.productGroupRequest[0].idGroup === `${activTipProizvoda}`);
+const arrayChunk = (arr, n) => {
+  const arrayTmp = arr.filter(element =>  element.tipProizvodaId == `${activTipProizvoda}`);
+  
   const array = arrayTmp.slice();
   const chunks = [];
   while (array.length) chunks.push(array.splice(0, n));
@@ -109,49 +111,50 @@ const arrayChunk = (arr, n, activTipProizvoda) => {
 //dodavanje artikla iz tipova 
 const handleAddArtikalRacunTipovi = (sifra) => {
     let artikalTmp = artikalList.filter(element => element.code === sifra);
-    let artikalCheckTmp = checkArtikal(artikalTmp);
-    if(artikalCheckTmp === '') {
+    //let artikalCheckTmp = checkArtikal(artikalTmp);
+    if(artikalTmp.length === '') {
       let artikalTmp2 = {
-        productid: artikalTmp[0].productId,
-        productName: artikalTmp[0].productName,
-        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
-        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
-        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
-        code: artikalTmp[0].code,
+        productid: artikalTmp[0].id,
+        productName: artikalTmp[0].name,
+        kolicina: artikalTmp[0].kolicina ,
+        cena:  artikalTmp[0].cena, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].tipProizvodaId,
+        code: artikalTmp[0].sifra,
         activRacun: activRacun
       }
   
        //setRacunTmp01(prevState => [...prevState,artikalTmp[0]]);
        setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
   } else{
-    setErrorMessage(artikalCheckTmp);
-    console.log(artikalCheckTmp);
+    //setErrorMessage(artikalCheckTmp);
+    console.log('ne postoji artikal');
   } 
 }
 
 //dodavanje artikla sa input polja
 const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
-    let artikalTmp = artikalList.filter(element => element.code === event.target.value);
-    let artikalCheckTmp = checkArtikal(artikalTmp);
-    if(artikalCheckTmp === '') {
+    console.log(event.target.value);
+    let artikalTmp = artikalList.filter(element => element.sifra === event.target.value);
+    //let artikalCheckTmp = checkArtikal(artikalTmp);
+   // if(artikalTmp.length === '') {
       let artikalTmp2 = {
-        productid: artikalTmp[0].productId,
-        productName: artikalTmp[0].productName,
-        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
-        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
-        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
-        code: artikalTmp[0].code,
+        productid: artikalTmp[0].id,
+        productName: artikalTmp[0].name,
+        kolicina: artikalTmp[0].kolicina ,
+        cena:  artikalTmp[0].cena, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].tipProizvodaId,
+        code: artikalTmp[0].sifra,
         activRacun: activRacun
       }
       
       event.target.value = '';
       //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
       setListaRacunaTmp(prevState => [...prevState,artikalTmp2])
-    } else{
-      setErrorMessage(artikalCheckTmp);
-      console.log(artikalCheckTmp);
-    }
+   // } else{
+      //setErrorMessage(artikalCheckTmp);
+      //console.log('nema artikal');
+    //}
   }
 }
 
@@ -369,11 +372,11 @@ const addRacun = () => {
                              
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
                               <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
-                                {arrayChunk(artikalList, 4,activTipProizvoda).map((row, i) => (
+                                {arrayChunk(artikalList, 4).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.productName}</Button>
+                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
