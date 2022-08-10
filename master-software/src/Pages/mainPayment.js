@@ -28,8 +28,9 @@ import {ModalPopustRacun} from '../Components/modalPopustRacun'
 import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
-import {ArtikliList}  from '../Data/artikli'
-import {TipoviProizvoda}  from '../Data/tipoviProizvoda'
+
+import {ModalDetaljnaPretraga} from '../Components/detaljnaPretraga'
+
 
 import * as txtGeneral from '../Data/txt';
 
@@ -42,8 +43,9 @@ export const MainPayment = () => {
   const [openModalStornoArtikla, setOpenModalStornoArtikla] = React.useState(false);
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
+  const [openModalDetaljnaPretraga, setOpenDetaljnaPretraga] = React.useState(false);
   const [activRacun, setActivRacun] = React.useState(1);
-  const [activTipProizvoda, setActivTipProizvoda] = React.useState(1);
+  const [activTipProizvoda, setActivTipProizvoda] = React.useState(0);
   const [totalPrice, setTotalPrice] = React.useState(0);
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [value, setValue] = React.useState(0);
@@ -53,8 +55,8 @@ export const MainPayment = () => {
   const [buttonRacunCount, setButtonRacunCount] = React.useState(JSON.parse(localStorage.getItem('buttonRacunCount')));
   const [txt, setTxt] = React.useState(txtGeneral);
   //da aplikacija ne bi pucala ako je lista artikala prazna ili ako ima problem sa komunikacijom sa api
-  const artikalListTmp = [];
-  const [artikalList, setArtikalList] = React.useState(ArtikliList);
+  const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
+  const [artikalList, seArtikalList] = React.useState(artikalListTmp);
   const [errorMessage, setErrorMessage] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
   const handleCloseModalKolicina = () => setOpenModalKolicina(false);
@@ -74,15 +76,21 @@ export const MainPayment = () => {
                                           setTotalPrice(0);
   }
 
-  const unique = [...new Set(artikalList.map(item => item.groupName))];
-  const [tipoviProizvoda1, settipoviProizvoda1]  =  React.useState(TipoviProizvoda);
+  const handleOpenModalDetaljnaPretraga = () => setOpenDetaljnaPretraga(true);
+  const handleCloseModalDetaljnaPretraga = () => setOpenDetaljnaPretraga(false);
+  
 
-  {/*useEffect(() => {
+  const [inputTmp, setInputTmp] = React.useState('');
+
+  const unique = [...new Set(artikalList.map(item => item.groupName))];
+  const [tipoviProizvoda1, settipoviProizvoda1]  =  React.useState([]);
+
+  useEffect(() => {
     unique.map((obj,i) => {
       let objTmp = {id: i,name: obj};
       settipoviProizvoda1(prevState => [...prevState, objTmp]);
     })
-  },[]);*/}
+  },[]);
   
 
   const handleChange = (event, newValue) => {
@@ -99,9 +107,9 @@ export const MainPayment = () => {
  };
 
 //pakuje niz u podnizove od n elemenata
-const arrayChunk = (arr, n) => {
-  const arrayTmp = arr.filter(element =>  element.tipProizvodaId == `${activTipProizvoda}`);
-  
+const arrayChunk = (arr, n, activTipProizvoda) => {
+  console.log(activTipProizvoda);
+  const arrayTmp = arr.filter(element => element.productGroupRequest[0].idGroup === `${activTipProizvoda}`);
   const array = arrayTmp.slice();
   const chunks = [];
   while (array.length) chunks.push(array.splice(0, n));
@@ -110,52 +118,64 @@ const arrayChunk = (arr, n) => {
 
 //dodavanje artikla iz tipova 
 const handleAddArtikalRacunTipovi = (sifra) => {
-    let artikalTmp = artikalList.filter(element => element.sifra === sifra);
-    console.log(sifra);
-    //let artikalCheckTmp = checkArtikal(artikalTmp);
-   // if(artikalTmp.length === '') {
+    let artikalTmp = artikalList.filter(element => element.code === sifra);
+    let artikalCheckTmp = checkArtikal(artikalTmp);
+    if(artikalCheckTmp === '') {
       let artikalTmp2 = {
-        productid: artikalTmp[0].id,
-        productName: artikalTmp[0].name,
-        kolicina: artikalTmp[0].kolicina ,
-        cena:  artikalTmp[0].cena, //zakucano dok Deki ne sredi price list
-        tipProizvodaId: artikalTmp[0].tipProizvodaId,
-        code: artikalTmp[0].sifra,
+        productid: artikalTmp[0].productId,
+        productName: artikalTmp[0].productName,
+        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+        code: artikalTmp[0].code,
         activRacun: activRacun
       }
   
        //setRacunTmp01(prevState => [...prevState,artikalTmp[0]]);
        setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
-  //} else{
-    //setErrorMessage(artikalCheckTmp);
-    //console.log('ne postoji artikal');
-  //} 
+  } else{
+    setErrorMessage(artikalCheckTmp);
+    console.log(artikalCheckTmp);
+  } 
 }
 
 //dodavanje artikla sa input polja
 const handleAddArtikalRacun = (event) => {
+  let inputTmp = '';
+  let inputTmpAfter = '';
+  if(event.key === '*') {
+    inputTmp = event.target.value.split('*')[0];
+    setInputTmp(inputTmp);
+  }
+ 
   if (event.key === 'Enter') {
-    console.log(event.target.value);
-    let artikalTmp = artikalList.filter(element => element.sifra === event.target.value);
-    //let artikalCheckTmp = checkArtikal(artikalTmp);
-   // if(artikalTmp.length === '') {
+    inputTmp = event.target.value.split('*')[0];
+    inputTmpAfter = event.target.value.split('*')[1];
+    let inputValue  =   inputTmp !== '' ?  inputTmpAfter  :  event.target.value;
+    console.log(inputValue);
+    let artikalTmp = artikalList.filter(element => element.code ===   inputValue);
+    let artikalCheckTmp = checkArtikal(artikalTmp);
+    if(artikalCheckTmp === '') {
       let artikalTmp2 = {
-        productid: artikalTmp[0].id,
-        productName: artikalTmp[0].name,
-        kolicina: artikalTmp[0].kolicina ,
-        cena:  artikalTmp[0].cena, //zakucano dok Deki ne sredi price list
-        tipProizvodaId: artikalTmp[0].tipProizvodaId,
-        code: artikalTmp[0].sifra,
+        productid: artikalTmp[0].productId,
+        productName: artikalTmp[0].productName,
+        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+        code: artikalTmp[0].code,
         activRacun: activRacun
       }
       
       event.target.value = '';
       //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
-      setListaRacunaTmp(prevState => [...prevState,artikalTmp2])
-   // } else{
-      //setErrorMessage(artikalCheckTmp);
-      //console.log('nema artikal');
-    //}
+      setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
+      setInputTmp('');
+    } else{
+      setErrorMessage(artikalCheckTmp);
+      setInputTmp('');
+      event.target.value = '';
+      console.log(artikalCheckTmp);
+    }
   }
 }
 
@@ -311,7 +331,7 @@ const addRacun = () => {
                                                 },}} onClick={() => setErrorMessage('')}>X</Typography>
                               </Box>
                                   <Typography sx={{mt: 2, ml:1, color: '#6cb238'}}>{errorMessage}</Typography>
-                              
+                                  
                             </Box>
                                 <Grid item xs={6}  sx={{display:  'flex'}}>
                                     {buttonRacunList.map((item,index) => (
@@ -346,65 +366,76 @@ const addRacun = () => {
                                         }, }}>+</Button>
                                 </Grid>
                                 <Grid item xs={4} sx={{display:  'flex'}} >
-                                  <TextField
-                                      id="outlined-password-input"
-                                      variant= "outlined"
-                                      onKeyDown={handleAddArtikalRacun}
-                                      autoComplete="current-password"
-                                      inputRef={refTextField}
-                                      autoFocus
-                                      fullWidth
-                                      sx={{ml:  1,
-                                          "& .MuiOutlinedInput-root ": {
-                                            backgroundColor:  '#323b40',
-                                    
-                                          },
-                                          "& .MuiOutlinedInput-input": {
-                                            color: "white",
-                                            height: 20            
-                                          },
-                                        }}
-                                    />
+                                    <TextField
+                                        id="outlined-password-input"
+                                        variant= "outlined"
+                                        onKeyDown={handleAddArtikalRacun}
+                                        autoComplete="current-password"
+                                        inputRef={refTextField}
+                                        autoFocus
+                                        fullWidth
+                                        sx={{ml:  1,
+                                            "& .MuiOutlinedInput-root ": {
+                                              backgroundColor:  '#323b40',
+                                      
+                                            },
+                                            "& .MuiOutlinedInput-input": {
+                                              color: "white",
+                                              height: 20            
+                                            },
+                                          }}
+                                      />
                                 </Grid>
                                 <Grid xs={2}   sx={{display:  'flex'}}  >
-                                  <Button  fullWidth variant="contained"  startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>{txt.txtDetaljnaPretraga}</Button>
+
+                                      <Button  fullWidth variant="contained"   onClick={handleOpenModalDetaljnaPretraga} startIcon={<SearchIcon />} sx={{ml: 2,fontSize: 8, backgroundColor:  '#6cb238' }}>{txt.txtDetaljnaPretraga}</Button>
+                            
+                                  
                                 </Grid>
                             </Grid>  
-                             
+                            <ModalDetaljnaPretraga openProps={openModalDetaljnaPretraga} handleCloseprops={handleCloseModalDetaljnaPretraga}    ></ModalDetaljnaPretraga>
                             <Grid  sx={{ background: "#323b40", height: "75%",  borderRadius:  2}}  >
                               <Grid  sx={{ height: "80%", maxHeight: '70%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
-                                {arrayChunk(artikalList, 4).map((row, i) => (
+                              {/*<Typography sx={{mt: 2, ml:1, color: '#6cb238'}}>{inputTmp} X</Typography>*/}
+                                {arrayChunk(artikalList, 4,activTipProizvoda).map((row, i) => (
                                   <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                     {row.map((col, i) => (
                                         <Grid item xs={3} >
-                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.sifra)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  fontSize: 10, width: '90%'}}  >{col.name}</Button>
+                                            <Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:1, background: "#1e2730", height: 50,  borderColor:   'red !important',   border:  'solid 1px',  fontSize: 10, width: '90%'}}  >{col.productName}</Button>
                                         </Grid>
                                     ))}
                                   </Grid>
                                 ))} 
                                 </Grid>
                                 <Grid item style={{ height: "5%",   display:  'flex',  alignItems:    'center',  marginTop: 15,   justifyContent:  'flex-end' }} >
+                                        <Button variant="contained"    sx={{display: 'flex',  mt: 5, backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0)} > <KeyboardArrowUpIcon /></Button>
+                                        <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',   mt:5,    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(0)} ><KeyboardArrowDownIcon /></Button>
+                                </Grid>
+                                <Grid    sx={{maxWidth: { xs: 500, sm: 800 },   height:  '20%',  display: 'flex',  mt:  3}}>
+                                    <Grid item xs={10} >
+                                      <Tabs
+                                        value={value}
+                                        onChange={handleChange}
+                                        variant="scrollable"
+                                        scrollButtons
+                                        allowScrollButtonsMobile
+                                        aria-label="scrollable auto tabs example"
+                                        sx={{'& .MuiTabScrollButton-root': {
+                                          color: 'red',
+                                          
+                                        },
+                                        '& .Mui-selected': {color:  'white !important'}}}
+                                        TabIndicatorProps={{ style: { background: "#6cb238" } }}  
+                                      >
+                                        {tipoviProizvoda1.map((row,index)  => (
+                                            <Tab label={row.name}  onClick={()=>setActivTipProizvoda(row.id)}   sx={{color: '#5b6266'}} />
+                                        ))}
+                                      </Tabs>
+                                    </Grid>
+                                    <Grid item xs={2}  sx = {{ display:  'flex', mt: 2, justifyContent:  'flex-end'}}  >
                                         <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0)} > <KeyboardArrowUpIcon /></Button>
                                         <Button variant="contained"   sx={{ml: 1, mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px",  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(0)} ><KeyboardArrowDownIcon /></Button>
-                                </Grid>
-                                <Grid    sx={{maxWidth: { xs: 500, sm: 700 },  height:  '20%',  mt:  3}}>
-                                  <Tabs
-                                    value={value}
-                                    onChange={handleChange}
-                                    variant="scrollable"
-                                    scrollButtons
-                                    allowScrollButtonsMobile
-                                    aria-label="scrollable auto tabs example"
-                                    sx={{'& .MuiTabScrollButton-root': {
-                                      color: 'red'
-                                    },
-                                    '& .Mui-selected': {color:  'white !important'}}}
-                                    TabIndicatorProps={{ style: { background: "#6cb238" } }}  
-                                  >
-                                    {tipoviProizvoda1.map((row,index)  => (
-                                        <Tab label={row.name}  onClick={()=>setActivTipProizvoda(row.id)}   sx={{color: '#5b6266'}} />
-                                    ))}
-                                  </Tabs>
+                                  </Grid>               
                                 </Grid> 
                             </Grid>
                             <Grid item style={{ background: "#1e2730", height: "10%" }} >
@@ -431,7 +462,21 @@ const addRacun = () => {
                       xs={6}
                     >
                         <Grid item style={{ background: "#323b40", height: "100%",  display:  'flex',  flexDirection:  'column'}} >
-                            <Grid item style={{ height: "70%",   display:  'flex', margin: 5,  }} >
+                          <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
+                                  <ButtonGroup sx={{
+                                    ml:2,
+                                                    mt: 1,
+                                                    mb: 1,
+                                                    width: "100%",
+                                                    
+                                                    }}  >
+                                      <Button variant="contained"   onClick={handleOpenModalPopustRacun} startIcon={<SearchIcon />} sx={{backgroundColor:  '#1e2730' , height:  '90%',  marginRight: 2, fontSize:  8}}>{txt.txtPopust}</Button>
+                                      <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#1e2730' ,marginRight: 2, height:  '90%',  fontSize:  8}}>{txt.txtNumeric}</Button>
+                                      <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#1e2730' ,marginRight: 2,  height:  '90%',  fontSize:  8}}>{txt.txtVaga}</Button>
+                                      <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:  '#1e2730' , height:  '90%',  fontSize:  8}}>{txt.txtStorno}</Button>
+                                    </ButtonGroup>
+                          </Grid>
+                            <Grid item style={{ height: "60%",   display:  'flex', margin: 5,  }} >
                               <TableContainer sx={{ maxHeight: 300 }} ref={refTable}>
                                 <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#323b40'}}}  >
                                   <TableHead   >
@@ -480,9 +525,9 @@ const addRacun = () => {
                                                   width: "100%",
                                                   justifyContent: "space-evenly"}}>
                                     <Button variant="contained"   onClick={handleOpenModalPopustRacun} startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtPopust}</Button>
-                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtNumeric}</Button>
-                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtVaga}</Button>
-                                    <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtStorno}</Button>
+                                    <Button variant="contained" startIcon={<SearchIcon />} sx={{backgroundColor:  '#323b40' , height:  '90%',  fontSize:  8}}>{txt.txtStorno}</Button>
+                        
+                                    <Button variant="contained"   onClick={handleOpenModalStornoRacun} sx={{backgroundColor:   'blue' , width:'45%', height:  '90%',  borderRadius: 2, fontSize:  8}}>Gotovina</Button>
                                   </ButtonGroup>
 
                               </Card>

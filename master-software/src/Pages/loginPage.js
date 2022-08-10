@@ -65,12 +65,16 @@ export const LoginPage = () => {
       fetch('http://localhost:8087/api/v1/search//products/1234Danijela1234556966665668', requestOptions) 
         .then((response) => response.json())
         .then((data) =>  {
+          console.log(data);
             localStorage.setItem('artikalList', JSON.stringify(data));
+        } , (error) => {
+          if (error) {
+            localStorage.setItem('artikalList', JSON.stringify(racunTmp01) );
+          }
         });
 
       localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
       localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
-      localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
       localStorage.setItem('buttonRacunList', JSON.stringify(ButtonRacunList));     
       localStorage.setItem('buttonRacunCount', JSON.stringify(2));                                          
       navigate({
