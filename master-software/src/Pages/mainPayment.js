@@ -151,7 +151,7 @@ const handleAddArtikalRacun = (event) => {
   if (event.key === 'Enter') {
     inputTmp = event.target.value.split('*')[0];
     inputTmpAfter = event.target.value.split('*')[1];
-    let inputValue  =   inputTmp !== '' ?  inputTmpAfter  :  event.target.value;
+    let inputValue  =   inputTmpAfter !==  undefined ?  inputTmpAfter  :  event.target.value;
     console.log(inputValue);
     let artikalTmp = artikalList.filter(element => element.code ===   inputValue);
     let artikalCheckTmp = checkArtikal(artikalTmp);
@@ -159,7 +159,8 @@ const handleAddArtikalRacun = (event) => {
       let artikalTmp2 = {
         productid: artikalTmp[0].productId,
         productName: artikalTmp[0].productName,
-        kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        //kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+        kolicina:  inputTmpAfter  !==  undefined  ?  inputTmp  : 1,
         cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
         tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
         code: artikalTmp[0].code,
@@ -405,7 +406,7 @@ const addRacun = () => {
                                         </Grid>
                                     ))}
                                   </Grid>
-                                ))} 
+                                ))}   
                                 </Grid>
                                 <Grid item style={{ height: "5%",   display:  'flex',  alignItems:    'center',  marginTop: 15,   justifyContent:  'flex-end' }} >
                                         <Button variant="contained"    sx={{display: 'flex',  mt: 5, backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "20px", maxHeight: "20px",minWidth: "20px",minHeight: "20px", alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0)} > <KeyboardArrowUpIcon /></Button>
@@ -494,12 +495,13 @@ const addRacun = () => {
 
                                       key={index}
                                       sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40', fontSize: 8, maxWidth: 90} }}
+                                      onClick={() => {toModalCount(row.id); handleOpenModalKolicina()}}
                                     >
-                                      <TableCell component="th" scope="row"   onClick={handleOpenModalStornoArtikal}>
+                                      <TableCell component="th" scope="row"   >
                                         {row.productName}
                                       </TableCell>
-                                      <TableCell align="right"  onClick={() => {toModalCount(row.id); handleOpenModalKolicina()}}>{row.kolicina}</TableCell>
-                                      <TableCell align="right"  onClick={handleOpenModalPopustArtikal}>{currencyFormat(row.cena)}</TableCell>
+                                      <TableCell align="right" >{row.kolicina}</TableCell>
+                                      <TableCell align="right"  >{currencyFormat(row.cena)}</TableCell>
                                       <TableCell align="right">{currencyFormat(parseFloat(row.kolicina) * parseFloat(row.cena))}</TableCell>
                                       
                                     </TableRow>

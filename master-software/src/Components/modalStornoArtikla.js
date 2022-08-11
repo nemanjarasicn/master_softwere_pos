@@ -83,19 +83,8 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                     <Grid xs={6}  sx={{display:  'flex',  flexDirection:   'column',mb:5,  height:  '100%'}}  >
-                        {numericKeyboard.map(obj => (
-                            <Grid item xs={12}   sx={{display: 'flex' }}>
-                            {obj.map((col, i) => (
-                                <Grid item xs={4}       className={classes.root}>
-                                        <Button variant="contained"  value={col} fullWidth  onClick={handleAddValue} sx={{width:  'auto', height:  '80%'}}>{col}</Button>
-                                </Grid>
-                            ))}
-                          </Grid>
-                           
-                        ))}
-                    </Grid>
-                <Grid item xs={6}  sx={{ml: 3}}>
+
+                <Grid item xs={6}  >
                         <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                             <Grid sx={{display:  'flex', height:  '10%',  justifyContent:  'flex-start'}} >
                                 <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
@@ -136,6 +125,18 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                             </Grid>
                         </Grid>
                 </Grid>
+                <Grid xs={6}  sx={{display:  'flex', ml: 3, flexDirection:   'column',mb:5,  height:  '100%'}}  >
+                        {numericKeyboard.map(obj => (
+                            <Grid item xs={12}   sx={{display: 'flex' }}>
+                            {obj.map((col, i) => (
+                                <Grid item xs={4}       className={classes.root}>
+                                        <Button variant="contained"  value={col} fullWidth  onClick={handleAddValue} sx={{width:  'auto', height:  '80%'}}>{col}</Button>
+                                </Grid>
+                            ))}
+                          </Grid>
+                           
+                        ))}
+                    </Grid>
             </Box>
       </Modal>
     );

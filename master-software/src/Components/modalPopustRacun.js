@@ -14,6 +14,16 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+    palette: {
+      neutral: {
+        main: 'white',
+        contrastText: '#fff',
+      },
+    },
+  });
 
 
 const style = {
@@ -42,6 +52,9 @@ const style = {
 
 export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
 
+
+    const [value, setValue] = React.useState('');
+
     if(openProps) {
         setTimeout(() => {
             ref.current.focus();
@@ -50,7 +63,23 @@ export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
      
     const ref = useRef();
 
+    const handleAddValue = (event) => {
+
+        console.log(event.target.value);
+        let valueTmp = value + event.target.value;
+        setValue(valueTmp);
+
+
+    }
+
+
+    const handleChange = (event) => {
+        setValue(0);
+        setValue(event.target.value)
+    }
+
       return (
+        <ThemeProvider theme={theme}>
         <Modal
             open={openProps}
             onClose={handleCloseprops}
@@ -58,19 +87,8 @@ export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
             aria-describedby="modal-modal-description"
         >
             <Box sx={style}>
-                <Grid xs={6}  sx={{display:  'flex',  flexDirection:   'column',mb:5,  height:  '100%'}}  >
-                        {numericKeyboard.map(obj => (
-                            <Grid item xs={12}   sx={{display: 'flex' }}>
-                            {obj.map((col, i) => (
-                                <Grid item xs={4}  >
-                                        <Button variant="contained"  value={col} fullWidth   sx={{width:  'auto', height:  '80%'}}>{col}</Button>
-                                </Grid>
-                            ))}
-                          </Grid>
-                           
-                        ))}
-                </Grid>
-                <Grid item xs={6}  sx={{ml: 3}}>
+        
+                <Grid item xs={6} >
                         <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                             <Grid sx={{display:  'flex', height:  '10%',  justifyContent:  'center'}} >
                                 <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
@@ -84,42 +102,66 @@ export const ModalPopustRacun = ({openProps,handleCloseprops}) => {
                                 </Grid>
                             </Grid>
                             <Divider sx={{backgroundColor:  '#6cb238'}} />
-                            <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '30%', alignItems:  'center'}} >
+                            <Grid sx={{display:  'flex', flexDirection:  'column', mt: 2, height:  '40%', alignItems:  'center'}} >
                                 <Grid item xs={12}  sx={{display: 'flex', mt: 2}} >
                                     <TextField
                                         hiddenLabel
                                         fullWidth
                                         id="filled-hidden-label-normal"
-                                        placeholder='0.00'
+                                        value={value}
+                                        onChange={handleChange}
+                                        placeholder='Input number'
                                         variant="filled"
-                                    
-                                        
-                                        sx={{ input: {   fontSize: 12,      color:  'white', ml: 2},  }}
+                                        color="neutral"
+                                        inputProps={{min: 0, style: { textAlign: 'center' }}}
+                                        sx={{ input: {   fontSize: 12,      color:  'white', ml: 2, display:  'flex', justifyContent:  'center'},  }}
                                         inputRef={ref}
                                         />
 
                                 </Grid>
-                                <Grid item xs={12}  sx={{display: 'flex', width: '100%', ml: 1}} >
+                                <Grid item xs={12}  sx={{display: 'flex', width: '100%', mt: 1,  ml: 1}} >
+                                <RadioGroup
+                                        aria-labelledby="demo-radio-buttons-group-label"
+                                        defaultValue="procenat"
+                                        name="radio-buttons-group"
+                                        sx={{display:  'flex', flexDirection: 'row'}}
+                                    >
                                         <Grid item xs={6} sx={{display:  'flex', justifyContent:  'flex-start' }}  >  
-                                                <FormControlLabel sx={{color:  'white'}} value="1" name='test' control={<Radio sx={{color: 'white'}} />} label={<Typography variant="body2" sx={{color:  'white', fontSize: 8}}>Procenat(%)</Typography>} />
+                                                <FormControlLabel sx={{color:  'white'}} value="procenat" control={<Radio sx={{color: 'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography variant="body2" sx={{color:  'white', fontSize: 8}}>Procenat(%)</Typography>} />
                                         </Grid>
                                         <Grid   item xs={6}  sx={{display:  'flex', justifyContent:  'flex-end' }}>
-                                                <FormControlLabel sx={{color:  'white'}} value="0"  name='test' control={<Radio  sx={{color:  'white'}} />} label={<Typography variant="body2"  sx={{color:  'white',  fontSize: 8}}>Fiksni popust</Typography>} />
+                                                <FormControlLabel sx={{color:  'white', margin: 0}} value="fiksni"   control={<Radio  sx={{color:  'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography variant="body2"  sx={{color:  'white',  fontSize: 8}}>Fiksni popust</Typography>} />
                                         </Grid>
+                                </RadioGroup>
                                 </Grid>
                             </Grid>
                             
-                            <Grid sx={{display:  'flex', height:  '20%', mt: 7, flexDirection:  'column',  justifyContent:  'center'}} >
+                            <Grid sx={{display:  'flex', height:  '20%', mt: 4, flexDirection:  'column',  justifyContent:  'center'}} >
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
                                     <Button  fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 12, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
                                 </Box>
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 12, backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
+                                    <Button fullWidth variant="contained"   sx={{mt: 1  ,fontSize: 12, border:  'solid 1px white', backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
                                 </Box>
                             </Grid>
                         </Grid>
                 </Grid>
+                <Grid xs={6}  sx={{display:  'flex',  ml:  3, flexDirection:   'column',mb:5,  height:  '100%'}}  >
+                <Divider sx={{backgroundColor:  '#4f5e65', mb: 2}} />
+                        {numericKeyboard.map(obj => (
+                            <Grid item xs={12}   sx={{display: 'flex' }}>
+                            {obj.map((col, i) => (
+                                <Grid item xs={4}  >
+                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  'auto', height:  '80%', backgroundColor:  '#1e2730'}}>{col}</Button>
+                                </Grid>
+                            ))}
+                          </Grid>
+                           
+                        ))}
+                <Divider sx={{backgroundColor:  '#4f5e65', mt: 1}} />
+                </Grid>
             </Box>
       </Modal>
+      </ThemeProvider>
     );
   }
