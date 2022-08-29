@@ -22,6 +22,8 @@ import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import * as txt from '../Data/txt';
 
+import  '../Css/detaljnaPretraga.css'
+
 
 
 
@@ -39,8 +41,9 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 800,
-    height: 550,
+    width: () => window.devicePixelRatio == 1.5 ? 800 : 1042 , 
+    height: () => window.devicePixelRatio == 1.5 ? 550 : 842 ,
+
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -50,36 +53,65 @@ const style = {
     display: 'flex'
   };
 
-export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps}) => {
+export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps,fromModalDp, refresh}) => {
+    
+
+    const initialArtikal = [
+        {
+            id:  '', 
+            productName: '',
+            cena: '',
+            code: ''
+
+        }
+    ]
 
     const [value, setValue] = React.useState('');
+    const [searchValue, setSearchValue] = React.useState(initialArtikal);
+    
+    const [selectedValue, setSelectedValue] = React.useState('');
     const classes = useStyles();
 
 
-    const numericKeyboard = [
-        ['7',      '8',         '9'],
-        ['4',      '5',         '6'],
-        ['1',      '2',         '3'],
-        ['.',      '0',         '<x']
-    ];
+    React.useEffect(() => {
+        console.log('test');
+        setSearchValue(initialArtikal);
+      },[openProps]);
 
 
 
 
-    const handleAddValue = (event) => {
+    const filterArtikal = (dataFilter) => {
+        console.log(dataFilter);
+        let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+        let artikalTmp = artikliList.filter(obj => obj.id === dataFilter || obj.productName.toLowerCase().includes(dataFilter.toLowerCase()));
+        console.log(artikalTmp);
+        setSearchValue(initialArtikal);
+        setSelectedValue('');
+        if(artikalTmp['length'] && dataFilter !== '') {
+            artikalTmp.map((row,i) => {
+                console.log(row);
+                let artikalValue = 
+                    {
+                        id: row.id,
+                        productName: row.productName,
+                        cena: '100',
+                        code:  row.code
 
-        console.log(event.target.value);
-        let valueTmp = value + event.target.value;
-        setValue(valueTmp);
-
-
+                    }
+                
+                setSearchValue(prevState => [...prevState,artikalValue]);
+            })
+            console.log(searchValue);
+        } else {            
+            setSearchValue(initialArtikal);
+        }
     }
 
 
-    
-    const handleChange = (event) => {
-        setValue(0);
-        setValue(event.target.value)
+    const saveSearch = () => {
+        fromModalDp(selectedValue);
+        handleCloseprops();
     }
 
 
@@ -91,6 +123,7 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
             onClose={handleCloseprops}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            onBackdropClick="false"
         >
             <Box sx={style}>
                      
@@ -98,67 +131,83 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                         <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                             <Grid sx={{display:  'flex', height:  '10%', alignItems:   'flex-end', justifyContent:  'flex-start'}} >
                                 <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
-                                    <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', color:  'white'}}>
-                                            STORNO RACUNA
+                                    <Typography id="modal-modal-title"    sx={{
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 }}
+                                        className='title'>
+                                            Detaljna pretraga
                                     </Typography>
                     
                                 </Grid>
                                 <Grid item  xs={2}  sx={{display:   'flex',   color:  'white',   justifyContent:  'flex-end'}} >
-                                        <Typography>X</Typography>
+                                        <Typography  sx={{ 
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 }}
+                                        className='title'
+                                        onClick={() => handleCloseprops()}>X</Typography>
                                 </Grid>
                             </Grid>
                             <Divider sx={{backgroundColor:  '#6cb238'}} />
                             <Grid sx={{display:  'flex',  width: '100%',    height:  '10%', mt: 3, alignItems:  'center'}} >
                                     <Grid item xs={6}  >
-                                        <Typography sx={{color: '#6cb238', fontSize: 10}}>Pretraga</Typography>
-                                            <CustomSearchField></CustomSearchField>
+                                        <Typography sx={{
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14 }}
+                                        className='labelSearch'>Pretraga</Typography>
+                                            <CustomSearchField fromSearch={filterArtikal}></CustomSearchField>
                                     </Grid>
                                     <Grid item xs={3}   >
-                                    <Typography sx={{color: '#6cb238',  fontSize: 10}}>Kategorija proizvoda</Typography>
-                                            <CustomSelectField></CustomSelectField>
+                                    <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
+                                    className='labelSearch'>Kategorija proizvoda</Typography>
+                                            <CustomSelectField fontSize={10}></CustomSelectField>
                                     </Grid>
                                     <Grid item xs={3}   >
-                                    <Typography sx={{color: '#6cb238',   fontSize: 10}}>Podkategorija proizvoda</Typography>
-                                            <CustomSelectField></CustomSelectField>
+                                    <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
+                                    className='labelSearch'>Podkategorija proizvoda</Typography>
+                                            <CustomSelectField fontSize={10}></CustomSelectField>
                                     </Grid>
                             </Grid>
                             <Grid sx={{height:  '60%', display:  'flex'}} >
-                            <TableContainer sx={{ maxHeight: 300 , border:  'solid 1px', mt:3, backgroundColor:  '#1e2730'}} >
+                            <TableContainer sx={{ maxHeight:  window.devicePixelRatio == 1.5 ?  300 : 962 }}  className='tableConteiner' >
                                 <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#1e2730'}}}  >
                                   <TableHead   >
                                       <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
-                                        <TableCell  sx={{color:  'white', width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>{txt.txtArtikal}</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtKolicina}</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtCena}</TableCell>
-                                        <TableCell  sx={{color:  'white'}} align="right">{txt.txtUkupno}</TableCell>
+                                        <TableCell  sx={{fontSize:  window.devicePixelRatio == 1.5 ?  12 : 16}}  className='tableCell'>{txt.txtArtikal}</TableCell>
+                                        <TableCell   sx={{fontSize:  window.devicePixelRatio == 1.5 ?  12 : 16}}  className='tableCell' align="right">{txt.txtCena}</TableCell>
                                       </TableRow>
                                   </TableHead>
                                   <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
+                                    {searchValue.slice(1).map((row,i) => (
                                     <TableRow
-                                         sx={{ '& td, & th': {color:  'white',  border:  0,  backgroundColor: '#1e2730', fontSize: 8, maxWidth: 90} }}
-                                    >
+                                         sx={{ '& td, & th': {color:  'white',  border:  0, fontFamily: 'Roboto',
+                                         fontStyle: 'normal',
+ 
+                                         /* or 158% */
+                                         lineHeight:  '32px', 
+                                         textTransform: 'none',
+                                         fontSize:  window.devicePixelRatio == 1.5 ?  8 : 14}, backgroundColor: () => row.id === selectedValue ? '#6cb238' : '#1e2730' }}
+                                         onClick={() => setSelectedValue(row.id)}
+                                    >   
                                       <TableCell component="th" scope="row"  >
-                                        
+                                         {row.productName}
                                       </TableCell>
-                                      <TableCell align="right"   ></TableCell>
-                                      <TableCell align="right"  ></TableCell>
-                                      <TableCell align="right"></TableCell>
+                                      <TableCell align="right">{row.cena}</TableCell>
                                       
                                     </TableRow>
+
+                                    ))}
                                     
                                   
                                 </TableBody>
                                 </Table>
                               </TableContainer>        
                             </Grid>
-                            <Grid sx={{display:  'flex', height:  '20%', flexDirection:  'column',  justifyContent:  'center'}} >
-                                <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtPotvrdi}</Button>
-                                </Box>
-                                <Divider />
-                                <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtOdustani}</Button>
-                                </Box>
+                            <Divider sx={{color: 'red'}} />
+                            <Grid sx={{display:  'flex', height:  '10%', mt: 2.5, justifyContent:  'center'}} >
+                                    <Grid xs={6} sx={{mr: 2.5}}>
+                                                <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  'transparent',  border:  'solid 1px white',  height:  '56px',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtOdustani}</Button>
+                                    </Grid>
+                                    <Divider />
+                                    <Grid xs={6} >
+                                                <Button fullWidth variant="contained"  onClick={() => saveSearch()}  sx={{mt: 2  ,fontSize: 14, height:    '56px',  backgroundColor:  '#6cb238',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtPotvrdi}</Button>
+                                  </Grid>      
                             </Grid>
                         </Grid>
                 </Grid>

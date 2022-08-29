@@ -29,13 +29,15 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
-    height: 300,
+    width: () => window.devicePixelRatio == 1.5 ? 500 : 853 , 
+    height: () => window.devicePixelRatio == 1.5 ? 300 : 532 ,
+    
+
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     borderRadius: 2,
-    p: 4,
+    padding: '40px 40px 64px',
     backgroundColor:  '#323b40',
     display: 'flex'
   };
@@ -73,6 +75,16 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
     }
 
 
+    
+
+    const handleSubmit = () =>   {
+        console.log(value);
+        if(value ===  '0000') {
+            handleCloseprops(true);
+        }
+    }
+
+
 
 
       return (
@@ -81,6 +93,7 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
             onClose={handleCloseprops}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
+            onBackdropClick="false"
         >
             <Box sx={style}>
 
@@ -88,54 +101,105 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                         <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                             <Grid sx={{display:  'flex', height:  '10%',  justifyContent:  'flex-start'}} >
                                 <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
-                                    <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', color:  'white'}}>
+                                    <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center',
+                                    fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24, color:  'white'}}>
                                             STORNO RACUNA
                                     </Typography>
                     
                                 </Grid>
                                 <Grid item  xs={2}  sx={{display:   'flex',   color:  'white',   justifyContent:  'flex-end'}} >
-                                        <Typography>X</Typography>
+                                        <Typography  sx={{fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}
+                                    onClick={() => handleCloseprops(false)}>X</Typography>
                                 </Grid>
                             </Grid>
                             <Divider sx={{backgroundColor:  '#6cb238'}} />
-                            <Grid sx={{display:  'flex', height:  '50%', alignItems:  'center'}} >
+                            <Grid sx={{display:  'flex', height:  '50%', alignItems:  'end'}} >
                             <Grid item xs={12}  sx={{display: 'flex'}} >   
                                     <TextField
                                         hiddenLabel
                                         id="filled-hidden-label-normal"
-                                        
+                                        fullWidth
                                         value={value}
                                         onChange={handleChange}
                                         variant="filled"
                                         placeholder='unesite autorizacioni kod'
                                         size="small"
-                                        sx={{ input: {  fontSize: 14,   color:  'white', ml: 2},  }}
+                                        sx={{ input: {   fontFamily: 'Roboto', 
+                                            fontStyle: 'normal',
+        
+                                            /* or 158% */
+                                            lineHeight:  '32px', 
+                                            textAlign: 'center',
+                                            textTransform: 'none',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24,   color:  'white', ml: 2},  }}
                                         />
                                     </Grid>
                             
                             </Grid>
-                            <Grid sx={{display:  'flex', height:  '25%', flexDirection:  'column',  justifyContent:  'center'}} >
+                            <Grid sx={{display:  'flex', height:  '40%', flexDirection:  'column',  justifyContent:  'flex-end'}} >
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtPotvrdi}</Button>
+                                    <Button fullWidth variant="contained"   sx={{fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, height:  '56px', color:  'black',    backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}
+                                    onClick={() => handleSubmit()}>Potvrdi brisanje</Button>
                                 </Box>
 
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtOdustani}</Button>
+                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,  fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, backgroundColor:  '#1e2730',  height:  '56px',  display:  'flex',  justifyContent:  'center' }}
+                                    onClick={() => handleCloseprops(false)}>{txtStornoArtikla.txtOdustani}</Button>
                                 </Box>
                             </Grid>
                         </Grid>
                 </Grid>
-                <Grid xs={6}  sx={{display:  'flex', ml: 3, flexDirection:   'column',mb:5,  height:  '100%'}}  >
+                <Grid xs={6}  sx={{display:  'flex', ml: 3, flexDirection:   'column',  height:  '100%'}}  >
+                <Divider sx={{backgroundColor:  '#4f5e65', }} />
+                    <Grid sx={{height:  '100%', alignSelf:  'center',  mt: 5}}>
                         {numericKeyboard.map(obj => (
                             <Grid item xs={12}   sx={{display: 'flex' }}>
                             {obj.map((col, i) => (
-                                <Grid item xs={4}       className={classes.root}>
-                                        <Button variant="contained"  value={col} fullWidth  onClick={handleAddValue} sx={{width:  'auto', height:  '80%'}}>{col}</Button>
+                                <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
+                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                            fontStyle: 'normal',
+
+                                            /* or 158% */
+                                            lineHeight:  '32px',
+                                            letterSpacing:  '0.02em',
+                                            textAlign: 'center',
+                                            textTransform: 'none',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 36,   backgroundColor:  '#1e2730'}}>{col}</Button>
                                 </Grid>
                             ))}
                           </Grid>
                            
                         ))}
+                    </Grid>
+                <Divider sx={{backgroundColor:  '#4f5e65'}} />
                     </Grid>
             </Box>
       </Modal>

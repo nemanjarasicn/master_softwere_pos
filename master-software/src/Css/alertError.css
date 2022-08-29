@@ -1,0 +1,50 @@
+.gridConteiner  {
+    display:  flex !important;
+    width: 100% !important;  
+    flex-direction:  column !important; 
+    height:  100% !important
+}
+
+.gridConteinerImg  {
+    display:  flex; 
+    justify-content:  center;  
+    height:  60%
+}
+
+.imgAlert {
+    width: 100px !important; 
+    height: 100px !important;
+    color:   white
+}
+
+.titleMessage  {
+    display:  flex; 
+    justify-content:  center;  
+    font-family: 'Roboto' !important;
+    font-style: 'normal';
+
+    line-height:  32px; 
+    font-weight:   700 !important; 
+    text-align: center;
+    text-transform: uppercase;
+    color:  white
+}
+
+.divider  {
+    background-color:  #D54663;  
+    margin-top:  20px;
+}
+
+.messageText  {
+    display:  flex; 
+    margin-top: 20px;
+    justify-content:  center;  
+    font-family: 'Roboto' !important;
+    font-style: 'normal';
+
+    line-height:  32px; 
+    font-weight:   400 !important; 
+    text-align: center;
+    text-transform: uppercase;
+    color:  white
+}

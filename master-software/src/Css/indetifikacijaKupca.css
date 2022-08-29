@@ -1,0 +1,23 @@
+.gridConteiner  {
+    display:  flex !important;
+    flex-direction:  column !important; 
+    height:  100% !important
+}
+
+.gridConteinerTitle  {
+    display:  flex !important;
+    justify-content: center;
+    height:  10% !important
+}
+
+.titleText {
+    display:  flex !important;
+    justify-content: center;
+    text-transform: uppercase;
+    color:  white
+}
+
+.dividerGreen {
+    background-color:  #6cb238;  
+}
+

@@ -1,3 +1,46 @@
 ::-webkit-scrollbar {
     display: none;
   }
+
+  .buttonRacun {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 11px 12px;
+    margin-left: 20px;
+    background-color: #323B40 !important;
+    border-radius: 8px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .buttonRacun:hover {
+    background-color: #6cb238 !important;
+    border-color: #0062cc;
+    box-shadow: none;
+  }
+
+  .buttonRacun :first-child {
+   margin-left: 0;
+  }
+
+  .buttonRacun :active {
+    background-color: '#6cb238'
+  }
+
+  .textButtonRucun {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 26px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #FFFFFF;
+    flex: none;
+    order: 0;
+    flex-grow: 0
+  }

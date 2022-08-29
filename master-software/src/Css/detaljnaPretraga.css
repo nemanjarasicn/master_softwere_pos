@@ -1,0 +1,45 @@
+.title {
+    display:  'flex';
+    margin-bottom: 8px !important;
+    font-family: 'Roboto' !important;
+    font-style: 'normal';
+    line-height:  32px !important; 
+    font-weight: 700 !important;
+    text-align: 'center';
+    text-transform: 'uppercase';
+    justify-content:  'center';
+    color:  white
+}
+
+.labelSearch {
+    color: #6cb238;
+    font-family: 'Roboto' !important;
+    font-style: normal;
+    
+    line-height:  22px !important;
+    margin-bottom: 8px !important;
+    text-transform: none;
+}
+
+.tableConteiner {
+    border:  'solid 1px';
+    margin-top: 24px;
+    background-color:  #1e2730;
+}
+
+.tableCell  {
+    color:  white !important; 
+    width:  '40%'; 
+    text-overflow: 'ellipsis';
+    overflow: 'hidden';
+    font-family: 'Roboto' !important;
+    font-style: normal;
+
+
+    line-height:  '32px' !important;
+    text-transform: none;
+}
+
+.divider {
+    
+}

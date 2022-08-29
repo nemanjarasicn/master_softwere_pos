@@ -17,27 +17,15 @@ import ContactPageIcon from '@mui/icons-material/ContactPage';
 import BadgeIcon from '@mui/icons-material/Badge';
 
 
-const drawerWidth = 240;
+const drawerWidth = 96;
 
-const openedMixin = (theme) => ({
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    overflowX: 'hidden',
-  });
   
   const closedMixin = (theme) => ({
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
     overflowX: 'hidden',
-    width: `calc(${theme.spacing(7)} + 1px)`,
+    width: window.devicePixelRatio == 1.5 ?  `calc(${theme.spacing(7)} + 1px)` : drawerWidth,
     [theme.breakpoints.up('sm')]: {
-      width: `calc(${theme.spacing(8)} + 1px)`,
-      backgroundColor:  '#323b40',
+      width:  window.devicePixelRatio == 1.5 ?  `calc(${theme.spacing(7)} + 1px)` : drawerWidth,
+      backgroundColor:  '#323B40',
     },
   });
   
@@ -45,29 +33,12 @@ const openedMixin = (theme) => ({
   const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   }));
   
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-  })(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    }),
-  }));
   
   const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -75,10 +46,6 @@ const openedMixin = (theme) => ({
       flexShrink: 0,
       whiteSpace: 'nowrap',
       boxSizing: 'border-box',
-      ...(open && {
-        ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme),
-      }),
       ...(!open && {
         ...closedMixin(theme),
         '& .MuiDrawer-paper': closedMixin(theme),
@@ -94,12 +61,6 @@ const openedMixin = (theme) => ({
       id: 0,
       avatarIcon: (<MonetizationOnIcon/>),
       text: "Naplata",
-    },
-    {
-      id: 1,
-      avatarIcon: (<TextSnippetIcon/>),
-      text: "Predracun",
-      
     },
     {
       id: 2,
@@ -118,17 +79,23 @@ const openedMixin = (theme) => ({
     },
   ];
 
-export const Sidebar = () => {
+export const Sidebar = ({openModal}) => {
+
+
+  const openModalFunc = (text) => {
+    if(text  ===  'Kupac')
+    openModal();
+  }
 
    
       return (
         <Drawer variant="permanent" >
         <DrawerHeader>
-          <Box>
-              <img src={Logo} alt="Master logo" style={{maxWidth:50}}  />
+          <Box  sx={{ mt: '48px'}}>
+              <img src={Logo} alt="Master logo" style={{maxWidth:48}}  />
           </Box>
         </DrawerHeader>
-        <Box sx={{marginTop: 5}}>
+        <Box sx={{marginTop: '120px'}}>
             <List>
             {icons.map((item, index) => (
                 <ListItem key={item} disablePadding sx={{ display: 'block' }}>
@@ -136,10 +103,12 @@ export const Sidebar = () => {
                     sx={{
                       minHeight: 48,
                       justifyContent:  'center',
+                      borderRadius: 8,
                       px: 2.5,
                       display:  'flex',
                       flexDirection:  'column'
                     }}
+                    onClick={ () => openModalFunc(item.text)}
                 >
                     <ListItemIcon
                     sx={{
@@ -151,12 +120,22 @@ export const Sidebar = () => {
                     </ListItemIcon>
                     <ListItemText primary={item.text} sx={{ color: 'white'}} 
                         primaryTypographyProps={{
-                                              fontSize: 15,
+                                              fontFamily: 'Roboto',
+                                              fontStyle: 'normal',
+
+                                              /* or 158% */
+
+                                              textAlign: 'center',
+                                              textTransform: 'uppercase',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  10 : 12,
                                               fontWeight: 'medium',
                                               letterSpacing: 0,
+                                              flex: 'none',
+                                              order: 1,
+                                              flexGrow: 0,
                                             }} />
                 </ListItemButton>
-                {item.text === 'Naplata' ? <Divider  sx={{ background: 'white', marginBottom: 1, }} /> : <p></p>}
+                 <Divider  sx={{ width:  '80%', marginLeft:   '10px',   background: 'white', marginBottom:  '20px', }} /> 
                 </ListItem>
             ))}
             </List>

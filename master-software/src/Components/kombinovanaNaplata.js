@@ -11,13 +11,14 @@ import { useRef,  useState, useEffect }  from 'react'
 import Divider from '@mui/material/Divider';
 
 
+
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: () => window.devicePixelRatio == 1.5 ? 550 : 828 , 
-    height: () => window.devicePixelRatio == 1.5 ? 350 : 978 ,
+    height: () => window.devicePixelRatio == 1.5 ? 350 : 822 ,
    
 
     bgcolor: 'background.paper',
@@ -39,11 +40,13 @@ const style = {
 
 
 
-export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openModalKomPlacanje, fromModalNaplata}) => {
+export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKombinovano}) => {
     
     
-    const [uplataStr, setUplataStr] = React.useState();
-    const [uplata, setUplata] = React.useState(0);
+    const [uplataGotovina, setUplataGotovina] = React.useState(0);
+    const [uplataPlatnaKartica, setUplataPlatnaKartica] = React.useState(0);
+    const [uplataCek, setUplataCek] = React.useState(0);
+    const [uplataVirman, setUplataVirman] = React.useState(0);
     const [kusur, setKusur] = React.useState(0);
     
 
@@ -52,46 +55,77 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
      }
 
      const naplataGotovinom = () => {
-        if(parseFloat(uplata) > (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust)))) {
-                fromModalNaplata({id: toModalNaplata[0].activRacun,  kusur:  kusur});
-                setKusur(0);
-                handleCloseprops({activId: toModalNaplata[0].activRacun, tipNaplate: 'gotovina'});
-        } else {
-            console.log('uplata je manja od total racuna');
-        }
+        setKusur(0);
+        handleCloseprops();
      }
 
-     const handleChange = (event) => {
+     const handleChangeGotovina = (event) => {
+        console.log(event);
         if (event.key === 'Enter') {
-            setKusur(0);
-            let kusurTmp = (parseFloat(event.target.value)  -  (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))));
-            setKusur(kusurTmp);
-            
-            let tmpUplata = currencyFormat(parseFloat(event.target.value));
-            setUplataStr(tmpUplata);
-            setUplata(event.target.value);
-            event.target.value = tmpUplata;
+ 
+                console.log(event.target.value);
+                let tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataGotovina(tmpUplata);
+                event.target.value = tmpUplata;
+                inputRefs.current[2].focus();
 
         }
 
      } 
 
-     const ref = useRef();
+     const handleChangePlatnaKartica = (event) => {
+        console.log(event);
+        if (event.key === 'Enter') {
+ 
+                console.log(event.target.value);
+                let tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataPlatnaKartica(tmpUplata);
+                event.target.value = tmpUplata;
+                inputRefs.current[3].focus();
+
+        }
+
+     } 
+
+     const handleChangeCek = (event) => {
+        console.log(event);
+        if (event.key === 'Enter') {
+ 
+                console.log(event.target.value);
+                let tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataCek(tmpUplata);
+                event.target.value = tmpUplata;
+                inputRefs.current[4].focus();
+
+        }
+
+     } 
+
+     const handleChangeVirman = (event) => {
+        console.log(event);
+        if (event.key === 'Enter') {
+ 
+                console.log(event.target.value);
+                let tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataVirman(tmpUplata);
+                event.target.value = tmpUplata;
+                
+                
+
+        }
+
+     } 
+
+     
+
+     const inputRefs = useRef([]); 
      
      React.useEffect(() => {
         setTimeout(() => {
-            ref.current.focus();
+            inputRefs.current[1].focus();
         }, 200);
      },[openProps])
 
-
-
-     const openKomPlacanje  = () =>   {
-        openModalKomPlacanje();
-     }
-
-
-     
       return (
         <Modal
             open={openProps}
@@ -113,7 +147,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
                                         fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white'}}>
-                                        Naplata
+                                        Kombinovana naplata
                                     </Typography>
                             
                             </Grid>
@@ -125,12 +159,12 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                         lineHeight:  '32px', 
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
-                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}>X</Typography>
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}} >X</Typography>
                             </Grid>
                     </Grid>
                     <Divider sx={{backgroundColor:  '#6cb238'}} />
-                    <Grid  sx={{display:  'flex', height:  '44%' }} >
-                            <Grid item xs={6} sx={{display:  'flex',   flexDirection:  'column'    ,mt: 4,  height:  '100%'}} >
+                    <Grid  sx={{display:  'flex', height:  '80%' }} >
+                            <Grid item xs={6} sx={{display:  'flex',   flexDirection:  'column'    ,mt: 3,  height:  '100%'}} >
                             
                                 <Box  mt={2} >
                                     <Grid item xs={12}   sx={{display:  'flex'}}>
@@ -155,7 +189,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   justifyContent:  'flex-start', color:  'white'}}>
-                                                        {currencyFormat(toModalNaplata[0].totalPrice)}
+                                                       {currencyFormat(toModalKombinovano)}
                                                     </Typography>
                                             </Grid>
                                     </Grid>
@@ -181,7 +215,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                                        {currencyFormat(toModalNaplata[0].totalPopust)}
+                                                      {currencyFormat(0)}
                                                 </Typography>
                                             </Grid>
                                     </Grid>
@@ -208,12 +242,12 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  14 : 30,   mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                                        {currencyFormat((parseFloat(toModalNaplata[0].totalPrice) - (parseFloat(toModalNaplata[0].totalPopust))))}
+                                                         {currencyFormat(0)}
                                                     </Typography>
                                             </Grid>
                                     </Grid>
                                     <Divider sx={{backgroundColor:  '#4E595F', mt: 3}} />
-                                    <Grid item xs={12}   sx={{display:  'flex', mt: 4}}>
+                                    <Grid item xs={12}   sx={{display:  'flex', mt: 3}}>
                                             <Grid item xs={6}  sx={{display:  'flex',    justifyContent:  'flex-start', alignItems:  'center'}}>
                                                 <Typography id="modal-modal-title"   sx={{display:  'flex', fontFamily: 'Roboto', 
                                             fontStyle: 'normal',
@@ -223,7 +257,43 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,    justifyContent:  'flex-start', color:  'white'}}>
-                                                    Uplata
+                                                    Gotovina
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} sx={{display:  'flex',  justifyContent:  'flex-end'}}>
+                                            <TextField
+                                                hiddenLabel
+                                                id="filled-hidden-label-normal"
+                                                placeholder='0,00'
+                                                variant="filled"
+                                                onKeyDown={(event) => handleChangeGotovina(event)}
+                                               
+                                                size="small"
+                            
+                                                sx={{ input: {  fontFamily: 'Roboto', 
+                                                fontStyle: 'normal',
+    
+                                                /* or 158% */
+                                                lineHeight:  '32px', 
+                                                textAlign: 'end',
+                                                textTransform: 'none',
+                                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
+                                                autoFocus
+                                                inputRef={(ref) => (inputRefs.current[1] = ref)}
+                                                />
+                                            </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}   sx={{display:  'flex', mt: 2.5}}>
+                                            <Grid item xs={6}  sx={{display:  'flex',    justifyContent:  'flex-start', alignItems:  'center'}}>
+                                                <Typography id="modal-modal-title"   sx={{display:  'flex', fontFamily: 'Roboto', 
+                                            fontStyle: 'normal',
+
+                                            /* or 158% */
+                                            lineHeight:  '32px', 
+                                            textAlign: 'center',
+                                            textTransform: 'none',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,    justifyContent:  'flex-start', color:  'white'}}>
+                                                    Platna kartica
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} sx={{display:  'flex',  justifyContent:  'flex-end'}}>
@@ -233,7 +303,46 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                                 placeholder='0,00'
                                                 variant="filled"
                                             
-                                                onKeyDown={handleChange}
+                                               
+                                                size="small"
+                                               
+                                                sx={{ input: {  fontFamily: 'Roboto', 
+                                                fontStyle: 'normal',
+    
+                                                /* or 158% */
+                                                lineHeight:  '32px', 
+                                                textAlign: 'end',
+                                                textTransform: 'none',
+                                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
+                                                autoFocus
+                                                onKeyDown={(event) => handleChangePlatnaKartica(event)}
+                                                inputRef={(ref) => (inputRefs.current[2] = ref)}
+                                               
+                                                />
+                                            </Grid>
+                                    </Grid>
+                                    <Grid item xs={12}   sx={{display:  'flex', mt:  2.5}}>
+                                            <Grid item xs={6}  sx={{display:  'flex',    justifyContent:  'flex-start', alignItems:  'center'}}>
+                                                <Typography id="modal-modal-title"   sx={{display:  'flex', fontFamily: 'Roboto', 
+                                            fontStyle: 'normal',
+
+                                            /* or 158% */
+                                            lineHeight:  '32px', 
+                                            textAlign: 'center',
+                                            textTransform: 'none',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,    justifyContent:  'flex-start', color:  'white'}}>
+                                                    Cek
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} sx={{display:  'flex',  justifyContent:  'flex-end'}}>
+                                            <TextField
+                                                hiddenLabel
+                                                id="filled-hidden-label-normal"
+                                                placeholder='0,00'
+                                                variant="filled"
+                                                onKeyDown={(event) => handleChangeCek(event)}
+                                            
+                                               
                                                 size="small"
                                                 sx={{ input: {  fontFamily: 'Roboto', 
                                                 fontStyle: 'normal',
@@ -244,10 +353,48 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                                 textTransform: 'none',
                                                 fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
                                                 autoFocus
-                                                inputRef={ref}
+                                                inputRef={(ref) => (inputRefs.current[3] = ref)}
+                                               
                                                 />
                                             </Grid>
                                     </Grid>
+                                    <Grid item xs={12}   sx={{display:  'flex', mt:  2.5}}>
+                                            <Grid item xs={6}  sx={{display:  'flex',    justifyContent:  'flex-start', alignItems:  'center'}}>
+                                                <Typography id="modal-modal-title"   sx={{display:  'flex', fontFamily: 'Roboto', 
+                                            fontStyle: 'normal',
+
+                                            /* or 158% */
+                                            lineHeight:  '32px', 
+                                            textAlign: 'center',
+                                            textTransform: 'none',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,    justifyContent:  'flex-start', color:  'white'}}>
+                                                    Virman
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item xs={6} sx={{display:  'flex',  justifyContent:  'flex-end'}}>
+                                            <TextField
+                                                hiddenLabel
+                                                id="filled-hidden-label-normal"
+                                                placeholder='0,00'
+                                                variant="filled"
+                                                onKeyDown={(event) => handleChangeVirman(event)}
+                                               
+                                                size="small"
+                                                sx={{ input: {  fontFamily: 'Roboto', 
+                                                fontStyle: 'normal',
+    
+                                                /* or 158% */
+                                                lineHeight:  '32px', 
+                                                textAlign: 'end',
+                                                textTransform: 'none',
+                                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
+                                                autoFocus
+                                                inputRef={(ref) => (inputRefs.current[4] = ref)}
+                                                
+                                                />
+                                            </Grid>
+                                    </Grid>
+                                    <Divider sx={{backgroundColor:  '#4E595F',  mt: 2.5}} />
                                     <Grid item xs={12}   sx={{display:  'flex', mt: 2}}>
                                             <Grid item xs={6}  sx={{display:  'flex',    justifyContent:  'flex-start'}}>
                                                 <Typography id="modal-modal-title"   sx={{display:  'flex',  fontFamily: 'Roboto', 
@@ -258,7 +405,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,    justifyContent:  'flex-start', color:  'white'}}>
-                                                    Kusur
+                                                    Ostatak
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={6} sx={{display:  'flex',    justifyContent:  'flex-end'}}>
@@ -344,83 +491,20 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                     </Box>
                             </Grid>*/}
                     </Grid>
-                    <Divider sx={{backgroundColor:  '#4E595F',  mt: 5}} />
-                    <Grid  sx={{display:  'flex', height:  '48%',  mt:  5}}>
-                        <Grid item xs={6}    sx={{display:  'flex',   flexDirection:  'column' , height: '100%'}}>
-                        <Button  fullWidth variant="contained"   sx={{ fontFamily: 'Roboto', 
-                                            fontStyle: 'normal',
-
-                                            /* or 158% */
-                                            lineHeight:  '32px', 
-                                            textAlign: 'center',
-                                            textTransform: 'uppercase',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'white',  backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Prenos na racun</Button>
-                        <Button fullWidth variant="contained"   sx={{fontFamily: 'Roboto',  mt: 2.5,
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   height:  '56px', backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Instant placanje</Button>
-                                  
-                        
-                        <Button  fullWidth variant="contained"   sx={{mt: 2.5,  fontFamily: 'Roboto', 
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'white',  backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Vaucer</Button>
-                        <Button fullWidth variant="contained"    sx={{fontFamily: 'Roboto',  mt: 2.5,
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   height:  '56px', backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Drugo bezgotovinsko placanje</Button>
-
-                        
-                        <Button  fullWidth variant="contained"   sx={{mt:  2.5,  fontFamily: 'Roboto', 
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'black',  backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}
-                                onClick={() => openKomPlacanje()}>Kombinovano placanje</Button>
-                                  
-                        </Grid>
-                        <Grid item xs={6} sx={{ml: 2.5}} >
-                        <Button fullWidth variant="contained"   onClick={naplataGotovinom}  sx={{fontFamily: 'Roboto', 
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '38px', 
-                                textAlign: 'center',
-                                fontWeight: 700,
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  16 : 30,   height:  '170px',  color:   'black',  backgroundColor:  '#64B5F6', display:  'flex',  justifyContent:  'center' }}>Gotovina</Button>
-                                  
-                                  <Button fullWidth variant="contained"    sx={{fontFamily: 'Roboto',  mt: 2.5,
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px',
-                                fontWeight:  '700',  
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  16 : 30,    color:  'black',   height:  '170px', backgroundColor:  '#F49E67', display:  'flex',  justifyContent:  'center' }}>Platna kartica</Button>
-                                  
-                        
-                            
-                        </Grid>
-
+                    <Divider sx={{backgroundColor:  '#4E595F'}} />
+                    <Grid  sx={{display:  'flex', height:  '10%', mt:  5 }}  >
+                                    <Grid xs={6} sx={{mr: 2.5}}>
+                                                <Button fullWidth  variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  'transparent',  border:  'solid 1px white',  height:  '56px',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}   onClick={handleCloseprops}>Odustani</Button>
+                                    </Grid>
+                                    <Divider />
+                                    <Grid xs={6} >
+                                                <Button fullWidth   variant="contained"    sx={{mt: 2  ,fontSize: 14, height:    '56px',  backgroundColor:  '#6cb238',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
+                                    </Grid>     
                     </Grid>
+    
+
                 </Grid>
+
             </Box>
       </Modal>
     );

@@ -3,6 +3,7 @@ import  {LoginPage}    from   './Pages/loginPage'
 import  {MainPayment}    from   './Pages/mainPayment'
 import { Route, Routes ,  BrowserRouter as Router} from "react-router-dom";
 
+
 function App() {
   const styles = {
     contentDiv: {
@@ -13,6 +14,7 @@ function App() {
       width: "100%",
     },
   };
+
   return (
     <>
     <Router>

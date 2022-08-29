@@ -11,6 +11,32 @@ import * as txtCount from '../Data/txt';
 import Divider from '@mui/material/Divider';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import { createStyles, makeStyles } from '@mui/styles';
+import SearchIcon from '@mui/icons-material/Search';
+import DeleteIcon from '@mui/icons-material/Delete';
+import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import { useRef,  useState, useEffect }  from 'react'
+
+
+
+
+const theme = createTheme({
+  palette: {
+    neutral: {
+      main: 'white',
+      contrastText: '#fff',
+    },
+  },
+});
 
 
 
@@ -19,29 +45,71 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 500,
-    height: 400,
+    width: () => window.devicePixelRatio == 1.5 ? 550 : 870 , 
+    height: () => window.devicePixelRatio == 1.5 ? 400 : 792 ,
+   
+
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     borderRadius: 2,
-    p: 4,
+    p: ' 40px 40px 64px',
     backgroundColor:  '#323b40'
   };
+
+
+  const useStyles = makeStyles(theme =>
+    createStyles({
+      smallRadioButton: {
+        "& svg": {
+          width: 16,
+          height: 16
+        }
+      }
+    })
+  );
+
+
+
 
 export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCount}) => {
 
     const [counter, setCounter] = React.useState(1);
+    const [valuePopust, setValuePopust]   = React.useState('');
+    const [valueTab, setValueTab] =  React.useState('kolicina');
+    const classes = useStyles();
+
+
+    
+    const ref = useRef();
+    const refCounter = useRef();
+    
+
+
+
+    React.useEffect(() => {
+      console.log(toModalCount);
+      setCounter(1);
+      setValuePopust('');
+      setValueTab('kolicina');
+    },[openProps]);
+
     
 
     //increase counter
   const increase = () => {
-    setCounter(count => count + 1);
+    let counterTmp = parseFloat(counter) + 1;
+    setCounter(counterTmp);
   };
 
   //decrease counter
   const decrease = () => {
-        setCounter(count => count - 1);
+        let counterTmp = parseFloat(counter)  - 1;
+        if(counterTmp < 1)  {
+          setCounter(1);
+        } else  {
+          setCounter(counterTmp);
+        }
   };
 
 
@@ -51,10 +119,62 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   }
 
   const handleSubmit = () => {
-    childToParent({counter: counter, id: toModalCount.id});
+    childToParent({counter: counter, valuePopust:  valuePopust,   id: toModalCount.id});
     reset();
     handleCloseprops();
   }
+
+  
+
+
+  const handleChangeTab = (event, newValue) => {
+    console.log(newValue);
+    reset();
+    setValuePopust('');
+    setValueTab(newValue);
+  }
+
+  const  handleChangeCounter  =   (event) => {
+    setCounter(event.target.value);
+
+    setTimeout(() => {
+            refCounter.current.focus();
+        }, 100);
+  }
+
+
+
+  const handleChangePopust = (event) => {
+    setValuePopust(event.target.value);
+    setTimeout(() => {
+      ref.current.focus();
+  }, 100);
+}
+
+
+
+
+
+const handleAddValue = (event) => {
+
+  console.log(event.target.value);
+  let valueTmp;
+  if(valueTab === 'kolicina')   {
+    valueTmp = counter + event.target.value;
+    setCounter(valueTmp);
+    setTimeout(() => {
+      refCounter.current.focus();
+  }, 100);
+  } else {
+    valueTmp = valuePopust + event.target.value;
+    setValuePopust(valueTmp);
+    setTimeout(() => {
+      ref.current.focus();
+  }, 100);
+  }
+
+
+}
 
 
   const numericKeyboard = [
@@ -65,100 +185,261 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   ];
 
 
+  const ComponentKolicina =  () => {
+
+    return (
+      <Grid item   sx={{display: 'flex',  height:  '100%'}} >
+                                      <Grid item xs={2}     sx={{display: 'flex',  alignItems:  'center'}} >
+                                          <Button variant="contained"  onClick={increase}   sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' ,
+                                            maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <AddIcon /></Button>
+                                      </Grid>
+                                      <Grid item xs={8}    sx={{display: 'flex', alignItems:  'center'}}>
+                                          <TextField
+                                              hiddenLabel
+                                              id="filled-hidden-label-normal"
+                                              defaultValue="1"
+                                              inputProps={{min: 0, style: { textAlign: 'center' }}}
+                                              variant="filled"
+                                              value={counter}
+                                              size="small"
+                                              color="neutral"
+                                              onChange={handleChangeCounter}
+                                              sx={{ input: {  fontFamily: 'Roboto', 
+                                                      fontStyle: 'normal',
+
+                                                      /* or 158% */
+                                                      lineHeight:  '32px', 
+                                                      textAlign: 'center',
+                                                      textTransform: 'uppercase',
+                                                      fontSize:  window.devicePixelRatio == 1.5 ?  12 : 72,   color:  'white', ml: 1},  }}
+                                              inputRef={refCounter}
+                                              />
+                                      </Grid>
+                                      <Grid item xs={2}   sx={{display:  'flex', alignItems:  'center' , justifyContent:  'flex-end'}}>
+                                          <Button variant="contained"   onClick={decrease}  sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , 
+                                          maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
+                                          maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                          minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                          minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <RemoveIcon /></Button>
+                                      </Grid>
+                              </Grid>
+    )
+  }
+
+
+  const ComponentPopust =  () => {
+
+    return (
+      <Grid  sx={{display: 'flex', flexDirection: 'column', height:  '70%'}} >
+                                      <Grid item xs={12}    sx={{display: 'flex',   alignItems:  'center'}}>
+                                          <TextField
+                                              fullWidth
+                                              hiddenLabel
+                                              id="filled-hidden-label-normal"
+                                              inputProps={{min: 0, style: { textAlign: 'center' }}}
+                                              defaultValue="1"
+                                              onChange={handleChangePopust}
+                                              variant="filled"
+                                              color="neutral"
+                                              placeholder='Input number'
+                                              value={valuePopust}
+                                              size="small"
+                                              sx={{ input: {   fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+          
+                                              /* or 158% */
+                                              lineHeight:  '38px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  12 : 30,      color:  'white', ml: 2, display:  'flex', justifyContent:  'center'},  }}
+                                              inputRef={ref}
+                                              />
+                                      </Grid>
+                                      
+                                      <Grid item xs={12}  sx={{display: 'flex',    flexDirection:  'column',  width: '100%', }} >
+                                        <RadioGroup
+                                          aria-labelledby="demo-radio-buttons-group-label"
+                                          defaultValue="procenat"
+                                          name="radio-buttons-group"
+                                          sx={{display:  'flex', }}
+                                        
+                                      >
+                                          
+                                              <FormControlLabel  className={classes.smallRadioButton}  sx={{color:  'white', mb: 3,  }} value="procenat" control={<Radio sx={{ color: 'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography variant="body2" sx={{color:  'white', fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+          
+                                              /* or 158% */
+                                              lineHeight:  '32px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24}}>Procenat(%)</Typography>} />
+                                              <FormControlLabel  className={classes.smallRadioButton} sx={{color:  'white',  mb: 3}} value="fiksniPopust"   control={<Radio  sx={{ color:  'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography variant="body2"  sx={{color:  'white',  fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+          
+                                              /* or 158% */
+                                              lineHeight:  '38px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24}}>Fiksni popust</Typography>} />
+                                              <FormControlLabel   className={classes.smallRadioButton} sx={{color:  'white',}} value="fiksniIznos"   control={<Radio  sx={{color:  'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography variant="body2"  sx={{color:  'white',   fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+          
+                                              /* or 158% */
+                                              lineHeight:  '38px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24}}>Fiksni iznos</Typography>} />
+                                        </RadioGroup>
+                                      </Grid>
+
+                              </Grid>
+    )
+  }
+  
 
 
 
 
       return (
+        <ThemeProvider theme={theme}>
         <Modal
             open={openProps}
             onClose={handleCloseprops}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            aria-labelledby="modal-artikal"
+            aria-describedby="modal-izmena kolicine i popusta"
+            onBackdropClick="false"
         >
             <Box sx={style}>
                 <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                     <Grid sx={{display:  'flex', height:  '8%'}} >
                           <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
-                                  <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', color:  'white'}}>
-                                          {txtCount.txtKolicina}
+                                  <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white'}}>
+                                          {toModalCount.productName}
                                   </Typography>
                         
                           </Grid>
                           <Grid item  xs={2}  sx={{display:   'flex',   color:  'white',   justifyContent:  'flex-end'}} >
-                                  <Typography>X</Typography>
+                                  <Typography  onClick={handleCloseprops}  sx={{fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}>X</Typography>
                           </Grid>
                     </Grid>
                     <Divider sx={{backgroundColor:  '#6cb238'}} />
-                    <Grid sx={{display:  'flex', height:  '20%' }} >
+                    <Grid sx={{display:  'flex', height:  '10%',  mt: 6 }} >
                         <Tabs    sx={{ width:  '100%','& .MuiTabs-indicator': { backgroundColor:  '#6cb238'},   '& .Mui-selected': {color:  'white !important'}, display:  'flex',  justifyContent:   'space-around'}}
                                  variant="fullWidth"
                                  aria-label="wrapped label tabs example"
-                                 value={0}
+                                 value={valueTab}
+                                 onChange={handleChangeTab}
                                 >
-                          <Tab label="Item One"  wrapped sx={{color: 'white'}} />
-                          <Tab label="Item Two"  sx={{color:   'white'}} />
+                          <Tab label="Kolicina" value="kolicina"  wrapped sx={{color: 'white', fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}} />
+                          <Tab label="Popust"   value="popust" sx={{color:   'white', fontFamily: 'Roboto', 
+                                    fontStyle: 'normal',
+
+                                    /* or 158% */
+                                    lineHeight:  '32px', 
+                                    textAlign: 'center',
+                                    textTransform: 'uppercase',
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}} />
                         </Tabs>
                     </Grid>
-                    <Grid sx={{display: 'flex' , height:  '60%'}}  >
-                      <Grid item xs={6}   sx={{display:  'flex', mt: 3,p:2, flexDirection:  'column'}}>
-                          <Grid sx={{display:  'flex'}} >
-                            <Grid item xs={12}  sx={{display: 'flex', mt: 3}} >
-                                    <Grid item xs={4}     sx={{display: 'flex',  alignItems:  'center'}} >
-                                        <Button variant="contained"  onClick={increase}   sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
-                                    </Grid>
-                                    <Grid item xs={4}    sx={{display: 'flex'}}>
-                                        <TextField
-                                            hiddenLabel
-                                            id="filled-hidden-label-normal"
-                                            defaultValue="1"
-                                            variant="filled"
-                                            value={counter}
-                                            size="small"
-                                            sx={{ input: {  fontSize: 36,   color:  'white', ml: 1},  }}
-                                            />
-                                    </Grid>
-                                    <Grid item xs={4}   sx={{display:  'flex', alignItems:  'center' , justifyContent:  'flex-end'}}>
-                                        <Button variant="contained"   onClick={decrease}  sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , maxWidth: "30px", maxHeight: "30px",minWidth: "30px",minHeight: "30px", alignItems: 'center',  flexWrap: 'wrap',}} > <KeyboardArrowUpIcon /></Button>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                            <Grid sx={{display:  'flex', mt: 10, height:  '30%', flexDirection:  'column',  justifyContent:  'center'}} >
-                                  <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                      <Button  fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 12, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
-                                  </Box>
-                                  <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                      <Button fullWidth variant="contained"   sx={{mt: 1  ,fontSize: 12, border:  'solid 1px white', backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
-                                  </Box>
+                    <Grid sx={{display: 'flex' ,   height:  '82%', mt: 4}}  >
+                      <Grid item xs={6}   sx={{display:  'flex',  pr:5, height:  '100%',  flexDirection:  'column'}}>
+                          
+                            {valueTab === 'kolicina' ? <ComponentKolicina></ComponentKolicina>       : <ComponentPopust></ComponentPopust>}
+                            <Grid item sx={{display:  'flex',   height:  '30%', flexDirection:  'column',  justifyContent:  'flex-end'}} >
+                                      <Button  fullWidth variant="contained" onClick={() => handleSubmit()}  sx={{mb: 1, fontFamily: 'Roboto', 
+                                            fontStyle: 'normal',
+
+                                            /* or 158% */
+                                            lineHeight:  '32px', 
+                                            textAlign: 'center',
+                                            textTransform: 'uppercase',
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,  height:  '56px',  color:  'black',  backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
+                                      <Button fullWidth variant="contained"  onClick={handleCloseprops}  sx={{fontFamily: 'Roboto',  mt: 2.5,
+                                              fontStyle: 'normal',
+
+                                              /* or 158% */
+                                              lineHeight:  '32px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   height:  '56px',  border:  'solid 1px white', backgroundColor:  'transparent', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
+                                  
                             </Grid>
                       </Grid>
-                      <Divider orientation="vertical"   variant="middle" flexItem />
-                      <Grid item  xs={6}  sx={{mt: 3, p:2, height: '100%', display: 'flex', flexDirection: 'column'}} >
+                      <Divider orientation="vertical" sx={{backgroundColor:  '#4f5e65'}}  variant="middle" flexItem />
+                      <Grid item  xs={6}  sx={{ pl: 5,   height: '100%', display: 'flex', flexDirection: 'column'}} >
 
-                        <Box  sx={{height:  '100%',  justifyContent:  'flex-start'}}  >
-                          {numericKeyboard.map(obj => (
-                              <Grid item xs={12}   sx={{display: 'flex', height: '20%'}}>
-                              {obj.map((col, i) => (
-                                  <Grid item xs={4}  >
-                                          <Button variant="contained"   value={col} fullWidth   sx={{width:  'auto', height:  '80%', backgroundColor:  '#1e2730'}}>{col}</Button>
-                                  </Grid>
+                     
+                          <Grid sx={{height:  '100%', alignSelf:  'center',}}>
+                              {numericKeyboard.map(obj => (
+                                  <Grid item xs={12}   sx={{display: 'flex' }}>
+                                  {obj.map((col, i) => (
+                                      <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
+                                              <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                                  fontStyle: 'normal',
+
+                                                  /* or 158% */
+                                                  lineHeight:  '32px',
+                                                  letterSpacing:  '0.02em',
+                                                  textAlign: 'center',
+                                                  textTransform: 'none',
+                                                  fontSize:  window.devicePixelRatio == 1.5 ?  12 : 36,   backgroundColor:  '#1e2730'}}>{col}</Button>
+                                      </Grid>
+                                  ))}
+                                </Grid>
+                                
                               ))}
-                            </Grid>
-                            
-                          ))}
-                         <Box  sx={{height:  '20%', mt: 3,  justifyContent:  'flex-end'}}  >
-                                  <Box sx={{  display: 'flex', justifyContent:  'flex-end', flexDirection:  'column'}}  >
-                                      <Button  fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 12, backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Detaljna pretraga</Button>
-                                  </Box>
-                                  <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                      <Button fullWidth variant="contained"   sx={{mt: 1  ,fontSize: 12, border:  'solid 1px white', backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
-                                  </Box>
+                          </Grid>
+                
+                         <Box  sx={{height:  '25%', display: 'flex', flexDirection:  'column',  justifyContent:  'flex-start'}}  >
+                                      <Button  fullWidth  startIcon={<HourglassTopIcon  sx={{width: 14}} />} variant="contained"   sx={{mb: 1,  fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+
+                                              /* or 158% */
+                                              lineHeight:  '32px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24, backgroundColor:  '#4f5e65', display:  'flex',  justifyContent:  'center' }}
+                                              onClick={handleCloseprops}>Vaga</Button>
+                                      <Button fullWidth   startIcon={<DeleteIcon  sx={{width: 14}} />}  variant="contained"   sx={{ fontFamily: 'Roboto', 
+                                              fontStyle: 'normal',
+
+                                              /* or 158% */
+                                              lineHeight:  '32px', 
+                                              textAlign: 'center',
+                                              textTransform: 'none',
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24,  mt: 2.5,  backgroundColor:  '#4f5e65', display:  'flex',  justifyContent:  'center' }}>Storno</Button>
+                                
                           </Box>
-                        </Box>
+    
                       </Grid>
                     </Grid>
                 </Grid>
             </Box>
       </Modal>
+      </ThemeProvider>
     );
   }
