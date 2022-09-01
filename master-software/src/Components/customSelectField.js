@@ -25,7 +25,6 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     border: '1px solid #ced4da',
-    fontSize: 24,
     backgroundColor:  '#1E2730',
     padding: '10px 26px 10px 12px',
     transition: theme.transitions.create(['border-color', 'box-shadow']),
@@ -48,12 +47,12 @@ export const CustomSelectField = ({fontSize}) => {
   return (
     
 
-    <FormControl sx={{mt: 1, minWidth: '100%' }} >
+    <FormControl sx={{ minWidth: '100%' }} >
           <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                
-                input={<BootstrapInput />}
+                input={<BootstrapInput  sx={{fontSize: {fontSize},}}/>}
                 >
                 <MenuItem value={10}>PIB Kupca</MenuItem>
                 

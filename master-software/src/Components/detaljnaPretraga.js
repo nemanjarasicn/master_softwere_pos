@@ -147,21 +147,21 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                             </Grid>
                             <Divider sx={{backgroundColor:  '#6cb238'}} />
                             <Grid sx={{display:  'flex',  width: '100%',    height:  '10%', mt: 3, alignItems:  'center'}} >
-                                    <Grid item xs={6}  >
+                                    <Grid item xs={6}  sx={{}} >
                                         <Typography sx={{
                                         fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14 }}
                                         className='labelSearch'>Pretraga</Typography>
                                             <CustomSearchField fromSearch={filterArtikal}></CustomSearchField>
                                     </Grid>
-                                    <Grid item xs={3}   >
+                                    <Grid item xs={3}   sx={{mr:4}} >
                                     <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
                                     className='labelSearch'>Kategorija proizvoda</Typography>
-                                            <CustomSelectField fontSize={10}></CustomSelectField>
+                                            <CustomSelectField fontSize={16}></CustomSelectField>
                                     </Grid>
-                                    <Grid item xs={3}   >
+                                    <Grid item xs={3}    >
                                     <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
                                     className='labelSearch'>Podkategorija proizvoda</Typography>
-                                            <CustomSelectField fontSize={10}></CustomSelectField>
+                                            <CustomSelectField fontSize={16}></CustomSelectField>
                                     </Grid>
                             </Grid>
                             <Grid sx={{height:  '60%', display:  'flex'}} >

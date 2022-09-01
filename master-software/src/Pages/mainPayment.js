@@ -474,6 +474,7 @@ const openModelKomPlacanje = () => {
 
 
 const saveFile = (id,isStorno) => {
+  console.log('asasss');
   const racunNaplataTmp = listaRacunaTmp.filter(racun => racun.activRacun === id)
   const url = !isStorno ? 'http://localhost:3001/saveRacun'   : 'http://localhost:3001/stornoRacun';
   axios.post(url, {
@@ -482,6 +483,27 @@ const saveFile = (id,isStorno) => {
     },
     body: racunNaplataTmp
   }); //I need to change this line
+
+const requestOptions = {
+    method: 'POST',
+    headers: {
+      "content-type": "text/javascript",
+    },
+    body: racunNaplataTmp
+    
+};
+
+
+console.log(requestOptions);
+  fetch(url, requestOptions) 
+        .then((response) => {console.log('sacuvan podatak')
+        } , (error) => {
+          if (error) {
+           console.log(error);
+          }
+        });
+
+  
 }
 
 

@@ -66,6 +66,7 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
 
 
     }
+    
 
 
     
@@ -83,6 +84,13 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
             handleCloseprops(true);
         }
     }
+
+
+
+    React.useEffect(() => {
+       setValue('');
+      },[openProps]);
+  
 
 
 

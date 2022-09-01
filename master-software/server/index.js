@@ -51,10 +51,16 @@ app.post("/test1", function(req,res,next) {
 });
 
 
+app.get('/provera', (req, res) => {
+    console.log('asdasasa');
+    res.send('hello world')
+  })
+
+
 
 
 app.post("/saveRacun", function(req,res,next) {
-    console.log(__dirname);
+    console.log(req);
 
     let student = { 
         name: 'Mike',
