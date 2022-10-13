@@ -45,21 +45,45 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
     const [uplataStr, setUplataStr] = React.useState();
     const [uplata, setUplata] = React.useState(0);
     const [kusur, setKusur] = React.useState(0);
+    const [valueUplata, setValueUplata] = React.useState('');
+    //const [selectedTipPlacanja, setSelectedtipPlacanja] = React.useState('');
     
 
     const currencyFormat = (num) => {
         return  num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
      }
 
-     const naplataGotovinom = () => {
-        if(parseFloat(uplata) > (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust)))) {
+     const handleChangeUplata = (event) => {
+        setValueUplata(event.target.value);
+        
+          ref.current.focus();
+      
+    }
+
+     const naplata = (selectedTipPlacanja) => {
+        if(parseFloat(uplata) > (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))) && uplata) {
                 fromModalNaplata({id: toModalNaplata[0].activRacun,  kusur:  kusur});
                 setKusur(0);
-                handleCloseprops({activId: toModalNaplata[0].activRacun, tipNaplate: 'gotovina'});
+                let tipNaplateTmp =  buttonPlacanjeList.filter(tip => tip.id   ===  selectedTipPlacanja); 
+    
+                handleCloseprops({activId: toModalNaplata[0].activRacun, tipNaplate: tipNaplateTmp[0].naziv, uplata:  uplata});
         } else {
             console.log('uplata je manja od total racuna');
         }
      }
+
+     const handleAddValue = (event) => {
+
+        let valueTmp;
+       
+          valueTmp = valueUplata + event.target.value;
+          setValueUplata(valueTmp);
+        
+            ref.current.focus();
+       
+
+            
+      }
 
      const handleChange = (event) => {
         if (event.key === 'Enter') {
@@ -70,7 +94,9 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
             let tmpUplata = currencyFormat(parseFloat(event.target.value));
             setUplataStr(tmpUplata);
             setUplata(event.target.value);
-            event.target.value = tmpUplata;
+            setTimeout(() => {
+                event.target.value = tmpUplata;
+            }, 100);
 
         }
 
@@ -79,15 +105,80 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
      const ref = useRef();
      
      React.useEffect(() => {
-        setTimeout(() => {
-            ref.current.focus();
-        }, 200);
+        setUplata('');
+        setValueUplata('');
+        setKusur(0);
+        //setSelectedtipPlacanja('');
+      
      },[openProps])
 
 
 
      const openKomPlacanje  = () =>   {
         openModalKomPlacanje();
+     }
+
+
+     const addTipPlacanja = (idTipPlacanja)  => {
+       // setSelectedtipPlacanja(idTipPlacanja);
+     }
+     
+
+
+
+     const buttonPlacanjeList = [
+        {
+          id: 1,
+          nazivLabel:  'Prenos na racun',
+          naziv: 'WireTransfer'
+        },
+        {
+          id: 2,
+          nazivLabel:  'Instant placanje',
+          naziv: 'MobileMoney'
+        },
+        {
+          id: 3,
+          nazivLabel:  'Vaucer',
+          naziv: 'Voucher'
+        },
+        {
+          id: 4,
+          nazivLabel:  'Drugo bezgotovinsko placanje',
+          naziv: 'Drugo bezgotovinsko placanje'
+        },
+        {
+          id: 5,
+          nazivLabel:  'Gotovina',
+          naziv: 'Cash'
+        },
+        {
+          id: 6,
+          nazivLabel:  'Platna kartica',
+          naziv: 'Card'
+        },
+       
+      ]
+
+     const CustomButtonPlacanje = (button) => {
+        return (
+            <Button  fullWidth variant="contained"   sx={{ fontFamily: 'Roboto',  mt: button.button.id !==  1  ? 2.5 : 0,
+                    fontStyle: 'normal',
+
+                    /* or 158% */
+                    lineHeight:  '32px', 
+                    textAlign: 'center',
+                    textTransform: 'uppercase',
+                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  
+                    height:  '56px',  
+                    color:  'white', 
+                    backgroundColor:     '#55666E', 
+                    display:  'flex',  
+                    justifyContent:  'center',
+                    '&:hover': {
+                        backgroundColor: '#1E6812',
+                      },}}  onClick={() =>  { addTipPlacanja(button.button.id); naplata(button.button.id)}}>{button.button.nazivLabel}</Button>
+            )
      }
 
 
@@ -125,7 +216,9 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                         lineHeight:  '32px', 
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
-                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}>X</Typography>
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,
+                                        '&:hover':{cursor: 'pointer'
+                                    }}}>X</Typography>
                             </Grid>
                     </Grid>
                     <Divider sx={{backgroundColor:  '#6cb238'}} />
@@ -232,12 +325,13 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                            
+                                                onChange={handleChangeUplata}
                                                 onKeyDown={handleChange}
+                                                value={valueUplata}
                                                 size="small"
                                                 sx={{ input: {  fontFamily: 'Roboto', 
                                                 fontStyle: 'normal',
-    
+                        
                                                 /* or 158% */
                                                 lineHeight:  '32px', 
                                                 textAlign: 'end',
@@ -289,7 +383,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                             <Grid item xs={12}   sx={{display: 'flex' }}>
                                             {obj.map((col, i) => (
                                                 <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
-                                                        <Button variant="contained"   value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                                        <Button variant="contained"  onClick={handleAddValue}   value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
                                                             fontStyle: 'normal',
 
                                                             /* or 158% */
@@ -347,42 +441,10 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                     <Divider sx={{backgroundColor:  '#4E595F',  mt: 5}} />
                     <Grid  sx={{display:  'flex', height:  '48%',  mt:  5}}>
                         <Grid item xs={6}    sx={{display:  'flex',   flexDirection:  'column' , height: '100%'}}>
-                        <Button  fullWidth variant="contained"   sx={{ fontFamily: 'Roboto', 
-                                            fontStyle: 'normal',
-
-                                            /* or 158% */
-                                            lineHeight:  '32px', 
-                                            textAlign: 'center',
-                                            textTransform: 'uppercase',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'white',  backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Prenos na racun</Button>
-                        <Button fullWidth variant="contained"   sx={{fontFamily: 'Roboto',  mt: 2.5,
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   height:  '56px', backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Instant placanje</Button>
-                                  
-                        
-                        <Button  fullWidth variant="contained"   sx={{mt: 2.5,  fontFamily: 'Roboto', 
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'white',  backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Vaucer</Button>
-                        <Button fullWidth variant="contained"    sx={{fontFamily: 'Roboto',  mt: 2.5,
-                                fontStyle: 'normal',
-
-                                /* or 158% */
-                                lineHeight:  '32px', 
-                                textAlign: 'center',
-                                textTransform: 'uppercase',
-                                fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   height:  '56px', backgroundColor:  '#55666E', display:  'flex',  justifyContent:  'center' }}>Drugo bezgotovinsko placanje</Button>
-
-                        
+                        {buttonPlacanjeList.filter(button => button.id < 5 ).map(obj => (
+                            <CustomButtonPlacanje   button={obj} ></CustomButtonPlacanje>
+                        ))}
+                       
                         <Button  fullWidth variant="contained"   sx={{mt:  2.5,  fontFamily: 'Roboto', 
                                 fontStyle: 'normal',
 
@@ -395,7 +457,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                   
                         </Grid>
                         <Grid item xs={6} sx={{ml: 2.5}} >
-                        <Button fullWidth variant="contained"   onClick={naplataGotovinom}  sx={{fontFamily: 'Roboto', 
+                        <Button fullWidth variant="contained"   onClick={() =>  { naplata(5)}}  sx={{fontFamily: 'Roboto', 
                                 fontStyle: 'normal',
 
                                 /* or 158% */
@@ -405,7 +467,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                 textTransform: 'uppercase',
                                 fontSize:  window.devicePixelRatio == 1.5 ?  16 : 30,   height:  '170px',  color:   'black',  backgroundColor:  '#64B5F6', display:  'flex',  justifyContent:  'center' }}>Gotovina</Button>
                                   
-                                  <Button fullWidth variant="contained"    sx={{fontFamily: 'Roboto',  mt: 2.5,
+                                  <Button fullWidth variant="contained"   onClick={() =>  { naplata(6)}}   sx={{fontFamily: 'Roboto',  mt: 2.5,
                                 fontStyle: 'normal',
 
                                 /* or 158% */
@@ -414,9 +476,9 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                 textAlign: 'center',
                                 textTransform: 'uppercase',
                                 fontSize:  window.devicePixelRatio == 1.5 ?  16 : 30,    color:  'black',   height:  '170px', backgroundColor:  '#F49E67', display:  'flex',  justifyContent:  'center' }}>Platna kartica</Button>
-                                  
-                        
-                            
+
+
+
                         </Grid>
 
                     </Grid>

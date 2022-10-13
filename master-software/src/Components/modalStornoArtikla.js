@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
+import { useRef,  useState, useEffect }  from 'react'
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -11,18 +12,19 @@ import * as txtStornoArtikla from '../Data/txt';
 import NumPad from 'react-numpad-material';
 import Keyboard from 'react-material-ui-keyboard';
 import { makeStyles } from "@mui/styles";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 
 
 
-const useStyles = makeStyles(theme => ({
-    root: {
-       
-            margin: '0px !important',
-           
-        }
-    }
-  ));
+const theme = createTheme({
+    palette: {
+      neutral: {
+        main: 'white',
+        contrastText: '#fff',
+      },
+    },
+  });
 
 const style = {
     position: 'absolute',
@@ -37,7 +39,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     borderRadius: 2,
-    padding: '40px 40px 64px',
+    padding:  window.devicePixelRatio == 1.5 ?  2.5 :  '40px 40px 64px',
     backgroundColor:  '#323b40',
     display: 'flex'
   };
@@ -45,7 +47,6 @@ const style = {
 export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) => {
 
     const [value, setValue] = React.useState('');
-    const classes = useStyles();
 
 
     const numericKeyboard = [
@@ -60,14 +61,19 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
 
     const handleAddValue = (event) => {
 
-        console.log(event.target.value);
         let valueTmp = value + event.target.value;
         setValue(valueTmp);
 
 
     }
-    
 
+    const ref = useRef();
+    
+    if(openProps) {
+        setTimeout(() => {
+            ref.current.focus();
+        }, 200);
+     }
 
     
     const handleChange = (event) => {
@@ -79,7 +85,6 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
     
 
     const handleSubmit = () =>   {
-        console.log(value);
         if(value ===  '0000') {
             handleCloseprops(true);
         }
@@ -96,6 +101,7 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
 
 
       return (
+        <ThemeProvider theme={theme}>
         <Modal
             open={openProps}
             onClose={handleCloseprops}
@@ -130,7 +136,9 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                                     lineHeight:  '32px', 
                                     textAlign: 'center',
                                     textTransform: 'uppercase',
-                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,
+                                    '&:hover':{cursor: 'pointer'
+                                    }}}
                                     onClick={() => handleCloseprops(false)}>X</Typography>
                                 </Grid>
                             </Grid>
@@ -145,6 +153,7 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                                         onChange={handleChange}
                                         variant="filled"
                                         placeholder='unesite autorizacioni kod'
+                                        color="neutral"
                                         size="small"
                                         sx={{ input: {   fontFamily: 'Roboto', 
                                             fontStyle: 'normal',
@@ -154,11 +163,13 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24,   color:  'white', ml: 2},  }}
+                                        
+                                        inputRef={ref}
                                         />
                                     </Grid>
                             
                             </Grid>
-                            <Grid sx={{display:  'flex', height:  '40%', flexDirection:  'column',  justifyContent:  'flex-end'}} >
+                            <Grid sx={{display:  'flex', height:  '40%', mt: window.devicePixelRatio == 1.5 ?  2 : 'none', flexDirection:  'column',  justifyContent:  'flex-end'}} >
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
                                     <Button fullWidth variant="contained"   sx={{fontFamily: 'Roboto', 
                                     fontStyle: 'normal',
@@ -167,20 +178,20 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                                     lineHeight:  '32px', 
                                     textAlign: 'center',
                                     textTransform: 'uppercase',
-                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, height:  '56px', color:  'black',    backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px', color:  'black',    backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}
                                     onClick={() => handleSubmit()}>Potvrdi brisanje</Button>
                                 </Box>
 
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{mt: 2  ,  fontFamily: 'Roboto', 
+                                    <Button fullWidth variant="contained"   sx={{mt: window.devicePixelRatio == 1.5 ?  1 : 2  ,  fontFamily: 'Roboto', 
                                     fontStyle: 'normal',
 
                                     /* or 158% */
                                     lineHeight:  '32px', 
                                     textAlign: 'center',
                                     textTransform: 'uppercase',
-                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, backgroundColor:  '#1e2730',  height:  '56px',  display:  'flex',  justifyContent:  'center' }}
-                                    onClick={() => handleCloseprops(false)}>{txtStornoArtikla.txtOdustani}</Button>
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  14 : 24, backgroundColor:  '#1e2730',  height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px',  display:  'flex',  justifyContent:  'center' }}
+                                    onClick={() => handleCloseprops(true)}>{txtStornoArtikla.txtOdustani}</Button>
                                 </Box>
                             </Grid>
                         </Grid>
@@ -192,7 +203,7 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                             <Grid item xs={12}   sx={{display: 'flex' }}>
                             {obj.map((col, i) => (
                                 <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
-                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width: window.devicePixelRatio == 1.5 ?  '50px' : '104px', height:  window.devicePixelRatio == 1.5 ?  '33px' : '76px' , borderRadius:  '12px', fontFamily: 'Roboto',
                                             fontStyle: 'normal',
 
                                             /* or 158% */
@@ -211,5 +222,6 @@ export const ModalStornoArtikal = ({openProps,handleCloseprops,titleTextProps}) 
                     </Grid>
             </Box>
       </Modal>
+      </ThemeProvider>
     );
   }

@@ -53,7 +53,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     borderRadius: 2,
-    p: ' 40px 40px 64px',
+    p:  window.devicePixelRatio == 1.5 ?  2.5 : '40px 40px 64px',
     backgroundColor:  '#323b40'
   };
 
@@ -76,6 +76,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
 
     const [counter, setCounter] = React.useState(1);
     const [valuePopust, setValuePopust]   = React.useState('');
+    const [tipPopusta, setTipPopusta]   = React.useState('procenat');
     const [valueTab, setValueTab] =  React.useState('kolicina');
     const classes = useStyles();
 
@@ -88,10 +89,10 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
 
 
     React.useEffect(() => {
-      console.log(toModalCount);
       setCounter(1);
       setValuePopust('');
       setValueTab('kolicina');
+      setTipPopusta('procenat');
     },[openProps]);
 
     
@@ -105,8 +106,8 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   //decrease counter
   const decrease = () => {
         let counterTmp = parseFloat(counter)  - 1;
-        if(counterTmp < 1)  {
-          setCounter(1);
+        if(counterTmp < 0)  {
+          setCounter(0);
         } else  {
           setCounter(counterTmp);
         }
@@ -119,7 +120,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   }
 
   const handleSubmit = () => {
-    childToParent({counter: counter, valuePopust:  valuePopust,   id: toModalCount.id});
+    childToParent({counter: counter, valuePopust:  valuePopust,   id: toModalCount.id, tipPopusta:  tipPopusta});
     reset();
     handleCloseprops();
   }
@@ -128,10 +129,14 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
 
 
   const handleChangeTab = (event, newValue) => {
-    console.log(newValue);
-    reset();
-    setValuePopust('');
+    //reset();
+    //setValuePopust('');
     setValueTab(newValue);
+  }
+
+  const  handleChangeRadioButton = (event, newButton) => {
+
+    setTipPopusta(newButton);
   }
 
   const  handleChangeCounter  =   (event) => {
@@ -157,7 +162,6 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
 
 const handleAddValue = (event) => {
 
-  console.log(event.target.value);
   let valueTmp;
   if(valueTab === 'kolicina')   {
     valueTmp = counter + event.target.value;
@@ -190,11 +194,11 @@ const handleAddValue = (event) => {
     return (
       <Grid item   sx={{display: 'flex',  height:  '100%'}} >
                                       <Grid item xs={2}     sx={{display: 'flex',  alignItems:  'center'}} >
-                                          <Button variant="contained"  onClick={increase}   sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' ,
-                                            maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
-                                            maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
-                                            minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
-                                            minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <AddIcon /></Button>
+                                            <Button variant="contained"   onClick={decrease}  sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , 
+                                                maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
+                                                maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                                minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                                minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <RemoveIcon /></Button>
                                       </Grid>
                                       <Grid item xs={8}    sx={{display: 'flex', alignItems:  'center'}}>
                                           <TextField
@@ -219,11 +223,12 @@ const handleAddValue = (event) => {
                                               />
                                       </Grid>
                                       <Grid item xs={2}   sx={{display:  'flex', alignItems:  'center' , justifyContent:  'flex-end'}}>
-                                          <Button variant="contained"   onClick={decrease}  sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , 
-                                          maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
-                                          maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
-                                          minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
-                                          minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <RemoveIcon /></Button>
+                                          <Button variant="contained"  onClick={increase}   sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' ,
+                                            maxWidth: window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            maxHeight:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            minWidth:  window.devicePixelRatio == 1.5 ?  30 : 48,
+                                            minHeight:  window.devicePixelRatio == 1.5 ?  30 : 48, alignItems: 'center',  flexWrap: 'wrap',}} > <AddIcon /></Button>
+                                  
                                       </Grid>
                               </Grid>
     )
@@ -265,6 +270,7 @@ const handleAddValue = (event) => {
                                           defaultValue="procenat"
                                           name="radio-buttons-group"
                                           sx={{display:  'flex', }}
+                                          onChange={handleChangeRadioButton}
                                         
                                       >
                                           
@@ -336,11 +342,13 @@ const handleAddValue = (event) => {
                                     lineHeight:  '32px', 
                                     textAlign: 'center',
                                     textTransform: 'uppercase',
-                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}}>X</Typography>
+                                    fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24, 
+                                    '&:hover':{cursor: 'pointer'
+                                    }}}>X</Typography>
                           </Grid>
                     </Grid>
                     <Divider sx={{backgroundColor:  '#6cb238'}} />
-                    <Grid sx={{display:  'flex', height:  '10%',  mt: 6 }} >
+                    <Grid sx={{display:  'flex', height:  '10%',  mt:   window.devicePixelRatio == 1.5 ?  1 :  6 }} >
                         <Tabs    sx={{ width:  '100%','& .MuiTabs-indicator': { backgroundColor:  '#6cb238'},   '& .Mui-selected': {color:  'white !important'}, display:  'flex',  justifyContent:   'space-around'}}
                                  variant="fullWidth"
                                  aria-label="wrapped label tabs example"
@@ -366,7 +374,7 @@ const handleAddValue = (event) => {
                         </Tabs>
                     </Grid>
                     <Grid sx={{display: 'flex' ,   height:  '82%', mt: 4}}  >
-                      <Grid item xs={6}   sx={{display:  'flex',  pr:5, height:  '100%',  flexDirection:  'column'}}>
+                      <Grid item xs={6}   sx={{display:  'flex',  pr: window.devicePixelRatio == 1.5 ?  2.5 :  5, height:  '100%',  flexDirection:  'column'}}>
                           
                             {valueTab === 'kolicina' ? <ComponentKolicina></ComponentKolicina>       : <ComponentPopust></ComponentPopust>}
                             <Grid item sx={{display:  'flex',   height:  '30%', flexDirection:  'column',  justifyContent:  'flex-end'}} >
@@ -377,20 +385,20 @@ const handleAddValue = (event) => {
                                             lineHeight:  '32px', 
                                             textAlign: 'center',
                                             textTransform: 'uppercase',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,  height:  '56px',  color:  'black',  backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
-                                      <Button fullWidth variant="contained"  onClick={handleCloseprops}  sx={{fontFamily: 'Roboto',  mt: 2.5,
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,  height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px',  color:  'black',  backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
+                                      <Button fullWidth variant="contained"  onClick={handleCloseprops}  sx={{fontFamily: 'Roboto',  mt:  window.devicePixelRatio == 1.5 ?  0 :   2.5,
                                               fontStyle: 'normal',
 
                                               /* or 158% */
                                               lineHeight:  '32px', 
                                               textAlign: 'center',
                                               textTransform: 'none',
-                                              fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   height:  '56px',  border:  'solid 1px white', backgroundColor:  'transparent', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,  height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px',  border:  'solid 1px white', backgroundColor:  'transparent', display:  'flex',  justifyContent:  'center' }}>Odustani</Button>
                                   
                             </Grid>
                       </Grid>
                       <Divider orientation="vertical" sx={{backgroundColor:  '#4f5e65'}}  variant="middle" flexItem />
-                      <Grid item  xs={6}  sx={{ pl: 5,   height: '100%', display: 'flex', flexDirection: 'column'}} >
+                      <Grid item  xs={6}  sx={{ pl:  window.devicePixelRatio == 1.5 ?  0 :   5,   height: '100%', display: 'flex', flexDirection: 'column'}} >
 
                      
                           <Grid sx={{height:  '100%', alignSelf:  'center',}}>
@@ -398,7 +406,7 @@ const handleAddValue = (event) => {
                                   <Grid item xs={12}   sx={{display: 'flex' }}>
                                   {obj.map((col, i) => (
                                       <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
-                                              <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                              <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width: window.devicePixelRatio == 1.5 ?  '50px' : '104px', height:  window.devicePixelRatio == 1.5 ?  '33px' : '76px' , borderRadius:  window.devicePixelRatio == 1.5 ?   '6px' : '12px', fontFamily: 'Roboto',
                                                   fontStyle: 'normal',
 
                                                   /* or 158% */

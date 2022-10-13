@@ -18,6 +18,12 @@ export const CustomSearchField = ({fromSearch}) => {
         }
     }
 
+    const handleSaveBlur = (event) => {
+     
+      fromSearch(event.target.value) 
+      
+  }
+
   return (
     <Paper
       sx={{  display: 'flex', alignItems: 'center' , width: '90%', color:  'white',   height: '42px', border:  'solid 1px white',  backgroundColor:  '#1e2730' }}
@@ -33,10 +39,12 @@ export const CustomSearchField = ({fromSearch}) => {
         
         fontSize: () => window.devicePixelRatio == 1.5 ? 12 : 16}}
         placeholder="Unesite naziv ili sifru proizvoda"
-        inputProps={{ 'aria-label': 'search google maps' }}
         onKeyDown={event=>{                                 //adding the onChange event
             handleSave(event)
           }}
+        onBlur={event  => {
+          handleSaveBlur(event)
+        }}
       />
       <IconButton type="submit"    sx={{ p: '3px' , color: 'white'}} aria-label="search">
         <SearchIcon />

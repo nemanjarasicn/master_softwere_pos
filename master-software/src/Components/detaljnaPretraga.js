@@ -18,6 +18,11 @@ import Table from '@mui/material/Table';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
+import InputBase from '@mui/material/InputBase';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import { styled } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
 import TableBody from '@mui/material/TableBody';
 import * as txt from '../Data/txt';
@@ -35,6 +40,7 @@ const useStyles = makeStyles(theme => ({
         }
     }
   ));
+
 
 const style = {
     position: 'absolute',
@@ -68,44 +74,63 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
 
     const [value, setValue] = React.useState('');
     const [searchValue, setSearchValue] = React.useState(initialArtikal);
-    
+    const [filter, setFilter] = React.useState('');
+
+
     const [selectedValue, setSelectedValue] = React.useState('');
+    const [kategorije, setKategorije] = React.useState('');
+    const [podkategorije, setPodkategorije]   =  React.useState('');
     const classes = useStyles();
 
 
     React.useEffect(() => {
-        console.log('test');
         setSearchValue(initialArtikal);
+        setKategorije('');
+        setPodkategorije('');
+        setFilter('');
       },[openProps]);
+
+    
+      React.useEffect(() => {
+        filterArtikal(filter);
+      },[kategorije,podkategorije]);
 
 
 
 
     const filterArtikal = (dataFilter) => {
-        console.log(dataFilter);
+      console.log(dataFilter);
         let artikliList = JSON.parse(localStorage.getItem('artikalList'));
-        let artikalTmp = artikliList.filter(obj => obj.id === dataFilter || obj.productName.toLowerCase().includes(dataFilter.toLowerCase()));
-        console.log(artikalTmp);
-        setSearchValue(initialArtikal);
-        setSelectedValue('');
-        if(artikalTmp['length'] && dataFilter !== '') {
-            artikalTmp.map((row,i) => {
-                console.log(row);
-                let artikalValue = 
-                    {
-                        id: row.id,
-                        productName: row.productName,
-                        cena: '100',
-                        code:  row.code
 
-                    }
+        if(dataFilter !==  '')    {
+              let artikalTmp = artikliList.filter(obj => (dataFilter !==  '' ? (obj.id === dataFilter || obj.productName.toLowerCase().includes(dataFilter.toLowerCase()))  : true ) 
+                && (kategorije !== '' ? (obj.groupName === kategorije)   : true ) 
+                && (podkategorije !== ''  ?  (obj.productGroupRequest[1].groupName  === podkategorije)   :  true  ) 
+                );
+            
+              setSearchValue(initialArtikal);
+              setSelectedValue('');
+              if(artikalTmp['length'] && dataFilter !== '') {
+                  artikalTmp.map((row,i) => {
+                    
+                      let artikalValue = 
+                          {
+                              id: row.id,
+                              productName: row.productName,
+                              cena: '100',
+                              code:  row.code
+
+                          }
+                      
+                      setSearchValue(prevState => [...prevState,artikalValue]);
+                  })
                 
-                setSearchValue(prevState => [...prevState,artikalValue]);
-            })
-            console.log(searchValue);
-        } else {            
-            setSearchValue(initialArtikal);
-        }
+              } else {            
+                  setSearchValue(initialArtikal);
+              }
+            } else {
+              setSearchValue(initialArtikal);
+            }
     }
 
 
@@ -113,6 +138,138 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
         fromModalDp(selectedValue);
         handleCloseprops();
     }
+
+    console.log(kategorije);
+  
+    
+    
+    const  addFilter = (dataFilter)  =>  {
+      setFilter(dataFilter);
+      filterArtikal(dataFilter);
+    }
+
+
+    const ComponentSelectKategorija =  ({fontSize}) => {
+
+        const BootstrapInput = styled(InputBase)(({ theme }) => ({
+ 
+            '& .MuiInputBase-input': {
+              borderRadius: 8,
+              color:  'white', 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #ced4da',
+              backgroundColor:  '#1E2730',
+              padding: '10px 26px 10px 12px',
+              transition: theme.transitions.create(['border-color', 'box-shadow']),
+              // Use the system font instead of the default Roboto font.
+              fontFamily: [
+                
+                'Roboto',
+               
+              ],
+              
+            },
+            '& .MuiSvgIcon-root ': {
+              fill: "#6cb238 !important",
+              fontSize: 32
+            }
+          }));
+      
+
+          
+        const optionsKategorije = JSON.parse(localStorage.getItem('uniqueTipoviArtikla'));
+
+        return (
+            <FormControl sx={{ minWidth: '100%' }} >
+            <Select
+                 displayEmpty
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select-label"
+              
+                  input={<BootstrapInput  sx={{fontSize: {fontSize}, color: 'white'}}/>}
+                 
+                  renderValue={
+                    kategorije !== "" ? (select) => <em>{kategorije}</em> : () => <em>select value</em>                  }
+                  onChange={(select) =>  {setKategorije(select.target.value); setPodkategorije('')} }
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                  {optionsKategorije.map(obj => (
+                    <MenuItem value={obj}>{obj}</MenuItem>
+                    ))}
+                  
+                
+            </Select>
+      </FormControl>
+        )
+      }
+
+
+
+      const ComponentSelectPodkategorija =  ({fontSize}) => {
+
+        const BootstrapInput = styled(InputBase)(({ theme }) => ({
+ 
+            '& .MuiInputBase-input': {
+              borderRadius: 8,
+              color:  'white', 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #ced4da',
+              backgroundColor:  '#1E2730',
+              padding: '10px 26px 10px 12px',
+              transition: theme.transitions.create(['border-color', 'box-shadow']),
+              // Use the system font instead of the default Roboto font.
+              fontFamily: [
+                
+                'Roboto',
+               
+              ],
+              
+            },
+            '& .MuiSvgIcon-root ': {
+              fill: "#6cb238 !important",
+              fontSize: 32
+            }
+          }));
+
+
+          let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+
+          let podkategorijeTmp = artikliList.filter(obj => obj.groupName  ===  kategorije    &&   obj.parentId  !==  null);
+          
+          const unique = [...new Set(podkategorijeTmp.map(item => item.productGroupRequest[1].groupName))]; 
+      
+
+        console.log(unique);
+
+        const optionsPodkategorije = kategorije  !== ''   ?  unique  : [''];
+
+        return (
+            <FormControl sx={{ minWidth: '100%' }} >
+            <Select
+                 displayEmpty
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select-label"
+                  label="tets"
+                  input={<BootstrapInput  sx={{fontSize: {fontSize}, color: 'white'}}/>}
+                  renderValue={
+                    podkategorije !== "" ? (select) => <em>{podkategorije}</em> : () => <em>select value</em>  }
+                  onChange={(select) =>  {setPodkategorije(select.target.value)} }
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                  {optionsPodkategorije.map(obj => (
+                    <MenuItem value={obj}>{obj}</MenuItem>
+                    ))}
+                  
+                
+            </Select>
+      </FormControl>
+        )
+      }
+    
 
 
 
@@ -140,6 +297,7 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                                 </Grid>
                                 <Grid item  xs={2}  sx={{display:   'flex',   color:  'white',   justifyContent:  'flex-end'}} >
                                         <Typography  sx={{ 
+                                            '&:hover':{cursor: 'pointer'},
                                         fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 }}
                                         className='title'
                                         onClick={() => handleCloseprops()}>X</Typography>
@@ -151,17 +309,19 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                                         <Typography sx={{
                                         fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14 }}
                                         className='labelSearch'>Pretraga</Typography>
-                                            <CustomSearchField fromSearch={filterArtikal}></CustomSearchField>
+                                            <CustomSearchField fromSearch={addFilter}></CustomSearchField>
                                     </Grid>
                                     <Grid item xs={3}   sx={{mr:4}} >
                                     <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
                                     className='labelSearch'>Kategorija proizvoda</Typography>
-                                            <CustomSelectField fontSize={16}></CustomSelectField>
+                                            {/*<CustomSelectField fontSize={16}  options={'kategorije'} fromSelect={addSelectItem}></CustomSelectField>*/}
+                                            <ComponentSelectKategorija  fontSize={16}></ComponentSelectKategorija>
                                     </Grid>
                                     <Grid item xs={3}    >
                                     <Typography sx={{fontSize:  window.devicePixelRatio == 1.5 ?  10 : 14}}
                                     className='labelSearch'>Podkategorija proizvoda</Typography>
-                                            <CustomSelectField fontSize={16}></CustomSelectField>
+                                            {/*<CustomSelectField fontSize={16} options={'podKategorije'} ></CustomSelectField>*/}
+                                            <ComponentSelectPodkategorija   fotSize={16}></ComponentSelectPodkategorija>
                                     </Grid>
                             </Grid>
                             <Grid sx={{height:  '60%', display:  'flex'}} >
@@ -202,7 +362,7 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                             <Divider sx={{color: 'red'}} />
                             <Grid sx={{display:  'flex', height:  '10%', mt: 2.5, justifyContent:  'center'}} >
                                     <Grid xs={6} sx={{mr: 2.5}}>
-                                                <Button fullWidth variant="contained"   sx={{mt: 2  ,fontSize: 14, backgroundColor:  'transparent',  border:  'solid 1px white',  height:  '56px',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtOdustani}</Button>
+                                                <Button fullWidth variant="contained"     onClick={() => handleCloseprops()} sx={{mt: 2  ,fontSize: 14, backgroundColor:  'transparent',  border:  'solid 1px white',  height:  '56px',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>{txtStornoArtikla.txtOdustani}</Button>
                                     </Grid>
                                     <Divider />
                                     <Grid xs={6} >

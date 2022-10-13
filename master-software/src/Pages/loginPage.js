@@ -14,6 +14,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ButtonRacunList } from  "../Data/racuniList"
 import {initialValuePopust}   from "../Data/initialValuePopust"
 import {initialValueKusur}   from "../Data/initialValueKusur"
+import {initialValueKupac}   from "../Data/initialValueKupac"
+import {initialValueTipUplate}  from "../Data/initialValueTipUplate"
+import {optionIndetifikacijaKupca}  from "../Data/optionIndetifikacijaKupca"
+import { optionOpcionoPoljeKupca } from '../Data/optionOpcionoPoljeKupca';
+import  secureLocalStorage  from  "react-secure-storage";
 import { artiklTmp }  from '../Data/artikliTmp'
 
 function Footer(props) {
@@ -47,6 +52,7 @@ export const LoginPage = () => {
 
   const [racunTmp01, setRacunTmp01] = React.useState([]);
   const [listaRacunaTmp, setListaRacunaTmp] = React.useState([]);
+  const [operater, setOperater] = React.useState('');
   
   const navigate  = useNavigate();
   
@@ -64,6 +70,7 @@ export const LoginPage = () => {
         headers: { 'PETCOM': 'dejan' },
         
     };
+    
 
       /*fetch('http://localhost:8087/api/v1/search//products/1234Danijela1234556966665668', requestOptions) 
         .then((response) => response.json())
@@ -81,11 +88,18 @@ export const LoginPage = () => {
 
       localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01)); 
       localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
-      localStorage.setItem('buttonRacunList', JSON.stringify(ButtonRacunList));     
+      secureLocalStorage.setItem('test', 'test');
+      localStorage.setItem('buttonRacunList', JSON.stringify(ButtonRacunList)); 
+      localStorage.setItem('operater', JSON.stringify(data.get('password')));       
       localStorage.setItem('buttonRacunCount', JSON.stringify(2));   
       
       localStorage.setItem('initialValuePopust', JSON.stringify(initialValuePopust));
+      localStorage.setItem('optionIndetifikacijaKupca', JSON.stringify(optionIndetifikacijaKupca));
+      localStorage.setItem('optionOpcionoPoljeKupca', JSON.stringify(optionOpcionoPoljeKupca));
+
       localStorage.setItem('initialValueKusur', JSON.stringify(initialValueKusur));
+      localStorage.setItem('initialValueKupac', JSON.stringify(initialValueKupac));
+      localStorage.setItem('initialValueTipUplate', JSON.stringify(initialValueTipUplate));
       navigate({
         pathname: '/naplata',
         state: {

@@ -54,7 +54,7 @@ const style = {
     ['.',      '0',         '<x']
 ];
 
-export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacun}) => {
+export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacun, toModalPopustRacun}) => {
 
 
     const [value, setValue] = React.useState('');
@@ -76,7 +76,6 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
 
     const handleAddValue = (event) => {
 
-        console.log(event.target.value);
         let valueTmp = value + event.target.value;
         setValue(valueTmp);
 
@@ -91,15 +90,21 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
 
 
     const  handleChangeRadio = (event) => {
-            console.log(event.target.value);
             setValueRadio(event.target.value);
     }
 
 
 
     const handleSave = () => {
-        fromModalPopustRacun({popustRadio:  valueRadio,  popust:  value});
-        handleCloseprops();
+        let massage = '';
+        if((valueRadio ===  'procenat'  &&  value > 100)  ||  (valueRadio  ===  'fiksni'  &&  value   >   toModalPopustRacun)) {
+            massage =  'Popust ne moze biti veci od ukupnog racuna';
+            fromModalPopustRacun({popustRadio:  '',  popust:  0, massageError:    massage});
+            handleCloseprops();
+        } else   {
+                    fromModalPopustRacun({popustRadio:  valueRadio,  popust:  value, massageError:    massage});
+                    handleCloseprops();
+        }
     }
 
       return (
@@ -117,25 +122,27 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                         <Grid sx={{display:  'flex', flexDirection:  'column',  height:  '100%'}} >
                             <Grid sx={{display:  'flex', height:  '10%',  justifyContent:  'center'}} >
                                 <Grid item  xs={10}  sx={{display:  'flex', justifyContent:  'flex-start'}}>
-                                    <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', fontSize:  () => window.devicePixelRatio == 1.5 ? 16 : 24 ,  color:  'white'}}>
+                                    <Typography id="modal-modal-title"    sx={{display:  'flex', justifyContent:  'center', fontSize:  () => window.devicePixelRatio == 1.5 ? 12 : 24 ,  color:  'white'}}>
                                             POPUST NA RACUN
                                     </Typography>
                     
                                 </Grid>
                                 <Grid item  xs={2}  sx={{display:   'flex',   color:  'white',   justifyContent:  'flex-end'}} >
-                                        <Typography sx={{fontSize:  () => window.devicePixelRatio == 1.5 ? 16 : 24}}  onClick={handleCloseprops}>X</Typography>
+                                        <Typography sx={{fontSize:  () => window.devicePixelRatio == 1.5 ? 12 : 24,
+                                        '&:hover':{cursor: 'pointer'
+                                    }}}  onClick={handleCloseprops}>X</Typography>
                                 </Grid>
                             </Grid>
                             <Divider sx={{backgroundColor:  '#6cb238'}} />
                             <Grid sx={{display:  'flex', flexDirection:  'column', mt: 2, height:  '40%', alignItems:  'center'}} >
-                                <Grid item xs={12}  sx={{display: 'flex', marginTop:  '60px'}} >
+                                <Grid item xs={12}  sx={{display: 'flex', marginTop: window.devicePixelRatio == 1.5 ?  '25px' : '60px'}} >
                                     <TextField
                                         hiddenLabel
                                         fullWidth
                                         id="filled-hidden-label-normal"
                                         value={value}
                                         onChange={handleChange}
-                                        placeholder='Input number'
+                                        placeholder='Unesite popust'
                                         variant="filled"
                                         color="neutral"
                                         inputProps={{min: 0, style: { textAlign: 'center' }}}
@@ -147,12 +154,12 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
 
                                             textAlign: 'center',
                                             textTransform: 'none',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 30 ,     color:  'white', ml: 2, display:  'flex', justifyContent:  'center'},  }}
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  16 : 30 ,     color:  'white', ml: 2, display:  'flex', justifyContent:  'center'},  }}
                                         inputRef={ref}
                                         />
 
                                 </Grid>
-                                <Grid item xs={12}  sx={{display: 'flex', width: '100%', marginTop:  '28px',  ml: 1}} >
+                                <Grid item xs={12}  sx={{display: 'flex', width: '100%', marginTop:  window.devicePixelRatio == 1.5 ?  '12px' : '28px',  ml: 1}} >
                                 <RadioGroup
                                         aria-labelledby="demo-radio-buttons-group-label"
                                         defaultValue="procenat"
@@ -161,7 +168,7 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                                         onChange={handleChangeRadio}
                                     >
                                         <Grid item  sx={{display:  'flex'}}  >  
-                                                <FormControlLabel sx={{color:  'white'}} value="procenat" control={<Radio sx={{color: 'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography  sx={{color:  'white', fontFamily: 'Roboto',
+                                        <FormControlLabel sx={{color:  'white'}} value="procenat" control={<Radio sx={{color: 'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography  sx={{color:  'white', fontFamily: 'Roboto',
                                             fontStyle: 'normal',
 
                                             /* or 158% */
@@ -169,10 +176,10 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                                             letterSpacing:  '0.02em',
                                             textAlign: 'center',
                                             textTransform: 'none',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24 }}>Procenat(%)</Typography>} />
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  6 : 24 }}>Procenat(%)</Typography>} />
                                         </Grid>
                                         <Grid   item   sx={{display:  'flex' }}>
-                                                <FormControlLabel sx={{color:  'white', margin: 0}} value="fiksni"   control={<Radio  sx={{color:  'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography   sx={{color:  'white',  fontFamily: 'Roboto',
+                                        <FormControlLabel sx={{color:  'white', margin: 0}} value="fiksni"   control={<Radio  sx={{color:  'white', '&.Mui-checked': {color: '#6cb238' }}} />} label={<Typography   sx={{color:  'white',  fontFamily: 'Roboto',
                                             fontStyle: 'normal',
 
                                             /* or 158% */
@@ -180,13 +187,13 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                                             letterSpacing:  '0.02em',
                                             textAlign: 'center',
                                             textTransform: 'none',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24 }}>Fiksni popust</Typography>} />
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  6 : 24 }}>Fiksni popust</Typography>} />
                                         </Grid>
                                 </RadioGroup>
                                 </Grid>
                             </Grid>
                             
-                            <Grid sx={{display:  'flex', height:  '20%', marginTop:  '80px', flexDirection:  'column',  justifyContent:  'center'}} >
+                            <Grid sx={{display:  'flex', height:  '20%', marginTop:   window.devicePixelRatio == 1.5 ?  '50px' : '80px', flexDirection:  'column',  justifyContent:  'center'}} >
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
                                     <Button  fullWidth variant="contained"     onClick={() => handleSave()}  sx={{mt: 2  , fontFamily: 'Roboto',
                                             fontStyle: 'normal',
@@ -195,22 +202,22 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                                             lineHeight:  '32px',
                                             letterSpacing:  '0.02em',
                                             textAlign: 'center',
-                                            borderRadius:  '12px', 
+                                            borderRadius:   window.devicePixelRatio == 1.5 ?  '6px' : '12px', 
                                             textTransform: 'uppercase',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 , backgroundColor:  '#6cb238', color:   'black',  display:  'flex', height: '56px',  justifyContent:  'center' }}
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 , backgroundColor:  '#6cb238', color:   'black',  display:  'flex', height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px',  justifyContent:  'center' }}
                                            >Potvrdi</Button>
                                 </Box>
                                 <Box sx={{  display: 'flex',  justifyContent:  'center'}}  >
-                                    <Button fullWidth variant="contained"   sx={{marginTop:  '20px'  , fontFamily: 'Roboto',
+                                    <Button fullWidth variant="contained"   sx={{marginTop:  window.devicePixelRatio == 1.5 ?  '10px' : '20px'   , fontFamily: 'Roboto',
                                             fontStyle: 'normal',
 
                                             /* or 158% */
                                             lineHeight:  '32px',
                                             letterSpacing:  '0.02em',
                                             textAlign: 'center',
-                                            borderRadius:  '12px', 
+                                            borderRadius:  window.devicePixelRatio == 1.5 ?  '6px' : '12px', 
                                             textTransform: 'none',
-                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 , border:  'solid 1px white', height: '56px', backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}
+                                            fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24 , border:  'solid 1px white', height:  window.devicePixelRatio == 1.5 ?  '30px' : '56px', backgroundColor:  '#1e2730', display:  'flex',  justifyContent:  'center' }}
                                             onClick={handleCloseprops}>Odustani</Button>
                                 </Box>
                             </Grid>
@@ -223,12 +230,12 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                             <Grid item xs={12}   sx={{display: 'flex' }}>
                             {obj.map((col, i) => (
                                 <Grid item xs={4}   sx={{paddingLeft:  '12px', paddingBottom:  '12px',}} >
-                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width:  '104px', height:  '76px', borderRadius:  '12px', fontFamily: 'Roboto',
+                                        <Button variant="contained"  onClick={handleAddValue}  value={col} fullWidth   sx={{width: window.devicePixelRatio == 1.5 ?  '50px' : '104px', height:  window.devicePixelRatio == 1.5 ?  '33px' : '76px' , borderRadius: window.devicePixelRatio == 1.5 ?  '6px' : '12px', fontFamily: 'Roboto',
                                             fontStyle: 'normal',
 
                                             /* or 158% */
                                             lineHeight:  '32px',
-                                            letterSpacing:  '0.02em',
+                                            letterSpacing:  '0.02em',   
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 36,   backgroundColor:  '#1e2730'}}>{col}</Button>
@@ -238,7 +245,7 @@ export const ModalPopustRacun = ({openProps,handleCloseprops,fromModalPopustRacu
                            
                         ))}
                     </Grid>
-                <Divider sx={{backgroundColor:  '#4f5e65',  marginTop:  '42px'}} />
+                <Divider sx={{backgroundColor:  '#4f5e65',  marginTop:    window.devicePixelRatio == 1.5 ?  '25px' : '42px'}} />
                 </Grid>
             </Box>
       </Modal>

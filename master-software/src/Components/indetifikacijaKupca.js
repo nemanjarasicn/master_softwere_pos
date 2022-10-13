@@ -15,6 +15,10 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import { styled } from '@mui/material/styles';
 import { withTheme } from '@emotion/react';
 
 import  {CustomSelectField}   from  '../Components/customSelectField'
@@ -57,11 +61,12 @@ const style = {
     ['.',      '0',         '<x']
 ];
 
-export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPopustRacun}) => {
+export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromIndetifikacijaKupca}) => {
 
 
     const [value, setValue] = React.useState('');
     const [valueRadio, setValueRadio] =  React.useState('procenat');
+    const [placeholder, setPlaceholder] = React.useState('');
 
     if(openProps) {
         setTimeout(() => {
@@ -72,6 +77,7 @@ export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPo
      React.useEffect(() => {
         setValue('');
         setValueRadio('procenat');
+        setPlaceholder('PIB kupca');
       },[openProps]);
 
      
@@ -79,7 +85,6 @@ export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPo
 
     const handleAddValue = (event) => {
 
-        console.log(event.target.value);
         let valueTmp = value + event.target.value;
         setValue(valueTmp);
 
@@ -88,22 +93,81 @@ export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPo
 
 
     const handleChange = (event) => {
-        setValue(0);
         setValue(event.target.value)
     }
 
 
     const  handleChangeRadio = (event) => {
-            console.log(event.target.value);
             setValueRadio(event.target.value);
     }
 
 
 
     const handleSave = () => {
-        fromModalPopustRacun({popustRadio:  valueRadio,  popust:  value});
+        let valueIndKupcaSelect =  JSON.parse(localStorage.getItem('optionIndetifikacijaKupca')).filter(obj=> obj.label === placeholder)
+
+        console.log('ssasas',valueIndKupcaSelect)
+        fromIndetifikacijaKupca({selectIndetifikacija:  valueIndKupcaSelect[0].value,  indetifikacijaValue:  value, tipSearch: 'indetifikacijaKupca'});
         handleCloseprops();
     }
+
+
+    const ComponentSelectIndetifikacijaKupca =  ({fontSize}) => {
+
+        const BootstrapInput = styled(InputBase)(({ theme }) => ({
+ 
+            '& .MuiInputBase-input': {
+              borderRadius: 8,
+              color:  'white', 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #ced4da',
+              backgroundColor:  '#1E2730',
+              padding: '10px 26px 10px 12px',
+              transition: theme.transitions.create(['border-color', 'box-shadow']),
+              // Use the system font instead of the default Roboto font.
+              fontFamily: [
+                
+                'Roboto',
+               
+              ],
+              
+            },
+            '& .MuiSvgIcon-root ': {
+              fill: "#6cb238 !important",
+              fontSize: 32
+            }
+          }));
+      
+
+          
+        const optionsIndetifikacijaKupca = JSON.parse(localStorage.getItem('optionIndetifikacijaKupca'));
+
+        return (
+            <FormControl sx={{ minWidth: '100%' }} >
+            <Select
+                 displayEmpty
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select-label"
+              
+                  input={<BootstrapInput  sx={{fontSize: {fontSize}, color: 'white'}}/>}
+                 
+                  renderValue={
+                    placeholder !== "" ? (select) => <em>{placeholder}</em> : () => <em>select value</em>     }
+                  onChange={(select) =>  {setPlaceholder(select.target.value)} }
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                  {optionsIndetifikacijaKupca.map(obj => (
+                    <MenuItem value={obj.label}>{obj.label}</MenuItem>
+                    ))}
+                  
+                
+            </Select>
+      </FormControl>
+        )
+      }
+
 
       return (
         <ThemeProvider theme={theme}>
@@ -133,7 +197,7 @@ export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPo
                             <Grid sx={{display:  'flex', flexDirection:  'column', mt: 2, height:  '40%', alignItems:  'center'}} >
                                 <Grid xs={12}  sx={{width:  '100%', mt: 6}}>
                                 <Typography sx={{color: '#6cb238',  fontSize: 16}}>Label</Typography>
-                                            <CustomSelectField fontSize={24}></CustomSelectField>
+                                            <ComponentSelectIndetifikacijaKupca   fontSize={24}></ComponentSelectIndetifikacijaKupca>
                                 </Grid>
                                 <Grid item xs={12}  sx={{display: 'flex',  mt: 5}} >    
                                     <TextField
@@ -142,7 +206,7 @@ export const ModalIndetifikacijaKupca = ({openProps,handleCloseprops,fromModalPo
                                         id="filled-hidden-label-normal"
                                         value={value}
                                         onChange={handleChange}
-                                        placeholder='Unesite PIB kupca'
+                                        placeholder={placeholder}
                                         variant="filled"
                                         color="neutral"
                                         inputProps={{min: 0, style: { textAlign: 'start' }}}

@@ -16,6 +16,10 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { withTheme } from '@emotion/react';
+import { styled } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 
 import  {CustomSelectField}   from  '../Components/customSelectField'
 
@@ -61,6 +65,7 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
 
     const [valuePasos, setValuePasos] = React.useState('');
     const [valueIndKupca, setValueIndKupac] =  React.useState('');
+    const [placeholder, setPlaceholder] = React.useState('');
 
     if(openProps) {
         setTimeout(() => {
@@ -78,7 +83,6 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
 
     const handleAddValue = (event) => {
 
-        console.log(event.target.value);
         let valueTmp = valuePasos + event.target.value;
         setValuePasos(valueTmp);
 
@@ -93,7 +97,6 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
 
 
     const  handleChangeRadio = (event) => {
-            console.log(event.target.value);
             setValueIndKupac(event.target.value);
     }
 
@@ -103,6 +106,64 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
         fromModalPopustRacun({popustRadio:  valueIndKupca,  popust:  valuePasos});
         handleCloseprops();
     }
+
+
+    const ComponentSelectOpcionoPoljeKupca =  ({fontSize}) => {
+
+        const BootstrapInput = styled(InputBase)(({ theme }) => ({
+ 
+            '& .MuiInputBase-input': {
+              borderRadius: 8,
+              color:  'white', 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center',
+              border: '1px solid #ced4da',
+              backgroundColor:  '#1E2730',
+              padding: '10px 26px 10px 12px',
+              transition: theme.transitions.create(['border-color', 'box-shadow']),
+              // Use the system font instead of the default Roboto font.
+              fontFamily: [
+                
+                'Roboto',
+               
+              ],
+              
+            },
+            '& .MuiSvgIcon-root ': {
+              fill: "#6cb238 !important",
+              fontSize: 32
+            }
+          }));
+      
+
+          
+        const optionsOpcionoPoljeKupca = JSON.parse(localStorage.getItem('optionOpcionoPoljeKupca'));
+
+        return (
+            <FormControl sx={{ minWidth: '100%' }} >
+            <Select
+                 displayEmpty
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select-label"
+              
+                  input={<BootstrapInput  sx={{fontSize: {fontSize}, color: 'white'}}/>}
+                 
+                  renderValue={
+                    placeholder !== "" ? (select) => <em>{placeholder}</em> : () => <em>select value</em>     }
+                  onChange={(select) =>  {setPlaceholder(select.target.value)} }
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  >
+                  {optionsOpcionoPoljeKupca.map(obj => (
+                    <MenuItem value={obj.label}>{obj.label}</MenuItem>
+                    ))}
+                  
+                
+            </Select>
+      </FormControl>
+        )
+      }
+
 
       return (
         <ThemeProvider theme={theme}>
@@ -156,7 +217,7 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
                                 </Grid>
                                 <Grid xs={12}  sx={{width:  '100%', mt: 4}}>
                                 <Typography sx={{color: '#6cb238',  fontSize: 16}}>Label</Typography>
-                                            <CustomSelectField fontSize={24}></CustomSelectField>
+                                            <ComponentSelectOpcionoPoljeKupca  fontSize={24}></ComponentSelectOpcionoPoljeKupca>
                                 </Grid>
                                 <Grid item xs={12}  sx={{display: 'flex',  mt: 4}} >    
                                     <TextField
@@ -165,7 +226,7 @@ export const ModalOpcionoPoljeKupca = ({openProps,handleCloseprops,fromModalPopu
                                         id="filled-hidden-label-normal"
                                         value={valueIndKupca}
                                         //onChange={handleChange}
-                                        placeholder='Unesite indetifikaciju kupca...'
+                                        placeholder={placeholder}
                                         variant="filled"
                                         color="neutral"
                                         inputProps={{min: 0, style: { textAlign: 'start' }}}

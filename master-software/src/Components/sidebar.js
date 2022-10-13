@@ -22,9 +22,9 @@ const drawerWidth = 96;
   
   const closedMixin = (theme) => ({
     overflowX: 'hidden',
-    width: window.devicePixelRatio == 1.5 ?  `calc(${theme.spacing(7)} + 1px)` : drawerWidth,
+    width: window.devicePixelRatio == 1.5 ?  65 : drawerWidth,
     [theme.breakpoints.up('sm')]: {
-      width:  window.devicePixelRatio == 1.5 ?  `calc(${theme.spacing(7)} + 1px)` : drawerWidth,
+      width:  window.devicePixelRatio == 1.5 ?  65 : drawerWidth,
       backgroundColor:  '#323B40',
     },
   });
@@ -79,23 +79,26 @@ const drawerWidth = 96;
     },
   ];
 
-export const Sidebar = ({openModal}) => {
+export const Sidebar = ({openModal, openModalIzvestajOp}) => {
 
 
   const openModalFunc = (text) => {
-    if(text  ===  'Kupac')
-    openModal();
-  }
+    if(text  ===  'Kupac') {
+      openModal();
+    } else if( text === 'Admin')  {
+      openModalIzvestajOp();
+    }
+    }
 
    
       return (
         <Drawer variant="permanent" >
         <DrawerHeader>
-          <Box  sx={{ mt: '48px'}}>
+          <Box  sx={{ mt:  window.devicePixelRatio == 1.5 ?   '25px' : '48px' }}>
               <img src={Logo} alt="Master logo" style={{maxWidth:48}}  />
           </Box>
         </DrawerHeader>
-        <Box sx={{marginTop: '120px'}}>
+        <Box sx={{marginTop:  window.devicePixelRatio == 1.5 ?  '50px' : '120px' }}>
             <List>
             {icons.map((item, index) => (
                 <ListItem key={item} disablePadding sx={{ display: 'block' }}>

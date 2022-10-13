@@ -26,29 +26,10 @@ const corsOptions ={
     optionSuccessStatus:200
 }
 
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.static('public'));
 
-const upload = multer({ storage: storage } ).single('file');
-
-const store = multer({dest: 'src/files'}).single('file');
-
 app.use(express.json());
-
-
-// route for file upload
-app.post("/test1", function(req,res,next) {
-    console.log(__dirname);
-
-    upload(req, res, function(error) {
-            if(error) {
-                console.log('erro');
-            } else {
-                console.log('uspesno sacuva');
-                res.sendStatus(200);
-            }
-    })
-});
 
 
 app.get('/provera', (req, res) => {
@@ -60,24 +41,18 @@ app.get('/provera', (req, res) => {
 
 
 app.post("/saveRacun", function(req,res,next) {
-    console.log(req);
+    console.log(__dirname);
 
-    let student = { 
-        name: 'Mike',
-        age: 23, 
-        gender: 'Male',
-        department: 'English',
-        car: 'Honda' 
-    };
+
     const pathTmp = 'C:/Users/neman/posao/master_software_frontend/master-software/master-software/racuni/'
-    let data =JSON.stringify(req.body);
-    console.log(data);
+    let data =JSON.stringify(req.body.body);
     let todayNow = fns.format(new Date(), 'dd_MM_yyyy_HH_mm_ss');
 
-    fs.writeFile(pathTmp + 'racun_' +todayNow + '.json', data, (err) => {
+    fs.writeFile(pathTmp + 'storno_racun_' +todayNow + '.json', data, (err) => {
         if (err) throw err;
         console.log('Data written to file');
     });
+
 
     
 });
@@ -105,10 +80,6 @@ app.post("/upload",async (req, res) => {
 
 });
 
-app.post('/test', (req, res) => {
-    res.send('POST request to the homepage')
-  })
-
 
   app.post("/stornoRacun", function(req,res,next) {
     console.log(__dirname);
@@ -116,7 +87,6 @@ app.post('/test', (req, res) => {
 
     const pathTmp = 'C:/Users/neman/posao/master_software_frontend/master-software/master-software/storno_racuni/'
     let data =JSON.stringify(req.body);
-    console.log(data);
     let todayNow = fns.format(new Date(), 'dd_MM_yyyy_HH_mm_ss');
 
     fs.writeFile(pathTmp + 'storno_racun_' +todayNow + '.json', data, (err) => {

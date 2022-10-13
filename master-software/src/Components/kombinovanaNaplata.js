@@ -60,10 +60,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
      }
 
      const handleChangeGotovina = (event) => {
-        console.log(event);
         if (event.key === 'Enter') {
  
-                console.log(event.target.value);
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
                 setUplataGotovina(tmpUplata);
                 event.target.value = tmpUplata;
@@ -74,10 +72,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
      } 
 
      const handleChangePlatnaKartica = (event) => {
-        console.log(event);
         if (event.key === 'Enter') {
  
-                console.log(event.target.value);
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
                 setUplataPlatnaKartica(tmpUplata);
                 event.target.value = tmpUplata;
@@ -88,10 +84,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
      } 
 
      const handleChangeCek = (event) => {
-        console.log(event);
         if (event.key === 'Enter') {
  
-                console.log(event.target.value);
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
                 setUplataCek(tmpUplata);
                 event.target.value = tmpUplata;
@@ -102,10 +96,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
      } 
 
      const handleChangeVirman = (event) => {
-        console.log(event);
         if (event.key === 'Enter') {
  
-                console.log(event.target.value);
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
                 setUplataVirman(tmpUplata);
                 event.target.value = tmpUplata;
@@ -159,7 +151,9 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                         lineHeight:  '32px', 
                                         textAlign: 'center',
                                         textTransform: 'uppercase',
-                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24}} >X</Typography>
+                                        fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,
+                                        '&:hover':{cursor: 'pointer'
+                                    }}} >X</Typography>
                             </Grid>
                     </Grid>
                     <Divider sx={{backgroundColor:  '#6cb238'}} />

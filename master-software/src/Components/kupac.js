@@ -14,6 +14,7 @@ import { makeStyles } from "@mui/styles";
 import Divider from '@mui/material/Divider';
 import  {CustomSearchField}   from  '../Components/customSearchField'
 import  {CustomSelectField}   from  '../Components/customSelectField'
+import { Kupci } from '../Data/Kupci';
 import Table from '@mui/material/Table';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
@@ -53,68 +54,73 @@ const style = {
     display: 'flex'
   };
 
-export const  ModalKupac = ({openProps,handleCloseprops,titleTextProps,fromModalDp, openModalIndetifikacijaKupca,  openModalOpKupca}) => {
+export const  ModalKupac = ({openProps,handleCloseprops,titleTextProps,fromModalKupac, openModalIndetifikacijaKupca,  openModalOpKupca}) => {
     
 
-    const initialArtikal = [
+    const initialKupac = [
         {
             id:  '', 
-            productName: '',
-            cena: '',
-            code: ''
+            naziv: '',
+            pib: '',
+            maticniBroj: '',
+            postanskiBroj:  '',
+            mesto:  '',
+            email:  '',
+            popust:  ''
 
         }
     ]
 
     const [value, setValue] = React.useState('');
-    const [searchValue, setSearchValue] = React.useState(initialArtikal);
+    const [searchValue, setSearchValue] = React.useState(initialKupac);
     
     const [selectedValue, setSelectedValue] = React.useState('');
     const classes = useStyles();
 
 
     React.useEffect(() => {
-        console.log('test');
-        setSearchValue(initialArtikal);
+        setSearchValue(initialKupac);
       },[openProps]);
 
 
 
 
-    const filterArtikal = (dataFilter) => {
-        let artikliList = JSON.parse(localStorage.getItem('artikalList'));
-        let artikalTmp = artikliList.filter(obj => obj.code === dataFilter || obj.productName.toLowerCase().includes(dataFilter.toLowerCase()));
-        console.log(artikalTmp);
-        setSearchValue(initialArtikal);
+    const filterKupci = (dataFilter) => {
+        let kupacTmp = Kupci.filter(obj => obj.pib === dataFilter || obj.naziv.toLowerCase().includes(dataFilter.toLowerCase()));
+        setSearchValue(initialKupac);
         setSelectedValue('');
-        if(artikalTmp['length'] && dataFilter !== '') {
-            artikalTmp.map((row,i) => {
-                console.log(row);
-                let artikalValue = 
+        if(kupacTmp['length'] && dataFilter !== '') {
+            kupacTmp.map((row,i) => {
+
+                let kupacValue = 
                     {
                         id: row.id,
-                        productName: row.productName,
-                        cena: '100',
-                        code:  row.code
+                        naziv: row.naziv,
+                        pib:    row.pib,
+                        maticniBroj:   row.maticniBroj,
+                        potanskiBroj:  row.postanskiBroj,
+                        mesto: row.mesto,
+                        email:  row.email,
+                        popust:   row.popust
 
                     }
                 
-                setSearchValue(prevState => [...prevState,artikalValue]);
+                setSearchValue(prevState => [...prevState,kupacValue]);
             })
-            console.log(searchValue);
         } else {            
-            setSearchValue(initialArtikal);
+            setSearchValue(initialKupac);
         }
     }
 
 
     const saveSearch = () => {
-        fromModalDp(selectedValue);
+
+        let kupacTmp = Kupci.filter(obj => obj.id === selectedValue);
+        fromModalKupac({kupac:kupacTmp, tipSearch: 'kupac'});
         handleCloseprops();
     }
 
     const  openModalIndKupca = () => {
-        console.log('ghggfhh');
         openModalIndetifikacijaKupca();
     }
 
@@ -220,7 +226,7 @@ export const  ModalKupac = ({openProps,handleCloseprops,titleTextProps,fromModal
                                               lineHeight:  '22px',
                                               
                                               fontSize: () => window.devicePixelRatio == 1.5 ? 10 : 14}}>Pretraga</Typography>
-                                                        <CustomSearchField fromSearch={filterArtikal}></CustomSearchField>
+                                                        <CustomSearchField fromSearch={filterKupci}></CustomSearchField>
                                                 </Grid>
                                                 <Grid item xs={3}   >
                                                 
@@ -233,7 +239,7 @@ export const  ModalKupac = ({openProps,handleCloseprops,titleTextProps,fromModal
                                         <TableContainer sx={{ maxHeight: 400 , border:  'solid 1px', mt:3, backgroundColor:  '#1e2730'}} >
                                             <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#1e2730'}}}  >
                                             <TableHead   >
-                                                <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'},}}  >
+                                            <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'},}}  >
                                                     <TableCell  sx={{color:  'white', width:  '20%', fontFamily: 'Roboto',
                                                         fontStyle: 'normal',
 
@@ -296,26 +302,88 @@ export const  ModalKupac = ({openProps,handleCloseprops,titleTextProps,fromModal
                                                         
                                                         lineHeight:  '26px',
                                               
-                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,  textOverflow: 'ellipsis', overflow: 'hidden'}}>Popust</TableCell>
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,  textOverflow: 'ellipsis', overflow: 'hidden'}}  align="right">Popust</TableCell>
                                                 </TableRow>
-                                            </TableHead>
-                                            <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
-                                                {searchValue.slice(1).map((row,i) => (
+                                                </TableHead>
+                                                <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
+                                                {searchValue.slice(1).map((obj,i) => (
                                                 <TableRow
-                                                    sx={{ '& td, & th': {color:  'white',  border:  0, fontSize: 8, maxWidth: 90}, backgroundColor: () => row.code === selectedValue ? '#6cb238' : '#1e2730' }}
-                                                    onClick={() => setSelectedValue(row.code)}
+                                                     sx={{ '& td, & th': {color:  'white',  border:  0, fontFamily: 'Roboto',
+                                                     fontStyle: 'normal',
+        
+                                                     /* or 158% */
+                                                     lineHeight:  '32px', 
+                                                     textTransform: 'none',
+                                                     fontSize:  window.devicePixelRatio == 1.5 ?  8 : 14}, backgroundColor:  () => obj.id === selectedValue  ? '#6cb238' :  '#1e2730' }}
+                                                     onClick={() => setSelectedValue(obj.id)}
                                                 >   
-                                                <TableCell component="th" scope="row"  >
-                                                    {row.productName}
-                                                </TableCell>
-                                                <TableCell align="right">{row.cena}</TableCell>
-                                                
-                                                </TableRow>
+                                                    <TableCell  sx={{color:  'white', width:  '20%', fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
 
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,   textOverflow: 'ellipsis', overflow: 'hidden'}}>{obj.naziv}</TableCell>
+                                                    <TableCell  sx={{color:  'white',  width:  '15%', fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                                        
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16}} align="right">{obj.pib}</TableCell>
+                                                    <TableCell  sx={{color:  'white',  width:   '15%', fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,  textOverflow: 'ellipsis', overflow: 'hidden'}}>{obj.maticniBroj}</TableCell>
+                                                    <TableCell  sx={{color:  'white',  width:  '15%', fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,   textOverflow: 'ellipsis', overflow: 'hidden'}}>{obj.postanskiBroj}</TableCell>
+                                                    <TableCell  sx={{color:  'white', width:   '15%'  ,fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,  textOverflow: 'ellipsis', overflow: 'hidden'}}>{obj.mesto}</TableCell>
+                                                    <TableCell  sx={{color:  'white',  width:  '15%',  fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 , width:  '40%',  textOverflow: 'ellipsis', overflow: 'hidden'}}>{obj.email}</TableCell>
+                                                    <TableCell  sx={{color:  'white',  width:  '10%', fontFamily: 'Roboto',
+                                                        fontStyle: 'normal',
+
+                                                        /* or 158% */
+
+                                                        
+                                                        lineHeight:  '26px',
+                                              
+                                                        fontSize: () => window.devicePixelRatio == 1.5 ? 8 : 16 ,  textOverflow: 'ellipsis', overflow: 'hidden'}}  align="right">{obj.popust}</TableCell>
+                                                </TableRow>
                                                 ))}
-                                                
+                                           </TableBody>
                                             
-                                            </TableBody>
                                             </Table>
                                         </TableContainer>        
                                         </Grid>
