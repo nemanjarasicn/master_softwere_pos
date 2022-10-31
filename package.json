@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "lodash": "^4.17.21",
+    "material-ui-confirm": "^3.0.6",
+    "react-spinners": "^0.13.6"
+  }
+}

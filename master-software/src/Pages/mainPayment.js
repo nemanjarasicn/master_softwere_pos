@@ -19,6 +19,7 @@ import TableBody from '@mui/material/TableBody';
 import Card from '@mui/material/Card';
 import '../Css/mainPaymentCss.css'
 import Tabs from '@mui/material/Tabs';
+import { useNavigate, useParams } from 'react-router-dom';
 import Tab from '@mui/material/Tab';
 
 import {ModalCount} from '../Components/modalCount'
@@ -28,12 +29,15 @@ import {ModalStornoArtikal} from '../Components/modalStornoArtikla'
 import {ModalNaplata} from '../Components/modalNaplata'
 import {Sidebar} from '../Components/sidebar'
 import {ModalDetaljnaPretraga} from '../Components/detaljnaPretraga'
+import { ModalPdfStampa }  from  "../Components/stampaPdf"
+import { ModalAvans}  from  "../Components/modalAvans"
 import {ModalKupac} from '../Components/kupac'
 import { ModalIzvestaj } from '../Components/modalIzvestaj';
 import { countRacunIdList } from '../Data/countRacunId';
 
 import {ModalIndetifikacijaKupca} from '../Components/indetifikacijaKupca'
 import {ModalOpcionoPoljeKupca} from '../Components/opcionoPoljeKupca'
+import   { ModalConfirm }  from "../Components/modalConfirm"
 import {ModalKombinovanaNaplata} from '../Components/kombinovanaNaplata'
 import {ModalAlertError} from '../Components/alerError'
 import { artiklTmpBAckInitial } from '../Data/artikalBackInitial';
@@ -48,25 +52,34 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
 import textFile from '../Images/robots.txt'
-import { sendDataPrinter,  sendDataVpfr, arrayChunk , checkArtikal, handleTop, handleBottom, handleBottomStep, saveFile, addUplataDnevniIzvestaj} from '../Funkcije/functions';
+import { sendDataPrinter,  sendDataVpfr, arrayChunk , checkArtikal, handleTop, handleBottom, handleBottomStep, saveFile, addUplataDnevniIzvestaj, addArtikalDnevniIzvestaj} from '../Funkcije/functions';
 
 import * as txtGeneral from '../Data/txt';
+import { artiklTmp }  from '../Data/artikliTmp'
+import  artikli1 from '../Data/artikliTmp1.json'
+import { chainPropTypes } from '@mui/utils';
 
 
 export const MainPayment = () => {
 
   
   const theme = useTheme();
+
+  const navigate  = useNavigate();
   const [openModalKolicina, setOpenModalKolicina] = React.useState(false);
   const [openModalPopustArtikal, setOpenModalPopustArtikal] = React.useState(false);
   const [openModalPopustRacun, setOpenModalPopustRacun] = React.useState(false);
   const [openModalStornoArtikla, setOpenModalStornoArtikla] = React.useState(false);
   const [openModalStornoRacun, setOpenModalStornoRacun] = React.useState(false);
   const [openModalNaplata, setOpenModalNaplata] = React.useState(false);
+  const [openModalAvans, setOpenModalAvans] = React.useState(false);
+  const [logOutFlag, setLogOutFlag] = React.useState(false);
   const [openModalIzvestaj, setOpenModalIzvestaj] = React.useState(false);
   const [openModalDetaljnaPretraga, setOpenDetaljnaPretraga] = React.useState(false);
+  const [openModalPdfStampa, setOpenModalPdfStampa] = React.useState(false);
   const [openModalKupac, setOpenModalKupac] = React.useState(false);
   const [openModalIndKupca, setOpenIndKupca] = React.useState(false);
+  const [openModalConfirm, setOpenModalConfirm] = React.useState(false);
   const [openModalOpKupca, setOpenModalOpKupca] = React.useState(false);
   const [openModalKomPlacanje, setOpenModalKomPlacanje] = React.useState(false);
   const [openModalAlertError, setOpenModalAlertError] = React.useState(false);
@@ -95,8 +108,13 @@ export const MainPayment = () => {
   const [txt, setTxt] = React.useState(txtGeneral);
   const [totalPopustList, setTotalPopustList] = React.useState(JSON.parse(localStorage.getItem('initialValuePopust')));
   //da aplikacija ne bi pucala ako je lista artikala prazna ili ako ima problem sa komunikacijom sa api
-  const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
-  const [artikalList, seArtikalList] = React.useState(artikalListTmp);
+  //const artikalListTmp = !JSON.parse(localStorage.getItem('artikalList')).error  ? JSON.parse(localStorage.getItem('artikalList')) : [];
+  const articalListTmp1 =   artiklTmp;
+  //const  articalListTmp1 = artikli1;
+  console.log('artikl',artikli1);
+
+
+  const [artikalList, seArtikalList] = React.useState(articalListTmp1);
   const [tipoviProizvodaListArtikal, setTipoviProizvodaListArtikal] = React.useState(artikalList);
   const [errorMessage, setErrorMessage] = React.useState('');
   const handleOpenModalKolicina = () => setOpenModalKolicina(true);
@@ -131,10 +149,16 @@ export const MainPayment = () => {
   const handleCloseModalDetaljnaPretraga = () => setOpenDetaljnaPretraga(false);
   const handleOpenModalKupac = () => setOpenModalKupac(true);
   const handleCloseModalKupac = () => setOpenModalKupac(false);
+  const handleOpenModalConfirm = () => setOpenModalConfirm(true);
+  const handleCloseModalConfirm = () => setOpenModalConfirm(false);
   const handleOpenModalIndKupca = () => setOpenIndKupca(true);
   const handleCloseModalIndKupca = () => setOpenIndKupca(false);
   const handleOpenModalIzvestaj = () => setOpenModalIzvestaj(true);
   const handleCloseModalIzvestaj = () => setOpenModalIzvestaj(false);
+  const handleOpenModalPdfStampa = () => setOpenModalPdfStampa(true);
+  const handleCloseModalPdfStampa = () => setOpenModalPdfStampa(false);
+  const handleOpenModalAvans = () => setOpenModalAvans(true);
+  const handleCloseModalAvans = () => setOpenModalAvans(false);
   const handleOpenModalOpKupca = () => setOpenModalOpKupca(true);
   const handleCloseModakOpKupca = () => setOpenModalOpKupca(false);
 
@@ -198,7 +222,7 @@ const handleAddArtikalRacunTipovi = (artikal) => {
       
       if(checkIsInRacun(artikalTmp).length > 0) {
         const newStateArtikal = listaRacunaTmp.map(obj => {
-          if (obj.id ===  artikalTmp[0].id) {
+          if (obj.id ===  artikalTmp[0].id  &&  obj.activRacun    ===   activRacun) {
             return {...obj, kolicina:  (parseFloat(obj.kolicina)   + 1)};
           } else {
             return obj;
@@ -251,7 +275,7 @@ const handleAddArtikalRacunTipovi = (artikal) => {
 const  checkIsInRacun  = (artikal) => {
   console.log(listaRacunaTmp);
   let idTmp = artikal[0].id;
-  const checkArtikal = listaRacunaTmp.filter(obj=>  obj.id  === idTmp);
+  const checkArtikal = listaRacunaTmp.filter(obj=>  obj.id  === idTmp &&  obj.activRacun   ===  activRacun);
 
   return checkArtikal;
 }
@@ -266,114 +290,179 @@ const handleAddArtikalRacun = (event) => {
   }
  
   if (event.key === 'Enter') {
-    inputTmp = event.target.value.split('*')[0];
-    inputTmpAfter = event.target.value.split('*')[1];
-    const re = /^[0-9\b\/.\/*]+$/;
-    if(re.test(event.target.value) )  {
-        let inputValue  =   inputTmpAfter !==  undefined ?  inputTmpAfter  :  event.target.value;
-        
-        let artikalTmp = artikalList.filter(element => element.code ===   inputValue || element.barCode ===  inputValue );
+    if((event.target.value).length ===  13) {
+      const str = event.target.value;
+      const first2 = str.slice(0, 2);
+      if(first2 === '21' )  {
+        const codeTezinskiTmp = str.slice(2, 7);
+        const masaTmp = str.slice(7, 13);
+        const kgTmp =  masaTmp.slice(0,3);
+        const grTmp = masaTmp.slice(3,6);
+        const masa = parseFloat(kgTmp + '.'  + grTmp);
+        console.log('tezinski bar kod', masa);
+
+
+        let artikalTmp = artikalList.filter(element => element.code ===   codeTezinskiTmp  );
         let artikalCheckTmp = checkArtikal(artikalTmp);
         let countIdTmp = countRacunId.filter(obj => obj.id === activRacun);
 
-      
 
         if(artikalCheckTmp === '') {
 
-          let checkDecimal;
-          if(inputTmpAfter !==  undefined) {
-           
-            checkDecimal =  (inputTmp % 1 !== 0  &&  artikalTmp[0].decimalShow)  ? true: (inputTmp % 1 === 0) ? true: false;
-          } else {
-            checkDecimal = true;
+          let artikalTmp2 = {
+            id:  artikalTmp[0].id,
+            idRacunProduct: countIdTmp[0].countId,
+            productid: artikalTmp[0].prodctId,
+            productName: artikalTmp[0].productName,
+            //kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+            kolicina:   masa,
+            cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+            tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+            code: artikalTmp[0].code,
+            activRacun: activRacun,
+            popust: 0,
+            vat: artikalTmp[0].vat,
+            vatValue:  artikalTmp[0].vatValue1
           }
+          
 
-          if(checkDecimal) {
-
-            console.log('sasass');
-  
-            if(checkIsInRacun(artikalTmp).length > 0) {
-              const newStateArtikal = listaRacunaTmp.map(obj => {
-                if (obj.id ===  artikalTmp[0].id) {
-                  return {...obj, kolicina:  inputTmpAfter  !==  undefined  ? (parseFloat(obj.kolicina)  + parseFloat(inputTmp))  :  (parseFloat(obj.kolicina)   + 1),};
-                } else {
-                  return obj;
-                }
-              });
-
-              
-              event.target.value = '';
-               setListaRacunaTmp(newStateArtikal);
-               setInputTmp('');
+          const newState = countRacunId.map(obj => {
+            if (obj.id ===  activRacun) {
+              return {...obj, countId: obj.countId + 1};
             } else {
-    
-                  let artikalTmp2 = {
-                    id:  artikalTmp[0].id,
-                    idRacunProduct: countIdTmp[0].countId,
-                    productid: artikalTmp[0].prodctId,
-                    productName: artikalTmp[0].productName,
-                    //kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
-                    kolicina:  inputTmpAfter  !==  undefined  ?  inputTmp  : 1,
-                    cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
-                    tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
-                    code: artikalTmp[0].code,
-                    activRacun: activRacun,
-                    popust: 0,
-                    vat: artikalTmp[0].vat,
-                    vatValue:  artikalTmp[0].vatValue1
-                  }
-                  
+              return obj;
+            }
+          });
 
-                  const newState = countRacunId.map(obj => {
-                    if (obj.id ===  activRacun) {
-                      return {...obj, countId: obj.countId + 1};
+
+          event.target.value = '';
+        
+          //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+          setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
+          setCountRacunId(newState)
+          setInputTmp('');
+
+        }   else  {
+          setErrorMessage(artikalCheckTmp);
+          handleOpenModalAlertError();
+          setInputTmp('');
+          event.target.value = '';
+        }
+
+
+
+      }
+    } else {
+        inputTmp = event.target.value.split('*')[0];
+        inputTmpAfter = event.target.value.split('*')[1];
+        const re = /^[0-9\b\/.\/*]+$/;
+        if(re.test(event.target.value) )  {
+            let inputValue  =   inputTmpAfter !==  undefined ?  inputTmpAfter  :  event.target.value;
+            
+            let artikalTmp = artikalList.filter(element => element.code ===   inputValue || element.barCode ===  inputValue );
+            let artikalCheckTmp = checkArtikal(artikalTmp);
+            let countIdTmp = countRacunId.filter(obj => obj.id === activRacun);
+
+          
+
+            if(artikalCheckTmp === '') {
+
+              let checkDecimal;
+              if(inputTmpAfter !==  undefined) {
+              
+                checkDecimal =  (inputTmp % 1 !== 0  &&  artikalTmp[0].decimalShow)  ? true: (inputTmp % 1 === 0) ? true: false;
+              } else {
+                checkDecimal = true;
+              }
+
+              if(checkDecimal) {
+
+                console.log('sasass');
+      
+                if(checkIsInRacun(artikalTmp).length > 0) {
+                  const newStateArtikal = listaRacunaTmp.map(obj => {
+                    if (obj.id ===  artikalTmp[0].id &&  obj.activRacun  ===  activRacun) {
+                      return {...obj, kolicina:  inputTmpAfter  !==  undefined  ? (parseFloat(obj.kolicina)  + parseFloat(inputTmp))  :  (parseFloat(obj.kolicina)   + 1),};
                     } else {
                       return obj;
                     }
                   });
 
-
+                  
                   event.target.value = '';
-                
-                  //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
-                  setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
-                  setCountRacunId(newState)
+                  setListaRacunaTmp(newStateArtikal);
                   setInputTmp('');
-            }
-          }  else {
-            setErrorMessage('Kolicina ne moze biti decimalni broj');
-            handleOpenModalAlertError();
-            setInputTmp('');
-            event.target.value = '';
-          
-          }
-        } else{
-          setErrorMessage(artikalCheckTmp);
-          handleOpenModalAlertError();
-          setInputTmp('');
-          event.target.value = '';
-         
-        }
-      } else {
+                } else {
+        
+                      let artikalTmp2 = {
+                        id:  artikalTmp[0].id,
+                        idRacunProduct: countIdTmp[0].countId,
+                        productid: artikalTmp[0].prodctId,
+                        productName: artikalTmp[0].productName,
+                        //kolicina: artikalTmp[0].unitName === 'Kom' ? 1 : 2,
+                        kolicina:  inputTmpAfter  !==  undefined  ?  inputTmp  : 1,
+                        cena:  artikalTmp[0].priceLists[0].price, //zakucano dok Deki ne sredi price list
+                        tipProizvodaId: artikalTmp[0].productGroupRequest[0].idGroup,
+                        code: artikalTmp[0].code,
+                        activRacun: activRacun,
+                        popust: 0,
+                        vat: artikalTmp[0].vat,
+                        vatValue:  artikalTmp[0].vatValue1
+                      }
+                      
 
-          setErrorMessage('Ne mozete uneti nista osim brojeva i znakova "*" i "."');
-          setShowKusur(false);
-          setShowError(true);
-          setTimeout(() => {
-            setShowError(false);
-          }, 5000);
-          setInputTmp('');
-          event.target.value = '';
-      }
+                      const newState = countRacunId.map(obj => {
+                        if (obj.id ===  activRacun) {
+                          return {...obj, countId: obj.countId + 1};
+                        } else {
+                          return obj;
+                        }
+                      });
+
+
+                      event.target.value = '';
+                    
+                      //setRacunTmp01(prevState => [...prevState,artikalTmp[0]])
+                      setListaRacunaTmp(prevState => [...prevState,artikalTmp2]);
+                      setCountRacunId(newState)
+                      setInputTmp('');
+                }
+              }  else {
+                setErrorMessage('Kolicina ne moze biti decimalni broj');
+                handleOpenModalAlertError();
+                setInputTmp('');
+                event.target.value = '';
+              
+              }
+            } else{
+              setErrorMessage(artikalCheckTmp);
+              handleOpenModalAlertError();
+              setInputTmp('');
+              event.target.value = '';
+            
+            }
+          } else {
+
+              setErrorMessage('Ne mozete uneti nista osim brojeva i znakova "*" i "."');
+              setShowKusur(false);
+              setShowError(true);
+              setTimeout(() => {
+                setShowError(false);
+              }, 5000);
+              setInputTmp('');
+              event.target.value = '';
+          }
+        }
     }
 }
 
 
 const childToParent = (childdata) => {
  
-  
+  console.log('asasasa', childdata.counter);
    let listaRacunaTmp1 =  JSON.parse(localStorage.getItem('listaRacunaTmp'));
-   if(childdata.counter === 0 )    {
+   if(parseFloat(childdata.counter) === 0 )    {
+    console.log('usao u count');
       const newState = listaRacunaTmp.filter(obj  =>  obj.idRacunProduct !=  childdata.id  &&     obj.activRacun  ===    activRacun);
        //setRacunTmp01(newState);
       setListaRacunaTmp(newState);
@@ -484,6 +573,17 @@ useEffect(() => {
 }, [buttonRacunList]);
 
 
+useEffect(() => {
+  if(logOutFlag) {
+    navigate({
+      pathname: '/',
+    
+    })
+  }
+  
+}, [logOutFlag]);
+
+
 // ovo su ref koji gadjaju na odredjeni element
 const refTable = useRef();
 const refTipoviProizvoda = useRef();
@@ -498,7 +598,10 @@ useEffect(() => {
 
 
 const  addSearchValue = (searchCode) => {
-  let artikalSearchTmp = JSON.parse(localStorage.getItem('artikalList')).filter(obj => obj.id ===  searchCode );
+  //let artikalSearchTmp = JSON.parse(localStorage.getItem('artikalList')).filter(obj => obj.id ===  searchCode );
+
+
+  let artikalSearchTmp = artiklTmp.filter(obj => obj.id ===  searchCode );
 
   console.log('test', artikalSearchTmp[0]);
  
@@ -605,9 +708,9 @@ const openOPKupca  = () => {
   handleOpenModalOpKupca();
 }
 
-const openModelKomPlacanje = () => {
-  handleCloseModalNaplata({activId: activRacun, tipNaplate:  'komPlacanje'});
-  setToModalKombinovano(totalPrice);
+const openModelKomPlacanje =  (activIdNp) => {
+  handleCloseModalNaplata({activId: activIdNp});
+  setToModalKombinovano({totalPrice:  totalPrice, activId:  activIdNp,  totalPopust:    totalPopust  });
   handleOpenModalKomPlacanje();
 
 }
@@ -655,6 +758,9 @@ const addKusur = (dataKusur) => {
 
   } else if(tipNaplate ===  'kombinovanoPlacanje') {
 
+
+
+    console.log('fsdffd', uplata.Cash);
      racunConfig = {invoiceType: invoiceType,
                     transactionType:transactionType,
                     invoiceHeader:invoiceHeader,
@@ -665,24 +771,21 @@ const addKusur = (dataKusur) => {
                    payment: [
                     {
                       paymentType: "Cash",
-                      amount:  Number(totalPrice).toFixed(2)
+                      amount:  Number(uplata.Cash).toFixed(2)
                     },
                     {
-                      paymentType: "Cash",
-                      amount:  Number(totalPrice).toFixed(2)
+                      paymentType: "Card",
+                      amount:  Number(uplata.platnaKartica).toFixed(2)
                     },
                     {
-                      paymentType: "Cash",
-                      amount:  Number(totalPrice).toFixed(2)
+                      paymentType: "Check",
+                      amount:  Number(uplata.cek).toFixed(2)
                     },
-                    {
-                      paymentType: "Cash",
-                      amount:  Number(totalPrice).toFixed(2)
-                    },
-                    {
-                      paymentType: "Cash",
-                      amount:  Number(totalPrice).toFixed(2)
-                    }
+                    /*{
+                      paymentType: "Virman",
+                      amount:  Number(uplata.virman).toFixed(2)
+                    },*/
+                    
                   ]
                   }
 
@@ -713,7 +816,9 @@ const addKusur = (dataKusur) => {
 
         let gotovinaTmp = 0;
         
-        addUplataDnevniIzvestaj(tipNaplate,totalPrice);
+        addUplataDnevniIzvestaj(tipNaplate,totalPrice,uplata);
+        addArtikalDnevniIzvestaj(activRacunid, listaRacunaTmp);
+
 
         if(tipNaplate  === 'dirGotovina')  {
           addKusur({id: activRacunid, kusur: 0 });
@@ -800,12 +905,35 @@ const  addTipoviProizvodaListPodgrupe = () =>  {
       setTipoviProizvodaListArtikal(arrayTmp);          
 }
 
+
+
+
+const  naplataKombinovano =  (dataKomNaplata)   =>   {
+
+  console.log('dsdsdd',dataKomNaplata);
+  naplataTotal(1,dataKomNaplata.tipUplate,dataKomNaplata.uplata);
+  handleCloseModalKomPlacanje();
+
+
+
+}
+
 const  setActivTabTipProizvoda = (groupName) => {
   setIsPodgrupa(false);
   setActivTipProizvoda(groupName);
   setTipoviProizvodaListArtikal(artikalList);
 }
 
+
+
+const  logOutFunc   =  (potvrdi)  =>   {
+  if(potvrdi)   {
+      navigate({
+        pathname: '/',
+      
+      })
+    }
+}
 
 
   return (
@@ -817,7 +945,7 @@ const  setActivTabTipProizvoda = (groupName) => {
                    }}>
         <CssBaseline />
             <Grid item xs={0.6} >
-              <Sidebar openModal={openModalKu}  openModalIzvestajOp={openModalIz}></Sidebar>
+              <Sidebar openModal={openModalKu}  openModalIzvestajOp={openModalIz}  openModalPdfStampa={handleOpenModalPdfStampa}  openModalConfirmOp={handleOpenModalConfirm}></Sidebar>
             </Grid>
             <Grid item xs={11.4}>
               <Box  sx={{ flexGrow: 1,  height: '100vh', overflow: 'auto'  , display:  'flex' }}>
@@ -867,7 +995,7 @@ const  setActivTabTipProizvoda = (groupName) => {
                                           textAlign: 'center',
                                           textTransform: 'none',
                                           fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,
-                                         }}>{row.kusur}</Typography></Typography>
+                                         }}>{currencyFormat(row.kusur)}</Typography></Typography>
                               </Grid>  
                           </Box>
                            ))}
@@ -976,8 +1104,11 @@ const  setActivTabTipProizvoda = (groupName) => {
                               </Grid>
                           </Grid>  
                           <ModalDetaljnaPretraga openProps={openModalDetaljnaPretraga}  handleCloseprops={handleCloseModalDetaljnaPretraga}    fromModalDp={addSearchValue}  refresh={true} ></ModalDetaljnaPretraga>
+                          <ModalPdfStampa  openProps={openModalPdfStampa}  handleCloseprops={handleCloseModalPdfStampa}></ModalPdfStampa>
+                          <ModalAvans  openProps={openModalAvans}  handleCloseprops={handleCloseModalAvans}></ModalAvans>
                           <ModalKupac openProps={openModalKupac}  handleCloseprops={handleCloseModalKupac}    fromModalKupac={addKupac}   openModalIndetifikacijaKupca={openIndKupcaFunc}    openModalOpKupca={openOPKupca}   ></ModalKupac>
                           <ModalIzvestaj  openProps={openModalIzvestaj}  handleCloseprops={handleCloseModalIzvestaj}></ModalIzvestaj>
+                          <ModalConfirm  openProps={openModalConfirm}  handleCloseprops={handleCloseModalConfirm}   logOut={() => setLogOutFlag(true)}></ModalConfirm>
                           <ModalIndetifikacijaKupca openProps={openModalIndKupca}  handleCloseprops={handleCloseModalIndKupca}     fromIndetifikacijaKupca={addKupac}     ></ModalIndetifikacijaKupca>
                           <ModalOpcionoPoljeKupca openProps={openModalOpKupca}  handleCloseprops={handleCloseModakOpKupca}     ></ModalOpcionoPoljeKupca>
                           <Grid  sx={{ background: "#323b40", marginTop:  '20px',  height: "82%",  borderRadius:  2}}  >
@@ -1041,12 +1172,12 @@ const  setActivTabTipProizvoda = (groupName) => {
                                               maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
                                               maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
                                               minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
-                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32, alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0,refTable, refTipoviProizvoda, refTextField)} > <ArrowBackIosIcon  sx={{ml:1, fontSize: 16}}/></Button>
+                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32, alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(0, refTipoviProizvoda, refTextField)} > <ArrowBackIosIcon  sx={{ml:1, fontSize: 16}}/></Button>
                                       <Button variant="contained"   sx={{   marginLeft:   window.devicePixelRatio == 1.5 ? '16px' : '24px', mr: 1, display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   
                                               maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
                                               maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
                                               minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
-                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(0, refTable, refTipoviProizvoda, refTextField)} ><ArrowForwardIosIcon  sx={{ fontSize:  16}} /></Button>
+                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(0,  refTipoviProizvoda, refTextField)} ><ArrowForwardIosIcon  sx={{ fontSize:  16}} /></Button>
                                 </Grid>               
                               </Grid> 
                           </Grid>
@@ -1113,7 +1244,7 @@ const  setActivTabTipProizvoda = (groupName) => {
 
                                               textTransform:  'none', 
                                               lineHeight:  '26px', fontSize:  () => window.devicePixelRatio == 1.5 ? 10 : 16}}>Prodaja</Button>
-                                        <Button variant="contained"  onClick={() => setActivPlacanje('Proforma')}    sx={{backgroundColor:  activPlacanje === 'Proforma'  ?    '#1E6812' :  '#1e2730'   ,  marginRight: '8px',   width:   '22.5%',fontFamily: 'Roboto',
+                                        <Button variant="contained"  onClick={() => setActivPlacanje('Proforma')}    sx={{backgroundColor:  activPlacanje === 'Proforma'  ?    '#FDBD01' :  '#1e2730'   ,  marginRight: '8px',   width:   '22.5%',fontFamily: 'Roboto',
                                               fontStyle: 'normal',
                                               '&:hover': {
                                                 backgroundColor: '#6cb238',
@@ -1125,7 +1256,7 @@ const  setActivTabTipProizvoda = (groupName) => {
 
                                               textTransform:  'none',
                                               lineHeight:  '26px',  fontSize:  () => window.devicePixelRatio == 1.5 ? 10 : 16}}>Predracun</Button>
-                                        <Button variant="contained"    onClick={() => setActivPlacanje('Advance')}      sx={{backgroundColor:  activPlacanje === 'Advance'  ?    '#1E6812' :  '#1e2730' , marginRight:  '8px',   width:   '22.5%',  fontFamily: 'Roboto',
+                                        <Button variant="contained"    onClick={() => {setActivPlacanje('Advance'); handleOpenModalAvans()}}      sx={{backgroundColor:  activPlacanje === 'Advance'  ?    '#E55451' :  '#1e2730' , marginRight:  '8px',   width:   '22.5%',  fontFamily: 'Roboto',
                                               fontStyle: 'normal',
                                               '&:hover': {
                                                 backgroundColor: '#6cb238',
@@ -1148,7 +1279,7 @@ const  setActivTabTipProizvoda = (groupName) => {
                                               /* or 158% */
 
                                               textTransform:  'none',
-                                              lineHeight:  '26px',  fontSize:  () => window.devicePixelRatio == 1.5 ? 10 : 16}}>Obrt</Button>
+                                              lineHeight:  '26px',  fontSize:  () => window.devicePixelRatio == 1.5 ? 10 : 16}}>Obuka</Button>
                                       </ButtonGroup>
                               </Grid>
                               <Grid item style={{ height: "60%",   display:  'flex', margin: 5,  }} >
@@ -1175,7 +1306,7 @@ const  setActivTabTipProizvoda = (groupName) => {
                                       <TableRow
 
                                         key={index}
-                                        sx={{'&:last-child th,  &:last-child td': { backgroundColor:  '#6cb238', opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40',fontFamily: 'Roboto',
+                                        sx={{'&:last-child th,  &:last-child td': { backgroundColor:  activPlacanje === 'Proforma'  ? '#FDBD01' :  ( activPlacanje === 'Advance'  ? '#E55451'  : '#6cb238' ) , opacity: 1 }, '& td, & th': {color:  'white',  border:  0,  backgroundColor: () => index%2 ===0 ? '#1e2730' : '#323b40',fontFamily: 'Roboto',
                                         fontStyle: 'normal',
 
                                         /* or 158% */
@@ -1239,12 +1370,12 @@ const  setActivTabTipProizvoda = (groupName) => {
                                         maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
                                         maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
                                         minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
-                                        minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32, alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(1,refTable, refTipoviProizvoda, refTextField)} > <KeyboardArrowUpIcon /></Button>
+                                        minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32, alignItems: 'center',  flexWrap: 'wrap',}}  onClick={() => handleTop(1,refTable,   refTextField)} > <KeyboardArrowUpIcon /></Button>
                                   <Button variant="contained"   sx={{marginLeft: window.devicePixelRatio == 1.5 ? '16px' : '24px', display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',    
                                         maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
                                         maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
                                         minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
-                                        minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,   alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(1, refTable, refTipoviProizvoda, refTextField)} ><KeyboardArrowDownIcon /></Button>
+                                        minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,   alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(1, refTable,  refTextField)} ><KeyboardArrowDownIcon /></Button>
                                 </Grid>
                               </Grid>
                               <Grid item style={{  height: "10%",   display:  'flex', flexDirection:  'column',  justifyContent:  'center'}}  >
@@ -1288,7 +1419,8 @@ const  setActivTabTipProizvoda = (groupName) => {
                                               lineHeight:   '26px',
                                               textTransform: 'uppercase',
                                               fontSize:  () => window.devicePixelRatio == 1.5 ? 8 : 16}}
-                                              onClick={() => naplataTotal(activRacun,'dirGotovina', totalPrice)}>Gotovina
+                                              onClick={() => naplataTotal(activRacun,'dirGotovina', totalPrice)}
+                                              disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>Gotovina
                                       </Button>
                                     </ButtonGroup>
 
@@ -1336,10 +1468,11 @@ const  setActivTabTipProizvoda = (groupName) => {
                                           lineHeight:  '38px',
                                           textTransform: 'uppercase',
                                           height: window.devicePixelRatio == 1.5 ?   '38px' : '56px',
-                                          fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 24, backgroundColor:  '#6cb238', mr:2, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth>{txt.txtNaplata}</Button>
+                                          fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 24, backgroundColor:  '#6cb238', mr:2, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth
+                                          disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>{txt.txtNaplata}</Button>
                                     </Grid>
                                     <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata}   openModalKomPlacanje={openModelKomPlacanje}    fromModalNaplata={addKusur}></ModalNaplata>
-                                    <ModalKombinovanaNaplata openProps={openModalKomPlacanje} handleCloseprops={handleCloseModalKomPlacanje}  toModalKombinovano={toModalKombinovano}  ></ModalKombinovanaNaplata>
+                                    <ModalKombinovanaNaplata openProps={openModalKomPlacanje} handleCloseprops={handleCloseModalKomPlacanje}  toModalKombinovano={toModalKombinovano}    fromModalKombinovano={naplataKombinovano} ></ModalKombinovanaNaplata>
                               </Grid>
                           </Grid>
                     </Grid>

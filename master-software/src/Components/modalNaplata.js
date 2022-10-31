@@ -46,6 +46,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
     const [uplata, setUplata] = React.useState(0);
     const [kusur, setKusur] = React.useState(0);
     const [valueUplata, setValueUplata] = React.useState('');
+    const [flag, setFlag] = React.useState(true); // flag za brisanje inputa pri prvom kucanju
     //const [selectedTipPlacanja, setSelectedtipPlacanja] = React.useState('');
     
 
@@ -61,7 +62,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
     }
 
      const naplata = (selectedTipPlacanja) => {
-        if(parseFloat(uplata) > (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))) && uplata) {
+        if(parseFloat(uplata) >= (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust)))) {
                 fromModalNaplata({id: toModalNaplata[0].activRacun,  kusur:  kusur});
                 setKusur(0);
                 let tipNaplateTmp =  buttonPlacanjeList.filter(tip => tip.id   ===  selectedTipPlacanja); 
@@ -76,16 +77,25 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
 
         let valueTmp;
        
-          valueTmp = valueUplata + event.target.value;
-          setValueUplata(valueTmp);
+            valueTmp = flag ?  event.target.value :  (valueUplata + event.target.value);
+            setValueUplata(valueTmp);
         
             ref.current.focus();
-       
+            
+        if(flag) {
+            setFlag(false);
+        }
 
             
       }
 
      const handleChange = (event) => {
+        if(flag) {
+            event.target.value = '';
+            setTimeout(() => {
+                setFlag(false)
+            }, 100);
+        }
         if (event.key === 'Enter') {
             setKusur(0);
             let kusurTmp = (parseFloat(event.target.value)  -  (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))));
@@ -106,16 +116,18 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
      
      React.useEffect(() => {
         setUplata('');
-        setValueUplata('');
+        setValueUplata((parseFloat(toModalNaplata[0].totalPrice) - (parseFloat(toModalNaplata[0].totalPopust))));
+        setUplata((parseFloat(toModalNaplata[0].totalPrice) - (parseFloat(toModalNaplata[0].totalPopust))));
         setKusur(0);
+        setFlag(true);
         //setSelectedtipPlacanja('');
       
      },[openProps])
 
 
 
-     const openKomPlacanje  = () =>   {
-        openModalKomPlacanje();
+     const openKomPlacanje  = (activId) =>   {
+        openModalKomPlacanje({activId:    activId});
      }
 
 
@@ -145,7 +157,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
         {
           id: 4,
           nazivLabel:  'Drugo bezgotovinsko placanje',
-          naziv: 'Drugo bezgotovinsko placanje'
+          naziv: 'Other'
         },
         {
           id: 5,
@@ -453,7 +465,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                 textAlign: 'center',
                                 textTransform: 'uppercase',
                                 fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  height:  '56px',  color:  'black',  backgroundColor:  '#6cb238', display:  'flex',  justifyContent:  'center' }}
-                                onClick={() => openKomPlacanje()}>Kombinovano placanje</Button>
+                                onClick={() => openKomPlacanje({activId:  toModalNaplata[0].activRacun})}>Kombinovano placanje</Button>
                                   
                         </Grid>
                         <Grid item xs={6} sx={{ml: 2.5}} >

@@ -24,7 +24,13 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import { styled } from '@mui/material/styles';
 import TableRow from '@mui/material/TableRow';
+
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import TableBody from '@mui/material/TableBody';
+import { artiklTmp }  from '../Data/artikliTmp'
+import { handleTop,   handleBottomStep } from '../Funkcije/functions';
+
 import * as txt from '../Data/txt';
 
 import  '../Css/detaljnaPretraga.css'
@@ -60,6 +66,10 @@ const style = {
   };
 
 export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps,fromModalDp, refresh}) => {
+
+
+  const  refTablePretraga = React.useRef();
+
     
 
     const initialArtikal = [
@@ -100,7 +110,9 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
 
     const filterArtikal = (dataFilter) => {
       console.log(dataFilter);
-        let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+        //let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+
+        let artikliList = artiklTmp;
 
         if(dataFilter !==  '')    {
               let artikalTmp = artikliList.filter(obj => (dataFilter !==  '' ? (obj.id === dataFilter || obj.productName.toLowerCase().includes(dataFilter.toLowerCase()))  : true ) 
@@ -236,7 +248,9 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
           }));
 
 
-          let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+         // let artikliList = JSON.parse(localStorage.getItem('artikalList'));
+
+          let artikliList = artiklTmp;
 
           let podkategorijeTmp = artikliList.filter(obj => obj.groupName  ===  kategorije    &&   obj.parentId  !==  null);
           
@@ -325,7 +339,7 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                                     </Grid>
                             </Grid>
                             <Grid sx={{height:  '60%', display:  'flex'}} >
-                            <TableContainer sx={{ maxHeight:  window.devicePixelRatio == 1.5 ?  300 : 962 }}  className='tableConteiner' >
+                            <TableContainer sx={{ height:  window.devicePixelRatio == 1.5 ?  300 : 450 }}  className='tableConteiner'  ref={refTablePretraga} >
                                 <Table  stickyHeader    sx={{'& .MuiTableCell-stickyHeader': {backgroundColor: '#1e2730'}}}  >
                                   <TableHead   >
                                       <TableRow  sx={{'& .MuiTableCell-head': {borderColor:  '#6cb238'}}}  >
@@ -333,7 +347,7 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                                         <TableCell   sx={{fontSize:  window.devicePixelRatio == 1.5 ?  12 : 16}}  className='tableCell' align="right">{txt.txtCena}</TableCell>
                                       </TableRow>
                                   </TableHead>
-                                  <TableBody sx={{ overflow: "auto", scrollBehavior: "smooth"}} >
+                                  <TableBody sx={{ overflowY: "scroll" }} >
                                     {searchValue.slice(1).map((row,i) => (
                                     <TableRow
                                          sx={{ '& td, & th': {color:  'white',  border:  0, fontFamily: 'Roboto',
@@ -359,6 +373,18 @@ export const ModalDetaljnaPretraga = ({openProps,handleCloseprops,titleTextProps
                                 </Table>
                               </TableContainer>        
                             </Grid>
+                            <Grid item xs={12}  sx = {{ display:  'flex',    justifyContent:  'flex-end', alignItems: 'center'}}  >
+                                      <Button variant="contained"    sx={{display: 'flex', backgroundColor:   '#4f5e65',  alignContent:    'center' , 
+                                              maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
+                                              maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
+                                              minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
+                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32, alignItems: 'center',  flexWrap: 'wrap',}}     onClick={() => handleTop(2,  refTablePretraga, '')}  > <KeyboardArrowUpIcon  sx={{fontSize: 20}}/></Button>
+                                      <Button variant="contained"   sx={{   marginLeft:   window.devicePixelRatio == 1.5 ? '16px' : '24px', display: 'flex',    backgroundColor:   '#4f5e65'  ,  alignContent:    'center',   
+                                              maxWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32 ,
+                                              maxHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,
+                                              minWidth: () => window.devicePixelRatio == 1.5 ? 20 : 32,
+                                              minHeight: () => window.devicePixelRatio == 1.5 ? 20 : 32,  alignItems: 'center',  flexWrap: 'wrap', }}   onClick={() => handleBottomStep(2,  refTablePretraga, '')}  ><KeyboardArrowDownIcon  sx={{ fontSize:  20}} /></Button>
+                                </Grid> 
                             <Divider sx={{color: 'red'}} />
                             <Grid sx={{display:  'flex', height:  '10%', mt: 2.5, justifyContent:  'center'}} >
                                     <Grid xs={6} sx={{mr: 2.5}}>

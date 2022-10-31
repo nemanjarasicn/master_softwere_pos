@@ -1,8 +1,11 @@
 import axios from 'axios';
 
+import { format } from 'date-fns'
+
 // funkcija koja salje podatke na printer
 export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  totalPrice, dataLpfr,  uplata, racunConfig) => {
   console.log('usao u printer', dataLpfr);
+ 
     let listRacunPrinter = [];
     let listRacunPrinterTax = [];
     listaRacunaTmp.filter(racun => racun.activRacun === id).map(racun => {
@@ -40,21 +43,20 @@ export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  tot
   
        listRacunPrinterTax.push(newStateTax);
     });
-  
-    
+
     
     const printerTemplate = {
       numOfCharacters: 42,
       serverName: "POS1",
       invoiceType: racunConfig.invoiceType,
-      userId: "dejan",
+      userId: JSON.parse(localStorage.getItem('operater')) ?  JSON.parse(localStorage.getItem('operater'))  :  'Operater',
       invoiceHeader: racunConfig.invoiceHeader,
       invoiceFooter: racunConfig.invoiceFooter,
       invoiceTransactionType: racunConfig.transactionType,
       esirInvoiceNumber: "1101/1",
       headLine: racunConfig.headLine,
       refNumber: "JNJPD3MY-Dt1Ov1o0-144",
-      refDateAndTime: "2022-09-02 09:24:42",
+      refDateAndTime: format(new Date(), 'dd.MM.yyyy. HH:mm:ss'),
       dateAndTimeOfIssue: null,
       person: null,
       invoiceResult: {
@@ -129,7 +131,7 @@ export const  sendDataVpfr = (id, listaRacunaTmp, totalPrice, racunConfig) => {
           dateAndTimeOfIssue: null,
           invoiceType: racunConfig.invoiceType,
           transactionType:  racunConfig.transactionType,
-          cashier: "Operater",
+          cashier: JSON.parse(localStorage.getItem('operater')) ?  JSON.parse(localStorage.getItem('operater'))  :  'Operater',
           buyerId: racunConfig.buyerId,
           buyerCostCenterId: racunConfig.buyerCostCenterId,
           invoiceNumber: "1129/2.1",
@@ -215,13 +217,18 @@ export const checkArtikal = (artikalCheckTmp) =>  {
   }    
 
 // funkcija za scroll up na strelice
-export const handleTop = (tipScroll, refTable, refTipoviProizvoda, refTextField) => {
+export const handleTop = (tipScroll, refTable, refTextField) => {
     if(tipScroll === 1) {
         refTable.current.scrollBy({ top: -100, behavior: 'smooth' });
-    } else {
-        refTipoviProizvoda.current.scrollBy({ top: -100, behavior: 'smooth' });
+        refTextField.current.focus();
     }
-    refTextField.current.focus();
+    else if(tipScroll  === 2)  {
+      refTable.current.scrollBy({ top: -100, behavior: 'smooth' });
+    } else {
+      refTable.current.scrollBy({ top: -100, behavior: 'smooth' });
+      refTextField.current.focus();
+    }
+    
   };
 
 // funkcija za scroll na kraj tabele
@@ -230,13 +237,18 @@ export const handleBottom = (refTable) => {
   }
 
 // funkcija za scrol down na strelice
-export const handleBottomStep = (tipScroll, refTable, refTipoviProizvoda, refTextField  ) => {
+export const handleBottomStep = (tipScroll, refTable, refTextField  ) => {
     if(tipScroll === 1) { //1 za tabelu artikala 0 za tabelu tipova proizvoda
         refTable.current.scrollBy({ top: 100, behavior: 'smooth' });
-    } else {
-        refTipoviProizvoda.current.scrollBy({ top: 100, behavior: 'smooth' });
+        refTextField.current.focus();
+    } else if(tipScroll  === 2)  {
+      refTable.current.scrollBy({ top: 100, behavior: 'smooth' });
     }
-    refTextField.current.focus();
+     else {
+      refTable.current.scrollBy({ top: 100, behavior: 'smooth' });
+        refTextField.current.focus();
+    }
+    
 }
 
 
@@ -278,16 +290,151 @@ export const saveFile = (id,isStorno, listaRacunaTmp) => {
 
 
 
-export const   addUplataDnevniIzvestaj = (tipUplate,totalPrice) =>   {
+export const   addUplataDnevniIzvestaj = (tipUplate,totalPrice, uplata) =>   {
 
-      let trenutniIznos = JSON.parse(localStorage.getItem(tipUplate)) !== null  ?   JSON.parse(localStorage.getItem(tipUplate)) :  0;
-      console.log(trenutniIznos);
+
+  let trenutniIznos;
+
+
+  if(tipUplate === 'dirGotovina')  {
+      trenutniIznos = JSON.parse(localStorage.getItem('Cash'))   ?   JSON.parse(localStorage.getItem('Cash')) :  0;
+  } else  {
+      trenutniIznos = JSON.parse(localStorage.getItem(tipUplate))   ?   JSON.parse(localStorage.getItem(tipUplate)) :  0;
+  }
+      console.log('cash',trenutniIznos);
     
-      localStorage.setItem(tipUplate, JSON.stringify(parseFloat(trenutniIznos)    +   parseFloat(totalPrice)));
-      
-     
+      if(tipUplate === 'dirGotovina')  {
+          localStorage.setItem('Cash', JSON.stringify(parseFloat(trenutniIznos)    +   parseFloat(totalPrice)));
+      } else if(tipUplate === 'kombinovanoPlacanje')  {
+          const cashTmp =  JSON.parse(localStorage.getItem('Cash')) !== null  ?   JSON.parse(localStorage.getItem('Cash')) :  0;
+          const cardTmp  =   JSON.parse(localStorage.getItem('Card')) !== null  ?   JSON.parse(localStorage.getItem('Card')) :  0;
+          const checkTmp  =  JSON.parse(localStorage.getItem('Check')) !== null  ?   JSON.parse(localStorage.getItem('Check')) :  0;
+          localStorage.setItem('Cash', JSON.stringify(parseFloat(cashTmp)    +   parseFloat(uplata.Cash)));
+          localStorage.setItem('Card', JSON.stringify(parseFloat(cardTmp)    +   parseFloat(uplata.platnaKartica)));
+          localStorage.setItem('Check', JSON.stringify(parseFloat(checkTmp)    +   parseFloat(uplata.cek)));
+      } else    {
+          localStorage.setItem(tipUplate, JSON.stringify(parseFloat(trenutniIznos)    +   parseFloat(totalPrice)));
+      }
+        
 
+}
+
+
+
+
+ export const  printReport = ()   =>  {
+  console.log('dsddsds');
+
+
+  const printerTemplate = {
+    
+      "pib":"12345",
+     "numOfCharacters": 42,
+      "serverName": "POS1",
+     "invoiceType": "Normal",
+     "companyName": "petcom",
+     "reportHeader": "Dnevni izvestaj",
+      "dateFrom": "2022-09-02 09:24:42",
+      "dateTo": "2022-09-02 09:24:42",
+     "address": "Kajmakcalanska 123",
+     "invoiceResult": {
+         "paidFinishdBill":500.00,
+         "taxFinishTotal":12.00,
+        "requestedBy": "JNJPD3MY",
+        "sdcDateTime": "2022-09-02 09:24:42",
+        "invoiceCounter": "6/144КП",
+        "invoiceCounterExtension": "КП",
+        "invoiceNumber": "JNJPD3MY-Dt1Ov1o0-144",
+        "pdv":[{"N":2}], 
+        "basic":[ 
+            {"Gotovina":100.00,
+               "Platna Kartica":0.00}],
+        "reportPayment": [
+           {
+               "Gotovina":100.00,
+               "Platna Kartica":0.00,
+               "Ček":0.00,
+               "Prenos na račun":0.00,
+               "Vaučer":0.00,
+               "Instant plaćanje":0.00,
+               "Ostalo":0.00,
+               "Ukupno":100.00
+           }
+        ]
+       ,
+        "avans": 10.00,
+        "total": 100.00,
+        "predracun":0.00
+     }
+  
+  }
+
+ 
+
+  const url =  'http://localhost:8085/api/v3/printers/report';
+  axios.post(url, printerTemplate, {
+    headers:  {
+      'Content-Type': 'application/json',
+  }
+  });
+
+
+
+ }
+
+
+
+
+export  const  addArtikalDnevniIzvestaj   = (activId, listaRacunaTmp) =>   {
+
+
+  let  izvestajProdatiArtikliTmp  =  JSON.parse(localStorage.getItem('prodatiArtikli'))  ?  JSON.parse(localStorage.getItem('prodatiArtikli'))    :   [];
+
+  console.log('prodati arikli',  izvestajProdatiArtikliTmp);
+  const racunArtikalList =   listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activId);
+
+   racunArtikalList.map(artikal=>  {
+    if(izvestajProdatiArtikliTmp && (izvestajProdatiArtikliTmp.filter(obj=>  obj.id ===  artikal.id)).length  >  0 ) {
+
+        let  artikalProdato  =  izvestajProdatiArtikliTmp.filter(artikalProdatoTmp =>   artikalProdatoTmp.id   ===   artikal.id)
+        let artikalAddTmp = {id: artikal.id, cena: artikal.cena, productName:  artikal.productName,  kolicina:  (parseFloat(artikal.kolicina) +  parseFloat(artikalProdato[0].kolicina))} 
+
+        //const artikalProdatoList =   JSON.stringify([...izvestajProdatiArtikliTmp,artikalAddTmp]);
+        console.log('fadfdfaf', artikalProdato );
+
+        izvestajProdatiArtikliTmp =  izvestajProdatiArtikliTmp.filter(obj=> obj.id !==  artikal.id);
+
+        izvestajProdatiArtikliTmp  =  [...izvestajProdatiArtikliTmp,artikalAddTmp];
+  
+        //localStorage.setItem('prodatiArtikli',   artikalProdatoList); 
+
+    } else if(izvestajProdatiArtikliTmp  && (izvestajProdatiArtikliTmp.filter(obj=>  obj.id ===  artikal.id)).length  ===  0)  {
+      let newState = {
+        id: artikal.id,
+        cena: artikal.cena,
+        productName:  artikal.productName,
+        kolicina:  artikal.kolicina
+      }
+      izvestajProdatiArtikliTmp =  [...izvestajProdatiArtikliTmp,newState];
+    }
+
+    localStorage.setItem('prodatiArtikli',   JSON.stringify(izvestajProdatiArtikliTmp)); 
+  })
+
+  
+       
 }
 
   
   
+
+export const saveArtikle = (artikliLoad) => {
+  const url =  'http://localhost:3001/saveArtikli';
+  axios.post(url, {
+    headers: {
+      "content-type": "application/json;charset=utf-8",
+    },
+    body: artikliLoad
+  }); //I need to change this line
+
+};

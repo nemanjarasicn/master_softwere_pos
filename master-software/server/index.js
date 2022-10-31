@@ -57,6 +57,24 @@ app.post("/saveRacun", function(req,res,next) {
     
 });
 
+app.post("/saveArtikli", function(req,res,next) {
+    //console.log('usao u save',req.body.body);
+   
+    const pathTmp = 'C:/Users/neman/posao/master_software_frontend/master-software/master-software/src/Data/'
+    let data =(JSON.stringify(req.body.body))
+
+    console.log(data);
+    //let todayNow = fns.format(new Date(), 'dd_MM_yyyy_HH_mm_ss');
+
+    fs.writeFile(pathTmp + 'artikliTmp1' + '.json', data, (err) => {
+        if (err) throw err;
+        console.log('Artikal written to file');
+    });
+
+
+    
+});
+
 app.post("/upload",async (req, res) => {
     console.log('test',req.body)
         if (!req.files) {

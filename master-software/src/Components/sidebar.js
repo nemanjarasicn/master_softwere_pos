@@ -6,10 +6,15 @@ import MuiAppBar from '@mui/material/AppBar';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
+
+
+
 import ListItemIcon from '@mui/material/ListItemIcon';
+import { useNavigate, useParams } from 'react-router-dom';
 import ListItemText from '@mui/material/ListItemText';
 import List from '@mui/material/List';
 import Logo from  '../Images/master_logo.png'
+import LogoutIcon from '@mui/icons-material/Logout';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import GroupIcon from '@mui/icons-material/Group';
@@ -63,23 +68,31 @@ const drawerWidth = 96;
       text: "Naplata",
     },
     {
-      id: 2,
+      id: 1,
       avatarIcon: (<BadgeIcon/>),
       text: "Loyality",
     },
     {
-      id: 3,
+      id: 2,
       avatarIcon: (<GroupIcon/>),
       text: "Kupac",
     },
     {
-      id: 2,
+      id: 3,
       avatarIcon: (<ContactPageIcon/>),
       text: "Admin",
     },
+    {
+      id: 4,
+      avatarIcon: (<LogoutIcon/>),
+      text: "LogOut",
+    },
   ];
 
-export const Sidebar = ({openModal, openModalIzvestajOp}) => {
+export const Sidebar = ({openModal, openModalIzvestajOp, openModalConfirmOp, openModalPdfStampa}) => {
+
+  
+  const navigate  = useNavigate();
 
 
   const openModalFunc = (text) => {
@@ -87,8 +100,13 @@ export const Sidebar = ({openModal, openModalIzvestajOp}) => {
       openModal();
     } else if( text === 'Admin')  {
       openModalIzvestajOp();
+    } else if( text  ===  'LogOut')   {
+
+      openModalConfirmOp();
+    }  else if( text  ===  'Loyality')  {
+      openModalPdfStampa();
     }
-    }
+  }
 
    
       return (
@@ -101,7 +119,7 @@ export const Sidebar = ({openModal, openModalIzvestajOp}) => {
         <Box sx={{marginTop:  window.devicePixelRatio == 1.5 ?  '50px' : '120px' }}>
             <List>
             {icons.map((item, index) => (
-                <ListItem key={item} disablePadding sx={{ display: 'block' }}>
+                <ListItem key={item} disablePadding sx={{ display: 'block', marginTop:   item.text  ===  'LogOut'   ?  '310px' :  '0px'  }}>
                 <ListItemButton
                     sx={{
                       minHeight: 48,
@@ -138,11 +156,12 @@ export const Sidebar = ({openModal, openModalIzvestajOp}) => {
                                               flexGrow: 0,
                                             }} />
                 </ListItemButton>
-                 <Divider  sx={{ width:  '80%', marginLeft:   '10px',   background: 'white', marginBottom:  '20px', }} /> 
+                 <Divider  sx={{ width:  '80%', marginLeft:   '10px',   background: 'white', marginBottom:  '20px'}} /> 
                 </ListItem>
             ))}
             </List>
         </Box>
     </Drawer>
+    
     );
   }

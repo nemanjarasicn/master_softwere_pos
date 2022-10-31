@@ -40,7 +40,7 @@ const style = {
 
 
 
-export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKombinovano}) => {
+export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKombinovano, fromModalKombinovano}) => {
     
     
     const [uplataGotovina, setUplataGotovina] = React.useState(0);
@@ -48,6 +48,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
     const [uplataCek, setUplataCek] = React.useState(0);
     const [uplataVirman, setUplataVirman] = React.useState(0);
     const [kusur, setKusur] = React.useState(0);
+    const [ostatak, setOstatak] = React.useState(0);
     
 
     const currencyFormat = (num) => {
@@ -59,55 +60,100 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
         handleCloseprops();
      }
 
-     const handleChangeGotovina = (event) => {
-        if (event.key === 'Enter') {
+     console.log(toModalKombinovano.totalPrice);
+
+     const handleChangeGotovina = (event,vrsta) => {
+        if (event.key === 'Enter'  && !vrsta) {
  
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
-                setUplataGotovina(tmpUplata);
+                setUplataGotovina(event.target.value);
                 event.target.value = tmpUplata;
                 inputRefs.current[2].focus();
 
+        } else if(vrsta)  {
+            let tmpUplata;
+            if(event.target.value)  {
+                tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataGotovina(event.target.value);
+                event.target.value = tmpUplata;
+                inputRefs.current[2].focus();
+            }
         }
 
      } 
 
-     const handleChangePlatnaKartica = (event) => {
+     const handleChangePlatnaKartica = (event, vrsta) => {
         if (event.key === 'Enter') {
  
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
-                setUplataPlatnaKartica(tmpUplata);
+                setUplataPlatnaKartica(event.target.value);
                 event.target.value = tmpUplata;
                 inputRefs.current[3].focus();
 
+        } else if(vrsta)  {
+            let tmpUplata;
+            if(event.target.value)  {
+                tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataPlatnaKartica(event.target.value);
+                event.target.value = tmpUplata;
+                inputRefs.current[3].focus();
+            }
         }
 
      } 
 
-     const handleChangeCek = (event) => {
+     const handleChangeCek = (event,  vrsta) => {
         if (event.key === 'Enter') {
  
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
-                setUplataCek(tmpUplata);
+                setUplataCek(event.target.value);
                 event.target.value = tmpUplata;
                 inputRefs.current[4].focus();
 
+        } else if(vrsta)  {
+            let tmpUplata;
+            if(event.target.value)  {
+                tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataCek(event.target.value);
+                event.target.value = tmpUplata;
+                inputRefs.current[4].focus();
+            }
         }
 
      } 
 
-     const handleChangeVirman = (event) => {
+     const handleChangeVirman = (event,  vrsta) => {
         if (event.key === 'Enter') {
  
                 let tmpUplata = currencyFormat(parseFloat(event.target.value));
-                setUplataVirman(tmpUplata);
+                setUplataVirman(event.target.value);
                 event.target.value = tmpUplata;
                 
                 
 
+        }   else if(vrsta)  {
+            let tmpUplata;
+            if(event.target.value)  {
+                
+                 tmpUplata = currencyFormat(parseFloat(event.target.value));
+                setUplataVirman(event.target.value);
+                event.target.value = tmpUplata;
+            }
         }
 
      } 
 
+
+     console.log('gotovina ' + uplataGotovina + ' platna kartica ' + uplataPlatnaKartica  + ' cek ' + uplataCek);
+
+
+
+
+     const  saveRacun =   ()    =>   {
+        console.log(toModalKombinovano);
+        fromModalKombinovano({activId:  toModalKombinovano.activId,    tipUplate:     'kombinovanoPlacanje',  uplata: { Cash:  uplataGotovina,  platnaKartica:  uplataPlatnaKartica,   cek:  uplataCek,    virmman:  uplataVirman }    })
+
+     }
      
 
      const inputRefs = useRef([]); 
@@ -116,7 +162,19 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
         setTimeout(() => {
             inputRefs.current[1].focus();
         }, 200);
+        setUplataGotovina(0);
+        setUplataPlatnaKartica(0);  
+        setUplataCek(0);
+        setUplataVirman(0);
      },[openProps])
+
+
+     React.useEffect(() => {
+        let totalNaplagtaTmp  = parseFloat(toModalKombinovano.totalPrice) - (parseFloat(toModalKombinovano.totalPopust));
+        let ostatakTmp = totalNaplagtaTmp - parseFloat(uplataGotovina) - parseFloat(uplataPlatnaKartica)  -    parseFloat(uplataVirman)   -      parseFloat(uplataCek);
+
+        setOstatak(ostatakTmp);
+     },[uplataGotovina,uplataPlatnaKartica,uplataVirman,uplataCek])
 
       return (
         <Modal
@@ -183,7 +241,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,   justifyContent:  'flex-start', color:  'white'}}>
-                                                       {currencyFormat(toModalKombinovano)}
+                                                       {currencyFormat(toModalKombinovano.totalPrice ?  toModalKombinovano.totalPrice   :   0)}
                                                     </Typography>
                                             </Grid>
                                     </Grid>
@@ -209,7 +267,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  12 : 20,  mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                                      {currencyFormat(0)}
+                                                     {currencyFormat(toModalKombinovano.totalPopust ?  toModalKombinovano.totalPopust   :   0)}
                                                 </Typography>
                                             </Grid>
                                     </Grid>
@@ -236,7 +294,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                             textAlign: 'center',
                                             textTransform: 'none',
                                             fontSize:  window.devicePixelRatio == 1.5 ?  14 : 30,   mt: 2,  justifyContent:  'flex-start', color:  'white'}}>
-                                                         {currencyFormat(0)}
+                                                         {currencyFormat((parseFloat(toModalKombinovano.totalPrice) - (parseFloat(toModalKombinovano.totalPopust))))}
                                                     </Typography>
                                             </Grid>
                                     </Grid>
@@ -260,7 +318,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeGotovina(event)}
+                                                onKeyDown={(event) => handleChangeGotovina(event,0)}
+                                                onBlur={(event) => handleChangeGotovina(event,1) }
                                                
                                                 size="small"
                             
@@ -309,7 +368,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 textTransform: 'none',
                                                 fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
                                                 autoFocus
-                                                onKeyDown={(event) => handleChangePlatnaKartica(event)}
+                                                onKeyDown={(event) => handleChangePlatnaKartica(event,   0)}
+                                                onBlur={(event) => handleChangePlatnaKartica(event,1) }
                                                 inputRef={(ref) => (inputRefs.current[2] = ref)}
                                                
                                                 />
@@ -334,7 +394,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeCek(event)}
+                                                onKeyDown={(event) => handleChangeCek(event,  0)}
+                                                onBlur={(event) => handleChangeCek(event,1) }
                                             
                                                
                                                 size="small"
@@ -371,7 +432,8 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeVirman(event)}
+                                                onKeyDown={(event) => handleChangeVirman(event,  0)}
+                                                onBlur={(event) => handleChangeVirman(event,1) }
                                                
                                                 size="small"
                                                 sx={{ input: {  fontFamily: 'Roboto', 
@@ -411,7 +473,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                                     textAlign: 'center',
                                                                     textTransform: 'none',
                                                                     fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   justifyContent:  'flex-start', color:  'white'}}>
-                                                        {currencyFormat(kusur)}
+                                                        {currencyFormat(ostatak)}
                                                     </Typography>
                                             </Grid>
                                     </Grid>
@@ -492,7 +554,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                     </Grid>
                                     <Divider />
                                     <Grid xs={6} >
-                                                <Button fullWidth   variant="contained"    sx={{mt: 2  ,fontSize: 14, height:    '56px',  backgroundColor:  '#6cb238',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
+                                                <Button fullWidth   variant="contained"        onClick={() =>  saveRacun()}  sx={{mt: 2  ,fontSize: 14, height:    '56px',  backgroundColor:  '#6cb238',  borderRadius:  '8px',   display:  'flex',  justifyContent:  'center' }}>Potvrdi</Button>
                                     </Grid>     
                     </Grid>
     

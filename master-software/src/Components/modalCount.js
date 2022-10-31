@@ -29,6 +29,7 @@ import { useRef,  useState, useEffect }  from 'react'
 
 
 
+
 const theme = createTheme({
   palette: {
     neutral: {
@@ -79,6 +80,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
     const [tipPopusta, setTipPopusta]   = React.useState('procenat');
     const [valueTab, setValueTab] =  React.useState('kolicina');
     const classes = useStyles();
+    const [activStorno, setActivStorno] = React.useState(false);
 
 
     
@@ -93,6 +95,7 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
       setValuePopust('');
       setValueTab('kolicina');
       setTipPopusta('procenat');
+      setActivStorno(false);
     },[openProps]);
 
     
@@ -106,8 +109,8 @@ export const ModalCount = ({openProps,handleCloseprops,childToParent,toModalCoun
   //decrease counter
   const decrease = () => {
         let counterTmp = parseFloat(counter)  - 1;
-        if(counterTmp < 0)  {
-          setCounter(0);
+        if(counterTmp < 1)  {
+          setCounter(1);
         } else  {
           setCounter(counterTmp);
         }
@@ -236,7 +239,7 @@ const handleAddValue = (event) => {
 
 
   const ComponentPopust =  () => {
-
+        
     return (
       <Grid  sx={{display: 'flex', flexDirection: 'column', height:  '70%'}} >
                                       <Grid item xs={12}    sx={{display: 'flex',   alignItems:  'center'}}>
@@ -432,14 +435,14 @@ const handleAddValue = (event) => {
                                               textTransform: 'none',
                                               fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24, backgroundColor:  '#4f5e65', display:  'flex',  justifyContent:  'center' }}
                                               onClick={handleCloseprops}>Vaga</Button>
-                                      <Button fullWidth   startIcon={<DeleteIcon  sx={{width: 14}} />}  variant="contained"   sx={{ fontFamily: 'Roboto', 
+                                      <Button fullWidth   onClick = {()  =>  {setCounter(0); setActivStorno(true)}}  startIcon={<DeleteIcon  sx={{width: 14}} />}  variant="contained"   sx={{ fontFamily: 'Roboto', 
                                               fontStyle: 'normal',
 
                                               /* or 158% */
                                               lineHeight:  '32px', 
                                               textAlign: 'center',
                                               textTransform: 'none',
-                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24,  mt: 2.5,  backgroundColor:  '#4f5e65', display:  'flex',  justifyContent:  'center' }}>Storno</Button>
+                                              fontSize:  window.devicePixelRatio == 1.5 ?  8 : 24,  mt: 2.5,  backgroundColor: activStorno ?  '#6cb238'   :  '#4f5e65', display:  'flex',  justifyContent:  'center' }}>Storno</Button>
                                 
                           </Box>
     
