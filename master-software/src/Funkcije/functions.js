@@ -4,9 +4,9 @@ import { format } from 'date-fns'
 
 // funkcija koja salje podatke na printer
 export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  totalPrice, dataLpfr,  uplata, racunConfig) => {
-  console.log('usao u printer', dataLpfr);
  
     let listRacunPrinter = [];
+
     let listRacunPrinterTax = [];
     listaRacunaTmp.filter(racun => racun.activRacun === id).map(racun => {
       let newState = {
@@ -45,8 +45,12 @@ export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  tot
     });
 
     
+    let bayerIdTmp  =  racunConfig.buyerId ?  racunConfig.buyerId.pib   :   null
+
+    console.log('prinete', racunConfig);
     const printerTemplate = {
       numOfCharacters: 42,
+      bayerId:   bayerIdTmp,
       serverName: "POS1",
       invoiceType: racunConfig.invoiceType,
       userId: JSON.parse(localStorage.getItem('operater')) ?  JSON.parse(localStorage.getItem('operater'))  :  'Operater',
@@ -66,12 +70,7 @@ export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  tot
         invoiceCounterExtension: dataLpfr.data.invoiceCounterExtension,
         invoiceNumber: dataLpfr.data.invoiceNumber,
         resultItems: listRacunPrinter,
-        invoicePayments: [
-          {
-            amount: Number(gotovina).toFixed(2),
-            paymentType: "Cash"
-          }
-        ],
+        invoicePayments:  racunConfig.payment,
         taxItems: dataLpfr.data.taxItems,
         verificationUrl: dataLpfr.data.verificationUrl,
         messages: dataLpfr.data.messages,
@@ -106,7 +105,7 @@ export const  sendDataPrinter = (id, gotovina, listaRacunaTmp, artikalList,  tot
 // funkcija koja salje podatke na lpfr
 export const  sendDataVpfr = (id, listaRacunaTmp, totalPrice, racunConfig) => {
 
-  console.log('usao u lpfr');
+  console.log('usao u lpfr',racunConfig.bayerId);
     return new Promise((resolve, reject) => {
     
 
@@ -126,14 +125,16 @@ export const  sendDataVpfr = (id, listaRacunaTmp, totalPrice, racunConfig) => {
           listRacunVpfr.push(newState);
           
         });
+
+        let bayerIdTmp  =  racunConfig.buyerId  ?  racunConfig.buyerId.pib   :   null
   
         const dataToVpfrTmp = {
           dateAndTimeOfIssue: null,
           invoiceType: racunConfig.invoiceType,
           transactionType:  racunConfig.transactionType,
           cashier: JSON.parse(localStorage.getItem('operater')) ?  JSON.parse(localStorage.getItem('operater'))  :  'Operater',
-          buyerId: racunConfig.buyerId,
-          buyerCostCenterId: racunConfig.buyerCostCenterId,
+          buyerId:   bayerIdTmp,
+          buyerCostCenterId: null, //racunConfig.buyerCostCenterId,
           invoiceNumber: "1129/2.1",
           referentDocumentNumber: "",
           referentDocumentDT: null,
@@ -163,13 +164,22 @@ export const  sendDataVpfr = (id, listaRacunaTmp, totalPrice, racunConfig) => {
 }
 
 //pakuje niz u podnizove od n elemenata
-export const arrayChunk = (arr, n, activTipProizvoda,isPodgrupa, start, end ) => {
+export const arrayChunk = (arr, n, activTipProizvoda,isPodgrupa, start, end , podgrupaId) => {
+
     let arrayTmp = arr.filter(element => element.groupName === `${activTipProizvoda}`);
-    arrayTmp = arrayTmp.slice(start,end);
-    const uniqueArray = !isPodgrupa ? getUnique(arrayTmp) :  arrayTmp;
+    let arrayPodgrupaTmp =  arrayTmp.filter(obj   => obj.parentId  !== null);
+    console.log('sddsd',getUnique(arrayTmp));
+    let arratListTmp =   getUnique(arrayTmp);
+   let arrayTmp1 = arratListTmp.slice(start,end);
+
+  
+    let arrayT =  arrayTmp.slice(start,end);
+   
+    const uniqueArray = !isPodgrupa ? getUnique(arrayTmp1) :     arrayT  ;
     const array = uniqueArray.slice();
     const chunks = [];
     while (array.length) chunks.push(array.splice(0, n));
+
     return chunks;
   };
 
@@ -178,11 +188,11 @@ export const arrayChunk = (arr, n, activTipProizvoda,isPodgrupa, start, end ) =>
     const uniqueIds = [];
     
     const unique = arr.filter(element => {
-      const isDuplicate = uniqueIds.includes(element.parentId);
+      const isDuplicate = uniqueIds.includes(element.productGroupRequest[1] && element.productGroupRequest[1].idGroup);
   
       if(element.parentId !== null) {
         if (!isDuplicate) {
-          uniqueIds.push(element.parentId);
+          uniqueIds.unshift(element.productGroupRequest[1].idGroup);
   
           return true;
         } else {

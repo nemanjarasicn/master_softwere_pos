@@ -87,6 +87,7 @@ export const MainPayment = () => {
   const [activRacunNaplata, setActivRacunNaplata] = React.useState(1);
   const [activTipProizvoda, setActivTipProizvoda] = React.useState('slatkisi,');
   const [totalPrice, setTotalPrice] = React.useState(0);
+  const [podgrupaId, setPodgrupaId] = React.useState('');
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [isPodgrupa, setIsPodgrupa] = React.useState(false);
   const [activPlacanje, setActivPlacanje] = React.useState('Normal');
@@ -137,7 +138,7 @@ export const MainPayment = () => {
                                           setOpenModalNaplata(true);}
   const handleCloseModalNaplata = (obj) => {  
                                             if(obj.tipNaplate)  {
-                                              naplataTotal(obj.activId, obj.tipNaplate,  obj.uplata);      
+                                              naplataTotal(obj.activId, obj.tipNaplate,  obj.uplata, obj.kusur);      
                                               setOpenModalNaplata(false);     
                                             }  else {
                                               setOpenModalNaplata(false);  
@@ -716,7 +717,8 @@ const openModelKomPlacanje =  (activIdNp) => {
 }
 
 
-const addKusur = (dataKusur) => {
+/*const addKusur = (dataKusur) => {
+  console.log('kusur total',dataKusur);
   const newState = totalPopustList.map(obj => {
     if (obj.id === dataKusur.id) {
       return {...obj, kusur: dataKusur.kusur};
@@ -724,19 +726,34 @@ const addKusur = (dataKusur) => {
     return obj;
   });
   setTotalKusurList(newState);
-}
+}*/
 
 
- const naplataTotal =  async (activRacunid, tipNaplate, uplata) => {
+ const naplataTotal =  async (activRacunid, tipNaplate, uplata, kusur) => {
+
+
+  
+    const newState = totalKusurList.map(obj => {
+      if (obj.id === activRacunid) {
+        return {...obj, kusur: kusur};
+      }
+      return obj;
+    });
+    setTotalKusurList(newState);
+
+
+  
+ 
 
   const kupacTmp =  kupacList.filter(kupac => kupac.id ===  activRacunid);
+  console.log('kupac',  kupacTmp[0])
 
   let racunConfig = '';
   let invoiceType = activPlacanje === 'Advance'  ?  'Advance' : (activPlacanje   ===  'Proforma'  ?  'Proforma'  :    'Normal');
   let transactionType = activPlacanje  !== 'Refund'   ?   'Sale'  : 'Refund';
   let invoiceHeader  =   activPlacanje !==  'Proforma'   ? 'FISKALNI RAČUN' :  'OVO NIJE FISKALNI RAČUN'; //ovo je zkucano dok ne ubacimo kopije racuna
   let invoiceFooter   =  activPlacanje !==  'Proforma'   ? 'FISKALNI RAČUN' :  'OVO NIJE FISKALNI RAČUN'; //ovo je zakucano dok ne ubacimo kopije racuna
-  let buyerId  =  kupacTmp.kupac  !== '' ?   kupacTmp.kupac  :  null;
+  let buyerId  =  kupacTmp[0].kupac  !== '' ?   kupacTmp[0].kupac  :  null;
   let buyerCostCenterId =  kupacTmp.kupac  !== '' ?   kupacTmp.kupac  :  null;
   let headLine =  activPlacanje === 'Advance'  ?  'AVANS-PRODAJA' : (activPlacanje   ===  'Proforma'  ?  'PREDRACUN PRODAJA'  :    'PROMET PRODAJA');
 
@@ -802,7 +819,7 @@ const addKusur = (dataKusur) => {
                     payment: [
                       {
                         paymentType: tipNaplate,
-                        amount:  Number(totalPrice).toFixed(2)
+                        amount:  Number(uplata).toFixed(2)
                       }
                     ]
                   }
@@ -821,13 +838,13 @@ const addKusur = (dataKusur) => {
 
 
         if(tipNaplate  === 'dirGotovina')  {
-          addKusur({id: activRacunid, kusur: 0 });
+          //addKusur({id: activRacunid, kusur: 0 });
           gotovinaTmp = totalPrice;
 
-        } 
+        }  
 
-        
-        console.log(dataLpfr.response);
+
+
 
         setActivRacunNaplata(activRacunid)
         setShowError(false);
@@ -854,6 +871,7 @@ const addKusur = (dataKusur) => {
         console.log(newStateKupac);
         setCountRacunId(newState)
         setKupac('');
+        setActivPlacanje('Normal');
         setKupacList(newStateKupac);
         setTimeout(() => {
                 setShowKusur(false);
@@ -874,7 +892,7 @@ const addKusur = (dataKusur) => {
 const CustomButtonTipProizvodaPodgrupe = (col) => {
    return (
     <Box sx={{position: 'relative', mt: 2.5}}>
-            <Button  onClick={() => addTipoviProizvodaListPodgrupe()}   variant="contained"  sx={{ml:2, zIndex: 2,  position:  'relative', background: "#1e2730", height: () => window.devicePixelRatio == 1.5 ? 60 : 80, gap:  '8px',   padding:  '20px',   borderColor:   'red !important',  borderRadius:   '12px',  border:  ' 3px solid #EA9A22',lineHeight: '32px', fontWeight: 400, fontFamily: 'Roboto', textTransform:  'none', fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 20, width: '90%'}}  >{col.col.productGroupRequest[1].groupName}</Button>
+            <Button  onClick={() => addTipoviProizvodaListPodgrupe(col.col.productGroupRequest[1].idGroup)}   variant="contained"  sx={{ml:2, zIndex: 2,  position:  'relative', background: "#1e2730", height: () => window.devicePixelRatio == 1.5 ? 60 : 80, gap:  '8px',   padding:  '20px',   borderColor:   'red !important',  borderRadius:   '12px',  border:  ' 3px solid #EA9A22',lineHeight: '32px', fontWeight: 400, fontFamily: 'Roboto', textTransform:  'none', fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 20, width: '90%'}}  >{col.col.productGroupRequest[1].groupName}</Button>
             <Button   variant="contained"  sx={{ml:2, zIndex: 1,  bottom: '8px',left: '5px', position:  'absolute',  background: "#1e2730", height: () => window.devicePixelRatio == 1.5 ? 60 : 80, gap:  '8px',   padding:  '20px',   borderColor:   'red !important',  borderRadius:   '12px',  border:  ' 3px solid #EA9A22',lineHeight: '32px', fontWeight: 400, fontFamily: 'Roboto', textTransform:  'none', fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 20, width: '85%'}}  ></Button>
             <Button   variant="contained"  sx={{ml:2, bottom: '16px',left: '12px', position:  'absolute',  background: "#1e2730", height: () => window.devicePixelRatio == 1.5 ? 60 : 80, gap:  '8px',   padding:  '20px',   borderColor:   'red !important',  borderRadius:   '12px',  border:  ' 3px solid #EA9A22',lineHeight: '32px', fontWeight: 400, fontFamily: 'Roboto', textTransform:  'none', fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 20, width: '75%'}}  ></Button>
     </Box>
@@ -895,11 +913,13 @@ const  backFromPredgrupa = () => {
   const arrayTmp = artikalList.filter(element => element.groupName ===  activTipProizvoda);
   setTipoviProizvodaListArtikal(arrayTmp);
   setIsPodgrupa(false);
+  setPodgrupaId('');
 }
 
-const  addTipoviProizvodaListPodgrupe = () =>  {
+const  addTipoviProizvodaListPodgrupe = (idPodgr) =>  {
       setIsPodgrupa(true);
-      const arrayTmp = artikalList.filter(element => element.parentId !==  null);
+      setPodgrupaId(idPodgr);
+      const arrayTmp = artikalList.filter(element => element.parentId !==  null    &&  element.productGroupRequest[1].idGroup ===   idPodgr);
       arrayTmp.unshift(artiklTmpBAckInitial);
       
       setTipoviProizvodaListArtikal(arrayTmp);          
@@ -911,7 +931,7 @@ const  addTipoviProizvodaListPodgrupe = () =>  {
 const  naplataKombinovano =  (dataKomNaplata)   =>   {
 
   console.log('dsdsdd',dataKomNaplata);
-  naplataTotal(1,dataKomNaplata.tipUplate,dataKomNaplata.uplata);
+  naplataTotal(1,dataKomNaplata.tipUplate,dataKomNaplata.uplata, 0);
   handleCloseModalKomPlacanje();
 
 
@@ -920,6 +940,7 @@ const  naplataKombinovano =  (dataKomNaplata)   =>   {
 
 const  setActivTabTipProizvoda = (groupName) => {
   setIsPodgrupa(false);
+  setPodgrupaId('');
   setActivTipProizvoda(groupName);
   setTipoviProizvodaListArtikal(artikalList);
 }
@@ -1114,11 +1135,11 @@ const  logOutFunc   =  (potvrdi)  =>   {
                           <Grid  sx={{ background: "#323b40", marginTop:  '20px',  height: "82%",  borderRadius:  2}}  >
                             <Grid  sx={{ height: "80%", maxHeight: '80%' , overflowY:  'scroll'}} ref={refTipoviProizvoda}>
                             {/*<Typography sx={{mt: 2, ml:1, color: '#6cb238'}}>{inputTmp} X</Typography>*/}
-                              {arrayChunk(tipoviProizvodaListArtikal, 4,activTipProizvoda, isPodgrupa, startArrayTipovi,  endArrayTipovi).map((row, i) => (
+                              {arrayChunk(tipoviProizvodaListArtikal, 4,activTipProizvoda, isPodgrupa, startArrayTipovi,  endArrayTipovi, podgrupaId).map((row, i) => (
                                 <Grid item xs={12} m={2}  sx={{display: 'flex'}}>
                                   {row.map((col, i) => (
                                       <Grid item xs={3} >
-                          
+                
                                           {/*<Button  onClick={() => handleAddArtikalRacunTipovi(col.code)}   variant="contained"  sx={{ml:2, background: "#1e2730", height: () => window.devicePixelRatio == 1.5 ? 60 : 80, gap:  '8px',   padding:  '20px',   borderColor:   'red !important',  borderRadius:   '12px',  border:  ' 3px solid #EA9A22',lineHeight: '32px', fontWeight: 400, fontFamily: 'Roboto', textTransform:  'none', fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 20, width: '90%'}}  >{col.productName}</Button>*/}
                                          { col.parentId  === null ? <CustomButtonTipProizvoda col={col}></CustomButtonTipProizvoda> : (isPodgrupa  ? <CustomButtonTipProizvoda col={col}></CustomButtonTipProizvoda> : <CustomButtonTipProizvodaPodgrupe  col={col}></CustomButtonTipProizvodaPodgrupe>)}
                                       </Grid>
@@ -1419,7 +1440,7 @@ const  logOutFunc   =  (potvrdi)  =>   {
                                               lineHeight:   '26px',
                                               textTransform: 'uppercase',
                                               fontSize:  () => window.devicePixelRatio == 1.5 ? 8 : 16}}
-                                              onClick={() => naplataTotal(activRacun,'dirGotovina', totalPrice)}
+                                              onClick={() => naplataTotal(activRacun,'dirGotovina', totalPrice,   0)}
                                               disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>Gotovina
                                       </Button>
                                     </ButtonGroup>
@@ -1471,7 +1492,7 @@ const  logOutFunc   =  (potvrdi)  =>   {
                                           fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 24, backgroundColor:  '#6cb238', mr:2, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth
                                           disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>{txt.txtNaplata}</Button>
                                     </Grid>
-                                    <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata}   openModalKomPlacanje={openModelKomPlacanje}    fromModalNaplata={addKusur}></ModalNaplata>
+                                    <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata}   openModalKomPlacanje={openModelKomPlacanje}      ></ModalNaplata>
                                     <ModalKombinovanaNaplata openProps={openModalKomPlacanje} handleCloseprops={handleCloseModalKomPlacanje}  toModalKombinovano={toModalKombinovano}    fromModalKombinovano={naplataKombinovano} ></ModalKombinovanaNaplata>
                               </Grid>
                           </Grid>

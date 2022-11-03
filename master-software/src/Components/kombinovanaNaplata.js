@@ -151,7 +151,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
 
      const  saveRacun =   ()    =>   {
         console.log(toModalKombinovano);
-        fromModalKombinovano({activId:  toModalKombinovano.activId,    tipUplate:     'kombinovanoPlacanje',  uplata: { Cash:  uplataGotovina,  platnaKartica:  uplataPlatnaKartica,   cek:  uplataCek,    virmman:  uplataVirman }    })
+        fromModalKombinovano({activId:  toModalKombinovano.activId,    tipUplate:     'kombinovanoPlacanje',  uplata: { Cash:  uplataGotovina,  platnaKartica:  uplataPlatnaKartica,   cek:  uplataCek,    virmman:  uplataVirman }   })
 
      }
      
@@ -318,7 +318,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeGotovina(event,0)}
+                                                //onKeyDown={(event) => handleChangeGotovina(event,0)}
                                                 onBlur={(event) => handleChangeGotovina(event,1) }
                                                
                                                 size="small"
@@ -368,7 +368,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 textTransform: 'none',
                                                 fontSize:  window.devicePixelRatio == 1.5 ?  12 : 24,   color:  'white', ml: 2},  }}
                                                 autoFocus
-                                                onKeyDown={(event) => handleChangePlatnaKartica(event,   0)}
+                                                //onKeyDown={(event) => handleChangePlatnaKartica(event,   0)}
                                                 onBlur={(event) => handleChangePlatnaKartica(event,1) }
                                                 inputRef={(ref) => (inputRefs.current[2] = ref)}
                                                
@@ -394,7 +394,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeCek(event,  0)}
+                                                //onKeyDown={(event) => handleChangeCek(event,  0)}
                                                 onBlur={(event) => handleChangeCek(event,1) }
                                             
                                                
@@ -432,7 +432,7 @@ export const ModalKombinovanaNaplata = ({openProps,handleCloseprops, toModalKomb
                                                 id="filled-hidden-label-normal"
                                                 placeholder='0,00'
                                                 variant="filled"
-                                                onKeyDown={(event) => handleChangeVirman(event,  0)}
+                                                //onKeyDown={(event) => handleChangeVirman(event,  0)}
                                                 onBlur={(event) => handleChangeVirman(event,1) }
                                                
                                                 size="small"

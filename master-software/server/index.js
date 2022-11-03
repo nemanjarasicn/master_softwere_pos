@@ -48,7 +48,7 @@ app.post("/saveRacun", function(req,res,next) {
     let data =JSON.stringify(req.body.body);
     let todayNow = fns.format(new Date(), 'dd_MM_yyyy_HH_mm_ss');
 
-    fs.writeFile(pathTmp + 'storno_racun_' +todayNow + '.json', data, (err) => {
+    fs.writeFile(pathTmp + 'racun_' +todayNow + '.json', data, (err) => {
         if (err) throw err;
         console.log('Data written to file');
     });

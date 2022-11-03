@@ -39,7 +39,7 @@ const style = {
 
 
 
-export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openModalKomPlacanje, fromModalNaplata}) => {
+export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openModalKomPlacanje}) => {
     
     
     const [uplataStr, setUplataStr] = React.useState();
@@ -63,11 +63,11 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
 
      const naplata = (selectedTipPlacanja) => {
         if(parseFloat(uplata) >= (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust)))) {
-                fromModalNaplata({id: toModalNaplata[0].activRacun,  kusur:  kusur});
+                //fromModalNaplata({id: toModalNaplata[0].activRacun,  kusur:  kusur});
                 setKusur(0);
                 let tipNaplateTmp =  buttonPlacanjeList.filter(tip => tip.id   ===  selectedTipPlacanja); 
     
-                handleCloseprops({activId: toModalNaplata[0].activRacun, tipNaplate: tipNaplateTmp[0].naziv, uplata:  uplata});
+                handleCloseprops({activId: toModalNaplata[0].activRacun, tipNaplate: tipNaplateTmp[0].naziv, uplata:  uplata,  kusur:  kusur});
         } else {
             console.log('uplata je manja od total racuna');
         }
