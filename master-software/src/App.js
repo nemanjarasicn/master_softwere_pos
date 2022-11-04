@@ -48,7 +48,7 @@ localStorage.setItem('racunTmp01', JSON.stringify(racunTmp01));
 localStorage.setItem('listaRacunaTmp', JSON.stringify(listaRacunaTmp));
 secureLocalStorage.setItem('test', 'test');
 localStorage.setItem('buttonRacunList', JSON.stringify(ButtonRacunList)); 
-localStorage.setItem('operater', JSON.stringify(''));       
+//localStorage.setItem('operater', JSON.stringify(''));       
 localStorage.setItem('buttonRacunCount', JSON.stringify(2));   
 
 localStorage.setItem('initialValuePopust', JSON.stringify(initialValuePopust));
