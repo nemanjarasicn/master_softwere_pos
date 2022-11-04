@@ -96,6 +96,8 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                 setFlag(false)
             }, 100);
         }
+
+        
         if (event.key === 'Enter') {
             setKusur(0);
             let kusurTmp = (parseFloat(event.target.value)  -  (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))));
@@ -112,6 +114,20 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
 
      } 
 
+
+     const  addKusur  = (event)  =>  {
+        setKusur(0);
+        let kusurTmp = (parseFloat(event.target.value)  -  (parseFloat(toModalNaplata[0].totalPrice - parseFloat(toModalNaplata[0].totalPopust))));
+        setKusur(kusurTmp);
+
+        let tmpUplata = currencyFormat(parseFloat(event.target.value));
+            setUplataStr(tmpUplata);
+            setUplata(event.target.value);
+            setTimeout(() => {
+                event.target.value = tmpUplata;
+            }, 100);
+     }
+
      const ref = useRef();
      
      React.useEffect(() => {
@@ -123,6 +139,12 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
         //setSelectedtipPlacanja('');
       
      },[openProps])
+
+     React.useEffect(() => {
+        
+        console.log(uplata);
+      
+     },[uplata])
 
 
 
@@ -339,6 +361,7 @@ export const ModalNaplata = ({openProps,handleCloseprops,toModalNaplata, openMod
                                                 variant="filled"
                                                 onChange={handleChangeUplata}
                                                 onKeyDown={handleChange}
+                                                onBlur={addKusur}
                                                 value={valueUplata}
                                                 size="small"
                                                 sx={{ input: {  fontFamily: 'Roboto', 

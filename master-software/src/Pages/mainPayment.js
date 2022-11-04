@@ -91,6 +91,7 @@ export const MainPayment = () => {
   const [totalPopust, setTotalPopust] = React.useState(0);
   const [isPodgrupa, setIsPodgrupa] = React.useState(false);
   const [activPlacanje, setActivPlacanje] = React.useState('Normal');
+  const [disabledFlag, setDisabledFlag]  =  React.useState(false);
   const [kupacList, setKupacList] = React.useState(JSON.parse(localStorage.getItem('initialValueKupac')));
    const [tipUplateList, setTipUplateList] = React.useState(JSON.parse(localStorage.getItem('initialValueTipUplate')));
   const [kupac, setKupac] = React.useState('');
@@ -731,7 +732,7 @@ const openModelKomPlacanje =  (activIdNp) => {
 
  const naplataTotal =  async (activRacunid, tipNaplate, uplata, kusur) => {
 
-
+    setDisabledFlag(true);
   
     const newState = totalKusurList.map(obj => {
       if (obj.id === activRacunid) {
@@ -875,6 +876,7 @@ const openModelKomPlacanje =  (activIdNp) => {
         setKupacList(newStateKupac);
         setTimeout(() => {
                 setShowKusur(false);
+                setDisabledFlag(false);
         }, 5000);
         
 
@@ -1440,8 +1442,8 @@ const  logOutFunc   =  (potvrdi)  =>   {
                                               lineHeight:   '26px',
                                               textTransform: 'uppercase',
                                               fontSize:  () => window.devicePixelRatio == 1.5 ? 8 : 16}}
-                                              onClick={() => naplataTotal(activRacun,'dirGotovina', totalPrice,   0)}
-                                              disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>Gotovina
+                                              onClick={() => { naplataTotal(activRacun,'dirGotovina', totalPrice,   0)}}
+                                              disabled={((listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false) || disabledFlag}>Gotovina
                                       </Button>
                                     </ButtonGroup>
 
@@ -1490,7 +1492,7 @@ const  logOutFunc   =  (potvrdi)  =>   {
                                           textTransform: 'uppercase',
                                           height: window.devicePixelRatio == 1.5 ?   '38px' : '56px',
                                           fontSize: () => window.devicePixelRatio == 1.5 ? 16 : 24, backgroundColor:  '#6cb238', mr:2, '&.MuiButton-root': {color:  'black'}}}  onClick={handleOpenModalNaplata}  fullWidth
-                                          disabled={(listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false}>{txt.txtNaplata}</Button>
+                                          disabled={((listaRacunaTmp.filter(obj  =>  obj.activRacun  ===   activRacun)).length  ===  0 ?  true  : false)   ||  disabledFlag}>{txt.txtNaplata}</Button>
                                     </Grid>
                                     <ModalNaplata openProps={openModalNaplata}  toModalNaplata={[{totalPrice: totalPrice, totalPopust: totalPopust,  activRacun:  activRacun}]} handleCloseprops={handleCloseModalNaplata}   openModalKomPlacanje={openModelKomPlacanje}      ></ModalNaplata>
                                     <ModalKombinovanaNaplata openProps={openModalKomPlacanje} handleCloseprops={handleCloseModalKomPlacanje}  toModalKombinovano={toModalKombinovano}    fromModalKombinovano={naplataKombinovano} ></ModalKombinovanaNaplata>

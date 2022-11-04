@@ -192,6 +192,7 @@ export const arrayChunk = (arr, n, activTipProizvoda,isPodgrupa, start, end , po
   
       if(element.parentId !== null) {
         if (!isDuplicate) {
+          console.log('elemen',element);
           uniqueIds.unshift(element.productGroupRequest[1].idGroup);
   
           return true;
@@ -202,7 +203,7 @@ export const arrayChunk = (arr, n, activTipProizvoda,isPodgrupa, start, end , po
       return true;
     });
   
-     return unique;
+     return (unique.sort((a, b) => ((a.parentId < b.parentId) ? -1 : 1))).reverse();
   }
 
 // funkija proverava da li artikal ima sve potrebne vrednosti, ako ne vraca gresku 
